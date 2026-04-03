@@ -1,0 +1,18 @@
+{
+    "name": "treyka/boutique",
+    "autoload": {
+        "psr-4": {
+            "Treyka\\Boutique\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Aboutreyka9",
+            "email": "absanogo9@gmail.com"
+        }
+    ],
+    "require": {
+        "dompdf/dompdf": "^3.1",
+        "phpmailer/phpmailer": "^7.0"
+    }
+}
