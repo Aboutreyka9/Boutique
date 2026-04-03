@@ -1,0 +1,175 @@
+https://www.youtube.com/watch?v=Ubgabt4M7p8
+https://www.youtube.com/watch?v=3jqKq2PppV0
+https://www.youtube.com/watch?v=bPHQoVOgYJU
+https://youtu.be/bPHQoVOgYJU
+
+// -------------------------------------------------
+https://www.youtube.com/watch?v=J7aJBXwRpNE
+https://www.youtube.com/watch?v=uRcSkyHecGo
+https://www.youtube.com/watch?v=12brQAYkDy4
+https://www.youtube.com/watch?v=N18Am4HVy4o
+https://www.youtube.com/watch?v=HS6ty3M5ang
+https://www.youtube.com/watch?v=RMGiQ4gH-sA
+
+
+Famille verification
+
+<script>
+function myFunction() {
+  var row = document.getElementById("myRow");
+  var x = row.insertCell(0);
+  x.innerHTML = "New cell";
+}
+
+
+row.deleteCell(0);
+
+
+var row = table.insertRow(0);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  cell1.innerHTML = "NEW CELL1";
+  cell2.innerHTML = "NEW CELL2";
+</script>
+
+
+
+COUNT(so.ID_sortie) article,SUM(so.prix_vente * so.qte) total, cl.nom_client,
+cl.prenom_client,cl.telephone_client
+FROM vente ve INNER JOIN sortie so ON so.vente_id = ve.code_vente
+INNER JOIN client cl ON cl.ID_client = ve.client_id
+
+
+SELECT MONTH(created_at) AS MOIS  
+     , SUM(somme)  AS SMONT 
+FROM  sommevente                    
+GROUP BY MONTH(created_at)        
+ORDER BY MONTH(created_at) ASC;
+
+
+
+SELECT WEEK(ve.created_at) periode, DAY(ve.created_at) jour, SUM(so.prix_vente * qte)  AS total 
+        FROM sortie so INNER JOIN vente ve ON ve.code_vente = so.vente_id
+        GROUP BY DAY(ve.created_at) HAVING  periode = 46
+        ORDER BY WEEK(ve.created_at), DAY(ve.created_at) DESC LIMIT 7;
+
+
+// Vente par article et mois
+        SELECT DISTINCT ar.libelle_article art,MONTHNAME(ve.created_at) periode, SUM(so.prix_vente * qte)  AS total 
+        FROM sortie so INNER JOIN article ar ON ar.ID_article = so.article_id INNER JOIN vente ve ON 			       	 ve.code_vente = 	     so.vente_id
+        GROUP BY ar.ID_article,MONTH(ve.created_at)
+        ORDER By MONTH(ve.created_at),art;
+
+
+
+        // BILAN VENTE ET ACHAT PAR MOIS
+
+        SELECT ve.created_at dates, SUM(so.prix_vente) ventes,SUM(en.prix_achat) achats 
+FROM vente ve, achat ac, entree en, sortie so
+WHERE ve.code_vente = so.vente_id AND ac.code_achat = en.achat_id
+GROUP BY MONTHNAME(ve.created_at) ORDER BY MONTH(ve.created_at) ASC;
+
+
+        // BILAN VENTE ET ACHAT PAR MOIS PARt ARTICL
+        SELECT ar.libelle_article,ve.created_at dates, SUM(so.prix_vente) ventes,SUM(en.prix_achat) achats 
+FROM article ar 
+INNER JOIN sortie so ON so.article_id = ar.ID_article 
+INNER JOIN entree en ON en.article_id = ar.ID_article 
+INNER JOIN vente ve ON ve.code_vente = so.vente_id
+INNER JOIN achat ac ON ac.code_achat = en.achat_id
+GROUP BY MONTHNAME(ve.created_at) ORDER BY MONTH(ve.created_at) ASC;
+
+// VENTE PAR MOIS
+$sql = "SELECT  
+CASE MONTH(ve.created_at)
+WHEN 1 THEN 'janvier'
+WHEN 2 THEN 'février'
+WHEN 3 THEN 'mars'
+WHEN 4 THEN 'avril'
+WHEN 5 THEN 'mai'
+WHEN 6 THEN 'juin'
+WHEN 7 THEN 'juillet'
+WHEN 8 THEN 'aoûtddddd'
+WHEN 9 THEN 'septembre'
+WHEN 10 THEN 'octobre'
+WHEN 11 THEN 'novembre' 
+ELSE 'décembre'
+END 
+AS
+ mois, SUM(so.prix_vente * qte)  AS total 
+FROM sortie so INNER JOIN vente ve ON ve.code_vente = so.vente_id WHERE ve.etat_vente = 1
+GROUP BY MONTH(ve.created_at)        
+ORDER BY MONTH(ve.created_at) ASC LIMIT 12;";
+
+
+
+
+********************************************************************
+********************************************************************
+
+SELECT en.*,ar.libelle_article AS article,ac.created_at d_vente FROM entree en 
+INNER JOIN article ar ON ar.ID_article = en.article_id 
+INNER JOIN achat ac ON ac.code_achat=en.achat_id
+GROUP BY ac.created_at, ar.ID_article
+ORDER BY ac.created_at DESC;
+
+SELECT so.*,ar.libelle_article AS article,ve.created_at d_vente ,ve.etat_vente AS e_v FROM sortie so 
+INNER JOIN article ar ON ar.ID_article = so.article_id 
+INNER JOIN vente ve ON ve.code_vente=so.vente_id
+GROUP BY ve.created_at, ar.ID_article
+HAVING e_v=1
+ORDER BY ve.created_at DESC;
+
+
+
+
+
+SELECT ar.ID_article, ar.libelle_article article, SUM(so.qte) so_qte, SUM(so.prix_vente*so.qte) so_montant FROM article ar
+        INNER JOIN sortie so ON so.article_id = ar.ID_article 
+        GROUP BY ar.ID_article;
+
+        // View bilan sortie
+        CREATE VIEW bilan_sortie (ID_article,article,so_qte,so_montant)
+                AS SELECT ar.ID_article, ar.libelle_article article, SUM(so.qte) so_qte, SUM(so.prix_vente*so.qte) so_montant FROM article ar
+                INNER JOIN sortie so ON so.article_id = ar.ID_article 
+                WHERE so.etat_sortie =1
+                GROUP BY ar.ID_article;
+
+        // View bilan entree
+
+        CREATE VIEW bilan_entree (ID_article,article,en_qte,en_montant)
+                AS SELECT ar.ID_article, ar.libelle_article article, SUM(en.qte) en_qte, SUM(en.prix_achat*en.qte) en_montant FROM article ar
+                INNER JOIN entree en ON en.article_id = ar.ID_article 
+                WHERE en.etat_entree =1
+                GROUP BY ar.ID_article;
+
+
+        SELECT be.ID_article,be.article ,be.en_qte,be.en_montant, bs.so_qte,bs.so_montant FROM bilan_sortie bs
+RIGHT JOIN bilan_entree be ON be.ID_article = bs.ID_article;
+
+SELECT be.ID_article,be.article ,be.en_qte,be.en_montant,
+IF(bs.so_qte IS NULL,0,bs.so_qte) AS so_qte,
+IF(bs.so_montant IS NULL,0,bs.so_montant) AS so_montant
+FROM bilan_sortie bs
+RIGHT JOIN bilan_entree be ON be.ID_article = bs.ID_article;
+
+// View Bilan Comptabilite
+
+CREATE view comptabilite (id_article,article,depenses,ventes,qte_reste,mt_reste,gain) AS
+SELECT be.ID_article, be.article Article ,be.en_montant Depense,
+IF(bs.so_montant IS NULL,0,bs.so_montant) AS Vente,
+(be.en_qte - IF(bs.so_qte IS NULL,0,bs.so_qte)) AS QteReste,
+((be.en_qte - IF(bs.so_qte IS NULL,0,bs.so_qte))* ar.prix_article) AS mtRest,
+(IF(bs.so_montant IS NULL,0,bs.so_montant) + ((be.en_qte - IF(bs.so_qte IS NULL,0,bs.so_qte))* ar.prix_article) -be.en_montant) AS Gain
+FROM bilan_sortie bs
+RIGHT JOIN bilan_entree be ON be.ID_article = bs.ID_article
+INNER JOIN article ar ON ar.ID_article = be.ID_article;
+
+
+// View change etat vente
+CREATE VIEW change_etat_vente (id_vente,etat_vente,code_vente) AS 
+SELECT ve.ID_vente,ve.etat_vente,ve.code_vente  FROM vente ve 
+INNER JOIN sortie so ON so.vente_id = ve.code_vente
+WHERE ve.etat_vente = 1 AND ve.etat_vente > ANY (Select sor.etat_sortie from sortie sor where sor.vente_id = ve.code_vente AND sor.etat_sortie =0);
+
+

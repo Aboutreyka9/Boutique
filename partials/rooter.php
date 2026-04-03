@@ -1,0 +1,152 @@
+<?php
+session_start();
+date_default_timezone_set('Africa/Abidjan');
+
+require "../config/const.php";
+require "../config/helpers.php";
+require "../models/Connexion.php";
+require "../models/Employe.php";
+require '../controllers/Soutra.php';
+require "../controllers/ControllerEntrepot.php";
+require "../controllers/ControllerEmploye.php";
+require "../controllers/ControllerClient.php";
+require "../controllers/ControllerFournisseur.php";
+require "../controllers/ControllerCategorie.php";
+require "../controllers/ControllerFamille.php";
+require "../controllers/ControllerMark.php";
+require "../controllers/ControllerUnite.php";
+require "../controllers/ControllerArticle.php";
+require "../controllers/ControllerAchat.php";
+require "../controllers/ControllerVente.php";
+require "../controllers/ControllerCommande.php";
+require "../controllers/ControllerConfig.php";
+require "../controllers/ControllerDashboard.php";
+
+// setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
+// $sql = self::getConnexion()->query(" SET lc_time_names = 'fr_FR' ;");
+
+// date_default_timezone_set('Africa/Abidjan');
+
+// Dashbord
+ControllerDashboard::getAllDashboardAdmin();
+
+// Configuration
+ControllerConfig::ajouter_info();
+ControllerConfig::ajouter_contact();
+ControllerConfig::changeImageLogo();
+ControllerConfig::loadDate();
+ControllerConfig::switchClient();
+ControllerConfig::switchFournisseur();
+ControllerConfig::switchDelete();
+ControllerConfig::switchUnite();
+
+// Emplyer
+ControllerEmploye::authentification();
+ControllerEmploye::logout();
+ControllerEmploye::ajouter_employe();
+ControllerEmploye::modifier_login_employe();
+ControllerEmploye::liste_employe();
+ControllerEmploye::getEmploye();
+ControllerEmploye::suppresion_employe();
+
+// CLIENT
+ControllerClient::ajouter_client();
+ControllerClient::liste_client();
+ControllerClient::getClient();
+ControllerClient::suppresion_client();
+ControllerClient::getClientForVente();
+
+// FOURNISSEUR
+ControllerFournisseur::ajouter_fournisseur();
+ControllerFournisseur::liste_fournisseur();
+ControllerFournisseur::getfournisseur();
+ControllerFournisseur::suppresion_fournisseur();
+ControllerFournisseur::get_fournisseur_info();
+
+
+// ENTREPOT
+ControllerEntrepot::ajouter_entrepot();
+// ControllerEntrepot::liste_famille();
+ControllerEntrepot::getEntrepot();
+ControllerEntrepot::modifier_entrepot();
+// ControllerEntrepot::suppresion_famille();
+
+
+// CATEGORIE
+ControllerCategorie::ajouter_categorie();
+ControllerCategorie::liste_categorie();
+ControllerCategorie::getCategorie();
+ControllerCategorie::suppresion_categorie();
+
+// FAMILLE
+ControllerFamille::ajouter_famille();
+ControllerFamille::liste_famille();
+ControllerFamille::getFamille();
+ControllerFamille::suppresion_famille();
+
+// MARK
+ControllerMark::ajouter_mark();
+ControllerMark::liste_mark();
+ControllerMark::getMark();
+ControllerMark::suppresion_mark();
+
+//UNITE
+ControllerUnite::ajouter_unite();
+ControllerUnite::liste_unite();
+ControllerUnite::getUnite();
+ControllerUnite::suppresion_unite();
+
+// ARTICLE
+ControllerArticle::ajouter_article();
+ControllerArticle::liste_article();
+ControllerArticle::getArticle();
+ControllerArticle::suppresion_article();
+
+// ACHAT
+ControllerAchat::ajouter_panier_achat();
+ControllerAchat::ajouter_achat();
+ControllerAchat::liste_detail_achat_fournisseur();
+ControllerAchat::getCanvasMonthAchat();
+ControllerAchat::getAchat();
+ControllerAchat::suppresion_achat();
+ControllerAchat::btn_remove_achat_detail();
+ControllerAchat::getCanvasfournisseur();
+// ControllerAchat::initDateRangeFilter();
+ControllerAchat::getDataDateRangeFilterAchat();
+
+ControllerAchat::ajouter_depense();
+ControllerAchat::getDepense();
+ControllerAchat::suppresion_depense();
+ControllerAchat::getDataDateRangeFilterDepense();
+
+// VERSEMENT
+ControllerClient::ajouter_versement();
+
+// VENTE
+ControllerVente::ajouter_panier_vente();
+ControllerVente::ajouter_vente();
+ControllerVente::liste_vente();
+ControllerVente::liste_detail_vente_client();
+ControllerVente::getVente();
+ControllerVente::verifQteArticleVente();
+ControllerVente::verifDetail();
+ControllerVente::suppresion_vente();
+ControllerVente::btn_remove_vente_detail();
+ControllerVente::getDataDateRangeFilterInventaire();
+
+ControllerVente::getCanvasMonth();
+ControllerVente::getCanvasWeek();
+ControllerVente::getCanvasEmployeMonth();
+ControllerVente::getCanvasMontantByArticle();
+ControllerVente::getCanvasCLient();
+ControllerVente::getDataDateRangeFilterVente();
+
+// COMMANDE
+ControllerCommande::ajouter_panier_commande();
+ControllerCommande::ajouter_commande();
+ControllerCommande::valider_commande();
+ControllerCommande::getcommande();
+ControllerCommande::verifQteArticlecommande();
+ControllerCommande::verifDetail();
+ControllerCommande::suppresion_commande();
+ControllerCommande::btn_remove_commande_detail();
