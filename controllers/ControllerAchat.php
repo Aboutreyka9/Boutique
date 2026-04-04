@@ -185,16 +185,16 @@ class ControllerAchat extends Connexion
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_validation_achat") {
       extract($_POST);
-    $msg = [];
+      $msg = [];
 
-        $data = array(
+      $data = array(
         'statut_achat' => STATUT_COMMANDE[1],
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
-        $msg = ["success"=>true,"msg"=>"Commande validée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande validée avec succès"];
       } else {
-        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
       echo json_encode($msg);
     }
@@ -204,35 +204,35 @@ class ControllerAchat extends Connexion
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_encaisser_achat") {
       extract($_POST);
-    $msg = [];
+      $msg = [];
 
-        $data = array(
+      $data = array(
         'statut_achat' => STATUT_COMMANDE[2],
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
-        $msg = ["success"=>true,"msg"=>"Commande encaissée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande encaissée avec succès"];
       } else {
-        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
       echo json_encode($msg);
     }
   }
-  
+
   public static function annulation_achat()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_achat") {
       extract($_POST);
-    $msg = [];
+      $msg = [];
 
-        $data = array(
+      $data = array(
         'statut_achat' => STATUT_COMMANDE[3],
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
-        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
       } else {
-        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
       echo json_encode($msg);
     }
@@ -242,16 +242,16 @@ class ControllerAchat extends Connexion
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
       extract($_POST);
-    $msg = [];
+      $msg = [];
 
-        $data = array(
+      $data = array(
         'statut_achat' => STATUT_COMMANDE[4],
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
-        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
       } else {
-        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
       echo json_encode($msg);
     }
@@ -263,6 +263,8 @@ class ControllerAchat extends Connexion
     $verifEmpty = false;
     $val = "";
     $verifType = false;
+    // var_dump($_POST);
+    // return;
 
     for ($i = 0; $i < count($pu); $i++) {
       if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
@@ -424,10 +426,10 @@ class ControllerAchat extends Connexion
     }
   }
 
-  
+
   public static function ajouter_achat()
   {
-    if (isset($_POST['btn_valider_achat'])) {
+    if (isset($_POST['btn_ajouter_achat'])) {
 
       if (isset($_POST['id_approvision'])) {
         // mod()
