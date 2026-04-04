@@ -669,13 +669,13 @@ class Soutra extends Connexion
 
         $sql = 'SELECT  COALESCE(SUM(d.montant),0) montant_depense,  COALESCE(COUNT(d.ID_depense),0) nombre_depense
             FROM type_depense t
-            JOIN depense d ON t.ID_type = d.type_id AND d.etat_depense = :etat_depense
+            JOIN depense d ON t.ID_type = d.type_id AND d.statut_depense = :statut_depense
             WHERE DATE(d.date_created) BETWEEN :startDate AND :endDate ';
 
         $params = [
             ':startDate' => $startDate,
             ':endDate'   => $endDate,
-            ':etat_depense'   => 1,
+            ':statut_depense'   => STATUT_DEPENSE[2],
         ];
 
         // Ajout condition dynamique
@@ -2633,6 +2633,69 @@ class Soutra extends Connexion
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getAllListeDepenses($startDate, $endDate, $entrepot = null)
+    {
+        $data = [];
+
+        $params = [];
+        $sql = "SELECT d.*,t.*, CONCAT(e.nom_employe,' ',prenom_employe) AS employe
+            FROM type_depense t
+            JOIN depense d ON t.ID_type = d.type_id
+            JOIN employe e ON e.id_employe = d.employe_id
+        WHERE  DATE(d.date_created) BETWEEN :startDate AND :endDate ";
+        $params = ['startDate' => $startDate, 'endDate' => $endDate];
+
+
+        if (!empty($entrepot)) {
+            $sql .= " AND d.entrepot_id = :entrepot_id";
+            $params['entrepot_id'] = $entrepot;
+        }
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute($params);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getTotalDepenseAny($startDate, $endDate, $statut, $entrepot = null)
+    {
+        $data = [];
+
+        $sql = 'SELECT  COALESCE(SUM(d.montant),0) montant_depense,  COALESCE(COUNT(d.ID_depense),0) nombre_depense
+            FROM type_depense t
+            JOIN depense d ON t.ID_type = d.type_id AND d.statut_depense = :statut_depense
+            WHERE DATE(d.date_created) BETWEEN :startDate AND :endDate ';
+
+        $params = [
+            ':startDate' => $startDate,
+            ':endDate'   => $endDate,
+            ':statut_depense'   => $statut,
+        ];
+
+        // Ajout condition dynamique
+        if (!empty($entrepot)) {
+            $sql .= ' AND d.entrepot_id = :entrepot_id ';
+            $params[':entrepot_id'] = $entrepot;
+        }
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute($params);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
 
         $query->closeCursor();

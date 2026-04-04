@@ -21,6 +21,7 @@ require "../controllers/ControllerVente.php";
 require "../controllers/ControllerCommande.php";
 require "../controllers/ControllerConfig.php";
 require "../controllers/ControllerDashboard.php";
+require "../controllers/ControllerDepense.php";
 
 // setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 // $sql = self::getConnexion()->query(" SET lc_time_names = 'fr_FR' ;");
@@ -119,9 +120,14 @@ ControllerAchat::annulation_achat();
 ControllerAchat::retourner_achat();
 
 ControllerAchat::ajouter_depense();
+// DEPENSES
+ControllerDepense::ajouter_depense();
+ControllerDepense::getDataDateRangeFilterDepense();
+// 
+// ControllerAchat::ajouter_depense();
 ControllerAchat::getDepense();
 ControllerAchat::suppresion_depense();
-ControllerAchat::getDataDateRangeFilterDepense();
+// ControllerAchat::getDataDateRangeFilterDepense();
 
 // VERSEMENT
 ControllerClient::ajouter_versement();

@@ -1011,15 +1011,15 @@ class ControllerAchat extends Connexion
 
   public static function getDataDateRangeFilterDepense()
   {
-    if (isset($_POST['btn_filter_depense'])) {
+    if (isset($_POST['btn_filtemmlklkkmr_depense555'])) {
       extract($_POST);
-      $btn_filter_depense = $_POST['btn_filter_depense'];
+      $btn_filter654454_depense = $_POST['btn_filter_deùmmùùlùlpense'];
       $dateDebut = $_POST['dateDebut'] ?? null;
       $dateFin = $_POST['dateFin'] ?? null;
       $depense_precedente = 0;
 
       // si le btn = 1 on get par depense
-      if ($btn_filter_depense == 1) {
+      if ($btn_filt32355er_depense == 1) {
         $totaux_depense = Soutra::getTotauxDepenseByMouth($dateDebut, $dateFin);
         $data_depense = Soutra::getDepensesByMouth($dateDebut, $dateFin);
       }

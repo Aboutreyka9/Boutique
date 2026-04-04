@@ -1,64 +1,66 @@
 <?php
 
-class ControllerEmploye extends Connexion {
+class ControllerEmploye extends Connexion
+{
 
     // connexion utilisateur
-    public static function authentification() {
+    public static function authentification()
+    {
         if (isset($_POST["btn_connexion"])) {
             extract($_POST);
-            $msg ="";
+            $msg = "";
             if (empty(htmlspecialchars(trim($telephone)))) {
-                $msg = "2&Numero utilisateur requis !"; 
-            }elseif(empty(htmlspecialchars(trim($password)))){
-                 $msg = "2&Mot de passe requis !";
-            }else{
+                $msg = "2&Numero utilisateur requis !";
+            } elseif (empty(htmlspecialchars(trim($password)))) {
+                $msg = "2&Mot de passe requis !";
+            } else {
                 $msg = "2&Nom utilisateur ou mot de passe incorect !";
                 $emp = Soutra::loginEmployer($telephone, md5($password));
                 if (!empty($emp)) {
-                   $_SESSION["id_employe"] = $emp["ID_employe"];
-                   $_SESSION["role"] = $emp["role"];
-                   $_SESSION["nom"] = $emp["nom_employe"];
-                   Soutra::update("employe",['login' => date("Y-m-d h:i:s"), "ID_employe" => $emp['ID_employe']]);
+                    $_SESSION["id_employe"] = $emp["ID_employe"];
+                    $_SESSION["role"] = $emp["role"];
+                    $_SESSION["nom"] = $emp["nom_employe"];
+                    Soutra::update("employe", ['login' => date("Y-m-d h:i:s"), "ID_employe" => $emp['ID_employe']]);
                     $msg = "1&ok";
                 }
-               
             }
             echo $msg;
         }
     }
 
-    public static function logout() {
+    public static function logout()
+    {
         if (isset($_POST["btn_deconnexion"])) {
-           
-                   $_SESSION = [];
-                   session_destroy();
-                    $msg = 1;
-               
+
+            $_SESSION = [];
+            session_destroy();
+            $msg = 1;
         }
     }
 
-     public static function getEmploye() {
+    public static function getEmploye()
+    {
         if (isset($_POST["frm_upemploye"])) {
-            $employe = Soutra::getAllByItemsa('employe','ID_employe',$_POST['id_employe']);
-            $roles = Soutra::getAllTable('role','etat_role',1);
+            $employe = Soutra::getAllByItemsa('employe', 'ID_employe', $_POST['id_employe']);
+            $roles = Soutra::getAllTable('role', 'etat_role', 1);
             $output = '
             <div class="col-md-12">
             <div class="form-group">
               <label for="nom_employe">Nom</label>
-               <input type="text" name="nom_employe" value="'.$employe['nom_employe'].'" id="nom_employe" class="form-control">
+               <input type="text" name="nom_employe" value="' . $employe['nom_employe'] . '" id="nom_employe" class="form-control">
             </div>
           </div>
           <div class="col-md-12">
             <div class="form-group">
               <label for="prenom_employe">Prenoms</label>
-               <input type="text" name="prenom_employe" value="'.$employe['prenom_employe'].'" id="prenom_employe" class="form-control">
+               <input type="text" name="prenom_employe" value="' . $employe['prenom_employe'] . '" id="prenom_employe" class="form-control">
             </div>
           </div>
           <div class="col-md-12">
             <div class="form-group">
               <label for="telephone_employe">Telephone</label>
-              <input type="text" name="telephone_employe" value="'.$employe['telephone_employe'].'" id="telephone_employe" class="form-control">
-              <input type="hidden" name="id_employe" value="'.$employe['ID_employe'].'" class="form-control">
+              <input type="text" name="telephone_employe" value="' . $employe['telephone_employe'] . '" id="telephone_employe" class="form-control">
+              <input type="hidden" name="id_employe" value="' . $employe['ID_employe'] . '" class="form-control">
             </div>
           </div>
           <div class="col-md-12">
@@ -66,24 +68,23 @@ class ControllerEmploye extends Connexion {
               <label for="role_employe">Role</label>
               <select name="role_employe" id="role_employe" class="form-control" id="">
               ';
-              foreach ($roles as $row) {
+            foreach ($roles as $row) {
                 $selected = $employe["role_id"] == $row["ID_role"] ? " selected" : "";
-                $output .='
-                <option '.$selected.'  value="'.$row['ID_role'].'">'.$row['libelle_role'].'</option>
+                $output .= '
+                <option ' . $selected . '  value="' . $row['ID_role'] . '">' . $row['libelle_role'] . '</option>
                 ';
-
-              }
-            $output .='
+            }
+            $output .= '
               </select>
             </div>
           </div>
             ';
-            
-            
+
+
             echo $output;
         }
     }
-  
+
 
     // public static function etat_employe() {
     //     if (isset($_POST["etat_utilisateur"])) {
@@ -113,37 +114,38 @@ class ControllerEmploye extends Connexion {
     //     echo $output;
     // }
 
-    public static function liste_employe() {
-        if(isset($_POST['btn_liste_employe'])){ 
-        $output = '';
-        $emp = Soutra::getAllEmployer($_SESSION['id_employe']);
-        if (!empty($emp)) {
-            $i = 0;
-            foreach ($emp as $row) {
-                $i++;
-                $output .= '
-                <tr class="row'.$row['ID_employe'].'">
+    public static function liste_employe()
+    {
+        if (isset($_POST['btn_liste_employe'])) {
+            $output = '';
+            $emp = Soutra::getAllEmployer($_SESSION['id_employe']);
+            if (!empty($emp)) {
+                $i = 0;
+                foreach ($emp as $row) {
+                    $i++;
+                    $output .= '
+                <tr class="row' . $row['ID_employe'] . '">
                    <td>' . $i . '</td>
                    <td>' . $row['code_employe'] . '</td>
                    <td>' . $row['nom_employe'] . '</td>
                    <td>' . $row['prenom_employe'] . '</td>
                    <td>' . $row['telephone_employe'] . '</td>
                    <td>' . $row['role'] . '</td>';
-                
-                   $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="'. $row['ID_employe'].'" class="btn btn-primary btn-sm btn_update_employe">
+
+                    $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+                   <button data-id="' . $row['ID_employe'] . '" class="btn btn-primary btn-sm btn_update_employe">
                    <i class="fa fa-edit"></i> modiier </button>
                    <div class="d-inline">
-                       <button data-id="'. $row['ID_employe'].'" class="btn btn-warning btn-sm btn_remove_employe">
+                       <button data-id="' . $row['ID_employe'] . '" class="btn btn-warning btn-sm btn_remove_employe">
                        <i class="fa fa-trash"></i> Supprimer</button>
                    </div>
                  </td>
                     </tr>
                     ';
+                }
             }
+            echo $output;
         }
-        echo $output;
-      }
     }
 
     // public static function activation() {
@@ -238,24 +240,22 @@ class ControllerEmploye extends Connexion {
     //            }
     //         } 
     //     }
-        
+
     //     $output .= "</select>";
     //     echo $output;
     // }
 
-    public static function ajouter_employe() {
+    public static function ajouter_employe()
+    {
         if (isset($_POST['btn_ajouter_employe'])) {
 
-           if (isset($_POST['id_employe'])) {
-            // mod()
-            self::modifier_employe();
-
-           }else{
-            // Ajouter
-            self::createEmploye();
-           }
-
-         
+            if (isset($_POST['id_employe'])) {
+                // mod()
+                self::modifier_employe();
+            } else {
+                // Ajouter
+                self::createEmploye();
+            }
         }
     }
 
@@ -264,7 +264,7 @@ class ControllerEmploye extends Connexion {
         extract($_POST);
         $msg = "";
         if (empty($nom_employe) || empty($prenom_employe) || empty($telephone_employe) || empty($role_employe)) {
-           $msg =  '2&Veuillez remplir tous les champs !';
+            $msg =  '2&Veuillez remplir tous les champs !';
         } elseif (!Soutra::verif_type($telephone_employe) || mb_strlen($telephone_employe) != 10) {
             $msg = '2&Le numéro de téléphone invalide !';
             // $msg = mb_strlen($telephone_employe);
@@ -278,64 +278,64 @@ class ControllerEmploye extends Connexion {
                 'prenom_employe' => ucfirst($prenom_employe),
                 'telephone_employe' => $telephone_employe,
                 'role_id' => $role_employe,
-                'etat_employe'=> 1,
-                'code_employe'=> $code,
+                'etat_employe' => 1,
+                'code_employe' => $code,
                 'password_employe' => md5("123@123"),
-                    //'date_con'=> $date
+                //'date_con'=> $date
             );
             //var_dump($data);die();
             if (Soutra::insert("employe", $data)) {
                 $msg = "1&Employé enregistré avec succès";
             } else {
-                $msg= '2&Une erreur est survenue ! ';
+                $msg = '2&Une erreur est survenue ! ';
             }
         }
         echo $msg;
     }
 
-    public static function modifier_employe() {
+    public static function modifier_employe()
+    {
         extract($_POST);
         $msg = "";
-    
-            if (empty($nom_employe) || empty($telephone_employe) || empty($prenom_employe) || empty($role_employe)) {
-                $msg = '2&Veuillez remplir tous les champs !';
-            } elseif (!Soutra::verif_type($telephone_employe) || mb_strlen($telephone_employe) != 10) {
-                $msg = '2&Le numéro de téléphone doit être 10 chiffres !';
-            } elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe) && Soutra::libelle("employe", "ID_employe", "telephone_employe", $telephone_employe) != $id_employe) {
-                $msg = '2&Le numero de téléphone ' . $telephone_employe . ' existe déjà !';
-            }else {
-                $data = array(
-                    'nom_employe' => strtoupper($nom_employe),
-                    'prenom_employe' => ucfirst($prenom_employe),
-                    'telephone_employe' => $telephone_employe,
-                    'role_id' => $role_employe,
-                    'ID_employe' => $id_employe
-                );
-                //var_dump($data);die();
-                if (Soutra::update("employe", $data)) {
-                    $msg = "1&Employé modifié avec succès";
-                } else {
-                    $msg = '2&Une erreur est survenue !';
-                }
-            }
-            echo $msg;
 
-        
+        if (empty($nom_employe) || empty($telephone_employe) || empty($prenom_employe) || empty($role_employe)) {
+            $msg = '2&Veuillez remplir tous les champs !';
+        } elseif (!Soutra::verif_type($telephone_employe) || mb_strlen($telephone_employe) != 10) {
+            $msg = '2&Le numéro de téléphone doit être 10 chiffres !';
+        } elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe) && Soutra::libelle("employe", "ID_employe", "telephone_employe", $telephone_employe) != $id_employe) {
+            $msg = '2&Le numero de téléphone ' . $telephone_employe . ' existe déjà !';
+        } else {
+            $data = array(
+                'nom_employe' => strtoupper($nom_employe),
+                'prenom_employe' => ucfirst($prenom_employe),
+                'telephone_employe' => $telephone_employe,
+                'role_id' => $role_employe,
+                'ID_employe' => $id_employe
+            );
+            //var_dump($data);die();
+            if (Soutra::update("employe", $data)) {
+                $msg = "1&Employé modifié avec succès";
+            } else {
+                $msg = '2&Une erreur est survenue !';
+            }
+        }
+        echo $msg;
     }
 
-    public static function modifier_login_employe() {
+    public static function modifier_login_employe()
+    {
         if (isset($_POST['btn_update_login_employe'])) {
             extract($_POST);
             $msg = "";
-        
-                if (empty($password) || empty($new_password)) {
-                    $msg = '2&Veuillez remplir tous les champs !';
-                } else {
-                    $emp = Soutra::libelle("employe", "password_employe", "ID_employe",$_SESSION['id_employe']);
 
-                    if (empty($emp) || $emp != md5($password)) {
-                        $msg = '2&Desolé ancien mot de passe incorrect !';
-                    }else{ 
+            if (empty($password) || empty($new_password)) {
+                $msg = '2&Veuillez remplir tous les champs !';
+            } else {
+                $emp = Soutra::libelle("employe", "password_employe", "ID_employe", $_SESSION['id_employe']);
+
+                if (empty($emp) || $emp != md5($password)) {
+                    $msg = '2&Desolé ancien mot de passe incorrect !';
+                } else {
                     $data = array(
                         'password_employe' => md5($new_password),
                         'ID_employe' => $_SESSION['id_employe']
@@ -345,32 +345,33 @@ class ControllerEmploye extends Connexion {
                     } else {
                         $msg = '2&Une erreur est survenue !';
                     }
-                  }
                 }
-                echo $msg;
+            }
+            echo $msg;
         }
     }
 
-    public static function suppresion_employe() {
+    public static function suppresion_employe()
+    {
         if (isset($_POST['btn_supprimer_employe'])) {
-          
+
             $data = array(
                 'etat_employe' => 0,
                 'ID_employe' => $_POST['id_employe']
             );
             Soutra::update("employe", $data);
             echo 1;
-            
         }
     }
 
-    public static function checkCode(){
-        $code = "EM".date('y').date('d').rand(19,9999);
-        if(!empty(Soutra::libelleExiste('employe','code_employe',$code))){
-          self::checkCode();
+    public static function checkCode()
+    {
+        $code = "EM" . date('y') . date('d') . rand(19, 9999);
+        if (!empty(Soutra::libelleExiste('employe', 'code_employe', $code))) {
+            self::checkCode();
         }
         return $code;
-      }
+    }
 
     // public static function enseignant_combobox() {
     //     if (isset($_POST['enseignant_combobox'])) {

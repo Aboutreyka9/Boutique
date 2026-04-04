@@ -537,3 +537,11 @@ table{
     font-weight: 500;
     font-size: 14px;
 }
+
+.custom-card-detail .icon i {
+    /* margin-bottom: 8px; */
+    /* color: #83dd1c; */
+    /* font-weight: 500; */
+    font-size: 18px;
+}
+
