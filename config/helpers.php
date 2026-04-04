@@ -78,3 +78,25 @@ function checkStatusCommande(string $etat, array $data = STATUT_COMMANDE)
 
   return $result;
 }
+
+function checkStatusDepense(string $etat, array $data = STATUT_DEPENSE)
+{
+  $result = "";
+  switch ($etat) {
+    case $data[0]:
+      $result = '<span class="badge badge-statut statut-warning"><span class="dot"></span> ' . $data[0] . '</span>';
+      break;
+    case $data[1]:
+      $result = '<span class="badge badge-statut statut-success"><span class="dot"></span> ' . $data[1] . '</span>';
+      break;
+    case $data[2]:
+      $result = '<span class="badge badge-statut statut-danger"><span class="dot"></span> ' . $data[2] . '</span>';
+      break;
+    default:
+      $result = '';
+      break;
+  }
+
+
+  return $result;
+}
