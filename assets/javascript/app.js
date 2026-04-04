@@ -4032,5 +4032,4 @@ function updateELement(btn_action,code) {
             }
     });
 }
-    }
 });
