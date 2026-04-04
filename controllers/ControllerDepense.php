@@ -42,4 +42,21 @@ class ControllerDepense extends Connexion
       echo json_encode($msg);
     }
   }
+
+
+  public static function getDataDateRangeFilterDepense()
+  {
+    if (isset($_POST['btn_filter_depense'])) {
+      extract($_POST);
+      $dateDebut = $_POST['dateDebut'] ?? null;
+      $dateFin = $_POST['dateFin'] ?? null;
+
+      $depense_annule = Soutra::getTotalDepenseAny($dateDebut, $dateFin, STATUT_DEPENSE[2]); // méthode adaptée que l'on a créée
+      $depense_en_attente = Soutra::getTotalDepenseAny($dateDebut, $dateFin, STATUT_DEPENSE[0]); // méthode adaptée que l'on a créée
+      $depense_approuve = Soutra::getTotalDepenseAny($dateDebut, $dateFin, STATUT_DEPENSE[1]); // 
+
+
+      echo json_encode(compact('depense_annule', 'depense_en_attente', 'depense_approuve'));
+    }
+  }
 } //fin de la class

@@ -117,11 +117,12 @@ ControllerAchat::getDataDateRangeFilterAchat();
 
 // DEPENSES
 ControllerDepense::ajouter_depense();
+ControllerDepense::getDataDateRangeFilterDepense();
 // 
 // ControllerAchat::ajouter_depense();
 ControllerAchat::getDepense();
 ControllerAchat::suppresion_depense();
-ControllerAchat::getDataDateRangeFilterDepense();
+// ControllerAchat::getDataDateRangeFilterDepense();
 
 // VERSEMENT
 ControllerClient::ajouter_versement();

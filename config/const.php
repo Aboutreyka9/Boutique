@@ -12,6 +12,6 @@ const ADMIN = 'admin';
 const USER = 'commercial';
 const GESTIONNAIRE = 'gestionnaire';
 const COMPTABLE = 'comptable';
-const STATUT_COMMANDE = ['en attente', 'valider', 'encaissé', 'retourné', 'annulé'];
+const STATUT_COMMANDE = ['en attente', 'validé', 'encaissé', 'retourné', 'annulé'];
 const PAYMENT_MODE = ['espèce', 'mobile money', 'credit', 'virement', 'chèque', 'autre'];
 const STATUT_DEPENSE = ['en attente', 'approuvé', 'annulé'];

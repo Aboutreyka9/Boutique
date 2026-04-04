@@ -2218,6 +2218,35 @@ $(function () {
         });
     }
 
+     //DASHBORD ADMIN
+    dashboardAdmin();
+
+    function dashboardAdmin(dateStart = "", dateEnd = "") {
+        if ($(".dashboard_admin").length > 0) {
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    dashboard_admin: 1,
+                    dateStart: dateStart,
+                    dateEnd: dateEnd
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    // return
+                    $("#nombre_vente").text(data.ventes.nombre_vente);
+                    $("#montant_vente").text(money(data.ventes.montant_vente));
+                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_reapprovisionnement);
+                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_reapprovisionnement));
+                    $("#nombre_depense").text(data.depenses.nombre_depense);
+                    $("#montant_depense").text(money(data.depenses.montant_depense));
+
+                }
+            });
+        }
+    }
+
     // CONFIGUE BOUTIQUE
     btnConfigInfo();
 
@@ -3812,17 +3841,22 @@ $(function () {
         });
     }
 
-    initDateRangeFilterDepense("datefilterDepense", 1);
+    initDateRangeFilterDepense(date_start_picker,date_end_picker);
 
-    function initDateRangeFilterDepense(selector, type) {
-        $('input[name="' + selector + '"]').daterangepicker({
-            autoUpdateInput: false,
+    function initDateRangeFilterDepense(startDate, endDate) {
+        
+        $('#datefilterDepense').daterangepicker({
+            startDate: startDate,
+            endDate: endDate,
+            autoUpdateInput: true,
             locale: {
+                // format: 'YYYY-MM-DD',
+                format: 'DD-MM-YYYY',
                 cancelLabel: 'Clear'
             }
         });
 
-        $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
+        $('#datefilterDepense').on('apply.daterangepicker', function (ev, picker) {
             let dateDebut = picker.startDate.format('YYYY-MM-DD 00:00:00');
             let dateFin = picker.endDate.format('YYYY-MM-DD 23:59:59');
             let dateD = picker.startDate.format('DD-MM-YYYY');
@@ -3830,28 +3864,36 @@ $(function () {
             $(this).val(dateD + ' - ' + dateF);
             // Appeler la fonction de recherche avec les dates sélectionnées
             $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
+
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: {
                     dateDebut: dateDebut,
                     dateFin: dateFin,
-                    btn_filter_depense: type
+                    btn_filter_depense: 1
                 },
                 dataType: "JSON",
                 success: function (data) {
+                    console.log(data);
 
-                    // let res = JSON.parse(data);
+                    // $('#montant_depense_approuve').text("008888000");
+                    $('#montant_depense_approuve').text(data.depense_approuve.montant_depense_approuve);
+                    $('#nombre_depense_approuve').text(data.depense_approuve.nombre_depense_approuve);
 
-                    $('#depense_precedente').text(data.depense_precedente);
-                    $(".depense-table").html(data.output);
+                     $('#montant_depense_en_attente').text(data.depense_en_attente.montant_depense_en_attente);
+                    $('#nombre_depense_en_attente').text(data.depense_en_attente.nombre_depense_en_attente);
+
+                     $('#montant_depense_annule').text(data.depense_annule.montant_depense_annule);
+                    $('#nombre_depense_annule').text(data.depense_annule.nombre_depense_annule);
+
 
                 }
             });
         });
 
-        $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+        $('#datefilterDepense').on('cancel.daterangepicker', function (ev, picker) {
+            // $(this).val('');
         });
 
     }
@@ -3906,34 +3948,7 @@ $(function () {
     }
 
 
-    //DASHBORD ADMIN
-    dashboardAdmin();
-
-    function dashboardAdmin(dateStart = "", dateEnd = "") {
-        if ($(".dashboard_admin").length > 0) {
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    dashboard_admin: 1,
-                    dateStart: dateStart,
-                    dateEnd: dateEnd
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    console.log(data);
-                    // return
-                    $("#nombre_vente").text(data.ventes.nombre_vente);
-                    $("#montant_vente").text(money(data.ventes.montant_vente));
-                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_reapprovisionnement);
-                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_reapprovisionnement));
-                    $("#nombre_depense").text(data.depenses.nombre_depense);
-                    $("#montant_depense").text(money(data.depenses.montant_depense));
-
-                }
-            });
-        }
-    }
+   
 
 
     filterDashboardAdmin(date_start_picker, date_end_picker, dashboardAdmin);

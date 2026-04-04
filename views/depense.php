@@ -17,12 +17,14 @@
     $dateF = (new DateTime('today'))->format('d-m-Y');
 
     // Récupérer les achats du mois courant
-    $totaux = Soutra::getTotauxDepenseByMouth($start, $end); // méthode adaptée que l'on a créée
-    $totaux_last = Soutra::getTotauxDepenseByMouth($start_last, $end_last); // méthode adaptée que l'on a créée
+    // $totaux = Soutra::getTotauxDepenseByMouth($start, $end); // méthode adaptée que l'on a créée
+    $depense_annule = Soutra::getTotalDepenseAny($start, $end, STATUT_DEPENSE[2]); // méthode adaptée que l'on a créée
+    $depense_en_attente = Soutra::getTotalDepenseAny($start, $end, STATUT_DEPENSE[0]); // méthode adaptée que l'on a créée
+    $depense_approuve = Soutra::getTotalDepenseAny($start, $end, STATUT_DEPENSE[1]); // méthode adaptée que l'on a créée
     ?>
 
  <header class="page-title-bar">
-     <div class="mb-3" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+     <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
          <div class="title">
              <h1 class="page-title">Espace Dépenses</h1>
          </div>
@@ -31,34 +33,66 @@
          </div>
          <div class="input-group" style="max-width: 40%;">
              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-             <input type="text" name="datefilterDepense" class="form-control" placeholder="Sélectionner la période">
+             <input type="text" name="datefilterDepense" class="form-control" id="datefilterDepense" placeholder="Sélectionner la période">
              <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
 
          </div>
      </div>
-     <!-- Résumé des ventes -->
-     <div class="row mt-5">
-         <div class="col-md-6 col-lg-6">
-             <div class="card text-center shadow-sm border-primary">
-                 <div class="card-body">
-                     <h6 class="text-muted">Dépense du mois passé</h6>
-                     <h3 class="text-primary" id="depense_precedente">
-                         <?= number_format($totaux_last['total']  ?? 0, 0, ',', ' '); ?> FCFA</h3>
+
+ </header>
+
+ <!-- STATS -->
+ <div class="row g-3 mb-1">
+
+     <div class="col-md-4">
+         <div class="card custom-card-detail">
+             <div class="card-body">
+                 <div class="d-flex align-items-center">
+                     <div class="icon bg-dark mr-2">
+                         <i class="bi bi-x-octagon"></i>
+                     </div>
+                     <h6><span class="text-muted text-uppercase">Dépenses annulée </span>(<span id="nombre_depense_annule"> <?= $depense_annule['nombre_depense'] ?>
+                         </span>)</h6>
                  </div>
-             </div>
-         </div>
-         <div class="col-md-6 col-lg-6">
-             <div class="card text-center shadow-sm border-success">
-                 <div class="card-body">
-                     <h6 class="text-muted">Dépense du mois actuel</h6>
-                     <h3 class="text-success">
-                         <?= number_format($totaux['total'] ?? 0, 0, ',', ' '); ?> FCFA</h3>
-                 </div>
+                 <h5><span id="monant_depense_annule"><?= number_format($depense_annule['montant_depense'], 0, ',', ' ') ?>
+                     </span> FCFA</h5>
              </div>
          </div>
      </div>
 
- </header>
+     <div class="col-md-4">
+         <div class="card custom-card-detail">
+             <div class="card-body">
+                 <div class="d-flex align-items-center">
+                     <div class="icon bg-warning mr-2">
+                         <i class="bi bi-alarm"></i>
+                     </div>
+                     <h6><span class="text-muted text-uppercase">Dépenses en attentes</span> (<span id="nombre_depense_en_attente"> <?= $depense_en_attente['nombre_depense'] ?>
+                         </span>)</h6>
+                 </div>
+                 <h5><span id="montant_depense_en_attente"><?= number_format($depense_en_attente['montant_depense'], 0, ',', ' ') ?>
+                     </span> FCFA</h5>
+             </div>
+         </div>
+     </div>
+
+     <div class="col-md-4">
+         <div class="card custom-card-detail">
+             <div class="card-body">
+                 <div class="d-flex align-items-center">
+                     <div class="icon bg-success mr-2">
+                         <i class="bi bi-check2-circle"></i>
+                     </div>
+                     <h6><span class="text-muted text-uppercase">Dépenses approuvées</span> (<span id="nombre_depense_approuve"> <?= $depense_approuve['nombre_depense'] ?>
+                         </span>)</h6>
+                 </div>
+                 <h5><span class="tester" id="montant_depense_approuve"><?= number_format($depense_approuve['montant_depense'], 0, ',', ' ') ?>
+                     </span> FCFA</h5>
+             </div>
+         </div>
+     </div>
+
+ </div>
 
  <div class="card">
      <div class="card-body">
@@ -117,11 +151,9 @@
                                 <td class="form-button-action"> ';
 
                                 // btn Valider la deSTATUT_DEPENSE
-                                if ($row['statut_depense'] == STATUT_DEPENSE[0]):
-                                    $output .= '
+                                $output .= '
                                         <button type="button" data-id="' . $row['ID_depense'] . '" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm btn_confirmer_depense " data-original-title="Voir details depense"> <i class="fa fa-eye text-icon-primary"></i> </button>
                                         ';
-                                endif;
 
                                 // btn Valider la deSTATUT_DEPENSE
                                 if ($row['statut_depense'] == STATUT_DEPENSE[0]):
