@@ -875,13 +875,13 @@ class ControllerAchat extends Connexion
                              <div class="form-group">
                                  <label for="nom">Dépende</label>
                                  <select name="type_id" class="form-control select" id="">
-                                    <option value="' . $depense['id_type'] . '">' . $depense['libelle_type'] . '</option>
+                                    <option value="' . $depense['ID_type'] . '">' . $depense['libelle_type'] . '</option>
                                     ';
 
       $data = Soutra::getAllByFromTable("type_depense", "libelle_type");
       foreach ($data as $value) {
         $output .= '
-                                        <option value="' . $value['id_type'] . '">' . $value['libelle_type'] . '</option>
+                                        <option value="' . $value['ID_type'] . '">' . $value['libelle_type'] . '</option>
                                         ';
       }
       $output .= '

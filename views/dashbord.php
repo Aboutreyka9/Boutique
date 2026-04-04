@@ -74,8 +74,10 @@
     <div class="col-md-3 col-sm-4 col-xl-3">
       <div class="card stat-card">
         <div class="icon bg-danger"><i class="bi bi-cash"></i></div>
-        <h6>DÉPENSES</h6>
-        <h5>0 CFA</h5>
+        <h6>DÉPENSES (<span id="nombre_depense">0</span>)</h6>
+        <h5>
+          <span id="montant_depense">0</span> CFA
+        </h5>
       </div>
     </div>
 
