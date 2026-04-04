@@ -181,17 +181,79 @@ class ControllerAchat extends Connexion
     }
   }
 
-  public static function ajouter_achat()
+  public static function validation_achat()
   {
-    if (isset($_POST['btn_ajouter_achat'])) {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_validation_achat") {
+      extract($_POST);
+    $msg = [];
 
-      if (isset($_POST['id_approvision'])) {
-        // mod()
-        self::modifier_achat();
+        $data = array(
+        'statut_achat' => STATUT_COMMANDE[1],
+        'code_achat' => $code
+      );
+      if (Soutra::update("achat", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande validée avec succès"];
       } else {
-        // Ajouter
-        self::createAchat();
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
       }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function encaissement_achat()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_encaisser_achat") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_achat' => STATUT_COMMANDE[2],
+        'code_achat' => $code
+      );
+      if (Soutra::update("achat", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande encaissée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+  
+  public static function annulation_achat()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_achat") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_achat' => STATUT_COMMANDE[3],
+        'code_achat' => $code
+      );
+      if (Soutra::update("achat", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function retourner_achat()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_achat' => STATUT_COMMANDE[4],
+        'code_achat' => $code
+      );
+      if (Soutra::update("achat", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
     }
   }
 
@@ -359,6 +421,21 @@ class ControllerAchat extends Connexion
 
       echo json_encode(['achat' => $achat, 'code' => $code]);
       // echo $_POST['year_select'];
+    }
+  }
+
+  
+  public static function ajouter_achat()
+  {
+    if (isset($_POST['btn_valider_achat'])) {
+
+      if (isset($_POST['id_approvision'])) {
+        // mod()
+        self::modifier_achat();
+      } else {
+        // Ajouter
+        self::createAchat();
+      }
     }
   }
 

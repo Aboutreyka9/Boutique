@@ -133,7 +133,7 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
               <td class="text-right"><?= number_format($value['ventes'],0,","," ") ?></td>
               <td class="text-right"><?= $value['qte_reste']?> </td>
               <td class="text-right"><?=  number_format($value['mt_reste'],0,","," ")  ?> </td>
-              <td class="text-right"><?= number_format( $value['gain'],0,","," ") ?> </td>
+              <td class="text-right"><?= number_format($value['gain'],0,","," ") ?> </td>
 
           </tr>
     <?php
