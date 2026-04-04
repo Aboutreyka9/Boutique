@@ -7,7 +7,7 @@ use Dompdf\Dompdf;
 
 if (!isset($_GET['id'])) {
     http_response_code(400);
-    exit("ID de vente manquant");
+    exit("ID de achat manquant");
 }
 
 if (isset($_GET['statut'])) {
@@ -16,18 +16,18 @@ $statut =$_GET['statut']?? null;
 }
 // var_dump($statutLabel);return;
 
-$vente = Soutra::singleVente($_GET['id']);
+$achat = Soutra::singleAchat($_GET['id']);
 $infoBoutique = Soutra::getInfoBoutique();
-// var_dump($vente);return;
-if (empty($vente)) {
+// var_dump($achat);return;
+if (empty($achat)) {
     http_response_code(404);
-    exit("Vente non trouvée");
+    exit("achat non trouvée");
 }
 
-function generateProRecuHTML($infoBoutique, $vente) {
-    $client = $vente[0];
-    $total = array_sum(array_column($vente, 'prix_total'));
-    $date = date('d/m/Y à H:i', strtotime($client['created_at']));
+function generateProRecuHTML($infoBoutique, $achat) {
+    $fournisseur = $achat[0];
+    $total = array_sum(array_column($achat, 'prix_total'));
+    $date = date('d/m/Y à H:i', strtotime($fournisseur['created_at']));
 
         $logoPath = !empty($infoBoutique['image']) 
         ? htmlspecialchars($infoBoutique['image'], ENT_QUOTES, 'UTF-8') 
@@ -40,7 +40,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Facture - ' . htmlspecialchars($client['code_vente'], ENT_QUOTES, 'UTF-8') . '</title>
+    <title>Facture - ' . htmlspecialchars($fournisseur['code_achat'], ENT_QUOTES, 'UTF-8') . '</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -221,7 +221,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
                 <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">FACTURE</div>
 
                 <div>
-                    <strong>N°:</strong> ' . htmlspecialchars($client['code_vente'], ENT_QUOTES, 'UTF-8') . '
+                    <strong>N°:</strong> ' . htmlspecialchars($fournisseur['code_achat'], ENT_QUOTES, 'UTF-8') . '
                 </div>
 
                 <div>
@@ -239,16 +239,16 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
             <!-- GAUCHE -->
             <td style="width: 50%; vertical-align: top; padding-right: 10px;">
                 <div style="font-weight: bold; margin-bottom: 10px; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
-                    INFORMATIONS CLIENT
+                    INFORMATIONS FOURNISSEUR
                 </div>
 
-                <div><strong>Nom:</strong> ' . htmlspecialchars($client['nom_client'] . ' ' . $client['prenom_client'], ENT_QUOTES, 'UTF-8') . '</div>
+                <div><strong>Nom:</strong> ' . htmlspecialchars($fournisseur['nom_fournisseur'], ENT_QUOTES, 'UTF-8') . '</div>
 
-                ' . (!empty($client['telephone_client']) ? '
-                <div><strong>Téléphone:</strong> ' . htmlspecialchars($client['telephone_client'], ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
+                ' . (!empty($fournisseur['telephone_fournisseur']) ? '
+                <div><strong>Téléphone:</strong> ' . htmlspecialchars($fournisseur['telephone_fournisseur'], ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
 
-                ' . (!empty($client['adresse_client']) ? '
-                <div><strong>Adresse:</strong> ' . htmlspecialchars($client['adresse_client'], ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
+                ' . (!empty($fournisseur['adresse_fournisseur']) ? '
+                <div><strong>Adresse:</strong> ' . htmlspecialchars($fournisseur['adresse_fournisseur'], ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
             </td>
 
             <!-- DROITE -->
@@ -257,7 +257,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
                     MODE DE PAIEMENT
                 </div>
 
-                <div><strong>Mode:</strong> ' . htmlspecialchars($client['pay_mode'], ENT_QUOTES, 'UTF-8') . '</div>
+                <div><strong>Mode:</strong> ' . htmlspecialchars($fournisseur['adresse_fournisseur'], ENT_QUOTES, 'UTF-8') . '</div>
             </td>
         </tr>
     </table>
@@ -275,11 +275,11 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
                     </thead>
                     <tbody>';
 
-    foreach ($vente as $item) {
+    foreach ($achat as $item) {
         $html .= '<tr>
             <td>' . htmlspecialchars($item['libelle_article'], ENT_QUOTES, 'UTF-8') . '</td>
             <td>' . (int)$item['qte'] . '</td>
-            <td>' . number_format($item['prix_vente'], 0, ",", " ") . ' Fcfa</td>
+            <td>' . number_format($item['prix_achat'], 0, ",", " ") . ' Fcfa</td>
             <td>' . number_format($item['prix_total'], 0, ",", " ") . ' Fcfa</td>
         </tr>';
     }
@@ -301,7 +301,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
                 <div class="merci">Merci pour votre confiance !</div>
                 <div class="conseil">Veuillez conserver cette facture comme preuve d\'achat</div>
                 <div class="contact">Pour toute question, contactez-nous au ' . htmlspecialchars($infoBoutique['contact1'] ?? '', ENT_QUOTES, 'UTF-8') . '</div>
-                <div class="barcode">*** FACTURE N° ' . htmlspecialchars($client['code_vente'], ENT_QUOTES, 'UTF-8') . ' ***</div>
+                <div class="barcode">*** FACTURE N° ' . htmlspecialchars($fournisseur['code_achat'], ENT_QUOTES, 'UTF-8') . ' ***</div>
             </div>
         </div>
     </div>
@@ -311,7 +311,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
     return $html;
 }
 
-$html = generateProRecuHTML($infoBoutique, $vente);
+$html = generateProRecuHTML($infoBoutique, $achat);
 
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);

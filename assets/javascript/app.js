@@ -1916,7 +1916,7 @@ $(function () {
             if (id == "") {
                 return false;
             }
-            document.location.href = url;
+            document.location.href = ROOT_HOST+''+url;
             // verifDetail(vente);
         });
     }
@@ -3988,3 +3988,49 @@ $(function () {
 
     }
 });
+}
+
+function retour() {
+    history.back();
+}
+
+function updateELement(btn_action,code) {
+    let btn = btn_action.id;
+    swal({
+            title: "Etes vous sure",
+            text: "de vouloir effectuer cette opération?",
+            icon: "warning",
+            buttons: ['Non', 'Oui'],
+            dangerMode: true,
+        }).then((a) => {
+            if (a) {
+
+                $.ajax({
+                    url: "../partials/rooter.php",
+                    method: "POST",
+                    data: {
+                        code: code,
+                        btn_action: btn
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        // console.log(data);return
+                        
+                        if (data.success) {
+                            swal("Notification", data.msg, "success")
+                            .then(function () {
+                                history.go(0);
+                            });
+                        }else{
+                            swal("Notification", data.msg, "error")
+                            .then(function () {
+                                history.go(0);
+                            });
+                        }
+
+                        
+                    }
+                });
+            }
+    });
+}

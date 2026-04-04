@@ -873,6 +873,84 @@ class ControllerVente extends Connexion
       return;
     }
   }
+
+  
+  public static function validation_vente()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_validation_vente") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_vente' => STATUT_COMMANDE[1],
+        'code_vente' => $code
+      );
+      if (Soutra::update("vente", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande validée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function encaissement_vente()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_encaisser_vente") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_vente' => STATUT_COMMANDE[2],
+        'code_vente' => $code
+      );
+      if (Soutra::update("vente", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande encaissée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+  
+  public static function annulation_vente()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_vente") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_vente' => STATUT_COMMANDE[3],
+        'code_vente' => $code
+      );
+      if (Soutra::update("vente", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function retourner_vente()
+  {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_vente") {
+      extract($_POST);
+    $msg = [];
+
+        $data = array(
+        'statut_vente' => STATUT_COMMANDE[4],
+        'code_vente' => $code
+      );
+      if (Soutra::update("vente", $data)) {
+        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
+      } else {
+        $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+
 }
 
 //fin de la class

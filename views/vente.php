@@ -110,13 +110,19 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
           // btn Valider la commande
           if ($row['statut_vente'] == STATUT_COMMANDE[0]):
             $output .= '
-              <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Valider la commande"> <i class="fa fa-save text-icon-success"></i> </button>
+              <button type="button" 
+              id="btn_validation_vente"
+              onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+              data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Valider la commande"> <i class="fa fa-save text-icon-success"></i> </button>
               ';
           endif;
 
           // btn Encaisser la facture
           if ($row['statut_vente'] == STATUT_COMMANDE[1]):
-            $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i> </button>';
+            $output .= '<button type="button" 
+            id="btn_encaisser_vente"
+            onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+            data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i> </button>';
           endif;
 
           // btn Modifier la commande
@@ -126,16 +132,22 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
 
           // btn Annuler la commande
           if ($row['statut_vente'] == STATUT_COMMANDE[0]):
-            $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Annuler la commande"> <i class="fa fa-times text-icon-danger"></i> </button>';
+            $output .= '<button type="button" 
+            id="btn_annuler_vente"
+            onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+            data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Annuler la commande"> <i class="fa fa-times text-icon-danger"></i> </button>';
           endif;
 
           // btn Retourner la commande
           if ($row['statut_vente'] == STATUT_COMMANDE[1] || $row['statut_vente'] == STATUT_COMMANDE[2]):
-            $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Retourner la commande"> <i class="fa fa-undo text-icon-danger"></i> </button>';
+            $output .= '<button type="button"
+            id="btn_retourner_vente"
+            onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+            data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Retourner la commande"> <i class="fa fa-undo text-icon-danger"></i> </button>';
           endif;
 
           // btn Imprimer la facture
-          $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </button>
+          $output .= '<a href="'.RACINE .'views/print.php?id='.$row['code_vente'].'&statut='.$row['statut_vente'].'" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>
             </td>
             </tr>';
         }
