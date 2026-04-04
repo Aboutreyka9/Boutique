@@ -8,23 +8,25 @@ class ControllerEmploye extends Connexion
     {
         if (isset($_POST["btn_connexion"])) {
             extract($_POST);
-            $msg = "";
+            $msg['code'] = 400;
+
             if (empty(htmlspecialchars(trim($telephone)))) {
-                $msg = "2&Numero utilisateur requis !";
+                $msg['message'] = "Numero utilisateur requis !";
             } elseif (empty(htmlspecialchars(trim($password)))) {
-                $msg = "2&Mot de passe requis !";
+                $msg['message'] = "Mot de passe requis !";
             } else {
-                $msg = "2&Nom utilisateur ou mot de passe incorect !";
+                $msg['message'] = "Nom utilisateur ou mot de passe incorect !";
                 $emp = Soutra::loginEmployer($telephone, md5($password));
                 if (!empty($emp)) {
                     $_SESSION["id_employe"] = $emp["ID_employe"];
                     $_SESSION["role"] = $emp["role"];
                     $_SESSION["nom"] = $emp["nom_employe"];
                     Soutra::update("employe", ['login' => date("Y-m-d h:i:s"), "ID_employe" => $emp['ID_employe']]);
-                    $msg = "1&ok";
+                    $msg['code'] = 200;
+                    $msg['message'] = "Connexion réussie";
                 }
             }
-            echo $msg;
+            echo json_encode($msg);
         }
     }
 
@@ -34,7 +36,9 @@ class ControllerEmploye extends Connexion
 
             $_SESSION = [];
             session_destroy();
-            $msg = 1;
+            $msg['code'] = 200;
+            $msg['message'] = "Déconnexion réussie";
+            echo json_encode($msg);
         }
     }
 

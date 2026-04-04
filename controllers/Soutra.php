@@ -2087,6 +2087,20 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data[$libelle];
     }
+    public static function getElementSingle($table, $ref, $value)
+    {
+        $data = [];
+
+        $sql = "SELECT * FROM $table WHERE $ref = :ref ";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(array('ref' => $value));
+        if ($query->rowCount() > 0)
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        $query->closeCursor();
+        return $data;
+    }
+
     public static function getAllBetweenByItem($table, $lib, $clause, $d1, $d2, $value)
     {
         $sql = "SELECT * FROM $table WHERE $lib BETWEEN ? AND ? AND $clause = ?";
@@ -2226,6 +2240,34 @@ class Soutra extends Connexion
 
         return $data;
     }
+
+    public static function getSingleDataBonCommandeFournisseur($code_achat)
+    {
+        $data = [];
+        $sql = 'SELECT ach.*, 
+            SUM(en.qte) AS article,
+            SUM(en.prix_achat * en.qte) AS total,
+            -- ach._achat,ach.created_at,
+            fr.nom_fournisseur AS fournisseur, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
+            FROM achat ach 
+            JOIN entree en ON en.achat_id = ach.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ach.fournisseur_id
+            JOIN employe emp ON emp.ID_employe = ach.employe_id
+            WHERE ach.code_achat = :code_achat
+            GROUP BY ach.ID_achat';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['code_achat' => $code_achat]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+
+        return $data;
+    }
+
+
     public static function getAllListeBonCommandeClient($dateStart, $dateEnd)
     {
         $data = [];

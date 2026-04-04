@@ -297,9 +297,11 @@ $(function () {
             },
             dataType: 'JSON',
             success: function (data) {
-                localStorage.setItem(KEY, null);
-                // // ;
-                document.location.href = ROOT_SIMPLE;
+                if (data.code == 200) {
+                    localStorage.setItem(KEY, null);
+                    // // ;
+                    document.location.href = ROOT_SIMPLE;
+                }
             }
         });
     }
