@@ -952,13 +952,13 @@ class ControllerAchat extends Connexion
                              <div class="form-group">
                                  <label for="nom">Dépende</label>
                                  <select name="type_id" class="form-control select" id="">
-                                    <option value="' . $depense['id_type'] . '">' . $depense['libelle_type'] . '</option>
+                                    <option value="' . $depense['ID_type'] . '">' . $depense['libelle_type'] . '</option>
                                     ';
 
       $data = Soutra::getAllByFromTable("type_depense", "libelle_type");
       foreach ($data as $value) {
         $output .= '
-                                        <option value="' . $value['id_type'] . '">' . $value['libelle_type'] . '</option>
+                                        <option value="' . $value['ID_type'] . '">' . $value['libelle_type'] . '</option>
                                         ';
       }
       $output .= '
@@ -1011,15 +1011,15 @@ class ControllerAchat extends Connexion
 
   public static function getDataDateRangeFilterDepense()
   {
-    if (isset($_POST['btn_filter_depense'])) {
+    if (isset($_POST['btn_filtemmlklkkmr_depense555'])) {
       extract($_POST);
-      $btn_filter_depense = $_POST['btn_filter_depense'];
+      $btn_filter654454_depense = $_POST['btn_filter_deùmmùùlùlpense'];
       $dateDebut = $_POST['dateDebut'] ?? null;
       $dateFin = $_POST['dateFin'] ?? null;
       $depense_precedente = 0;
 
       // si le btn = 1 on get par depense
-      if ($btn_filter_depense == 1) {
+      if ($btn_filt32355er_depense == 1) {
         $totaux_depense = Soutra::getTotauxDepenseByMouth($dateDebut, $dateFin);
         $data_depense = Soutra::getDepensesByMouth($dateDebut, $dateFin);
       }

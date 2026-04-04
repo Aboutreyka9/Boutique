@@ -45,65 +45,116 @@
         </div>
       </div>
     </div>
+    <!-- STATS -->
+    <div class="row g-3 mb-1">
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-success mr-2">
+                <i class="bi bi-x-wallet2"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">ENCAISSÉ </span></h6>
+            </div>
+            <h5><span id="monant_encaisse"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-info mr-2">
+                <i class="bi bi-credit-card"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">RÈGLEMENTS</span> </h6>
+            </div>
+            <h5><span id="montant_reglement"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-purple mr-2">
+                <i class="bi bi-cart"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_vente"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-danger mr-2">
+                <i class="bi bi-cash"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">DÉPENSES</span> (<span id="nombre_depense"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_depense"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-warning mr-2">
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">RÉAPPRO </span> (<span id="nombre_reapprovisionnement"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_reapprovisionnement"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-orange mr-2">
+                <i class="bi bi-tag"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">REMISES</span> (<span id="nombre_remise"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_remise"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-primary mr-2">
+                <i class="bi bi-currency-exchange"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">BÉNÉFICES</span> (<span id="nombre_benefice"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_benefice"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
 
     <!-- CARD -->
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-success"><i class="bi bi-wallet2"></i></div>
-        <h6>ENCAISSÉ</h6>
-        <h5>7.360 CFA</h5>
-      </div>
-    </div>
 
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-info"><i class="bi bi-credit-card"></i></div>
-        <h6>RÈGLEMENTS</h6>
-        <h5>2.860 CFA</h5>
-      </div>
-    </div>
 
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-purple"><i class="bi bi-cart"></i></div>
-        <h6> VENTES (<span id="nombre_vente">0</span>)</h6>
-        <h5><span id="montant_vente">0</span> CFA</h5>
-      </div>
-    </div>
 
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-danger"><i class="bi bi-cash"></i></div>
-        <h6>DÉPENSES</h6>
-        <h5>0 CFA</h5>
-      </div>
-    </div>
 
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-warning"><i class="bi bi-arrow-repeat"></i></div>
-        <h6>RÉAPPRO (<span id="nombre_reapprovisionnement">0</span>)</h6>
-        <h5>
-          <span id="montant_reapprovisionnement">0</span> CFA
-        </h5>
-      </div>
-    </div>
 
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-orange"><i class="bi bi-tag"></i></div>
-        <h6>REMISES</h6>
-        <h5>0 CFA</h5>
-      </div>
-    </div>
-
-    <div class="col-md-3 col-sm-4 col-xl-3">
-      <div class="card stat-card">
-        <div class="icon bg-primary"><i class="bi bi-currency-exchange"></i></div>
-        <h6>BÉNÉFICES</h6>
-        <h5>14.780 CFA</h5>
-      </div>
-    </div>
 
   </div>
 

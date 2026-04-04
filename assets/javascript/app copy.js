@@ -7,8 +7,6 @@ $(function () {
 
 
 
-    let date_start_picker = moment().startOf('month'); // 1er du mois
-    let date_end_picker = moment(); // aujourd’hui
 
     function money(val) {
         return val.toLocaleString('fr-FR', {
@@ -1316,8 +1314,6 @@ $(function () {
         });
     }
 
-    // espace clean 1
-
     btn_ajouter_panier_vente();
 
     function btn_ajouter_panier_vente() {
@@ -1916,7 +1912,7 @@ $(function () {
             if (id == "") {
                 return false;
             }
-            document.location.href = ROOT_HOST+''+url;
+            document.location.href = url;
             // verifDetail(vente);
         });
     }
@@ -2080,8 +2076,6 @@ $(function () {
         });
     }
 
-    // espace clean 2
-
     btn_suprimer_vente();
 
     function btn_suprimer_vente() {
@@ -2216,35 +2210,6 @@ $(function () {
             }
 
         });
-    }
-
-     //DASHBORD ADMIN
-    dashboardAdmin();
-
-    function dashboardAdmin(dateStart = "", dateEnd = "") {
-        if ($(".dashboard_admin").length > 0) {
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    dashboard_admin: 1,
-                    dateStart: dateStart,
-                    dateEnd: dateEnd
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    console.log(data);
-                    // return
-                    $("#nombre_vente").text(data.ventes.nombre_vente);
-                    $("#montant_vente").text(money(data.ventes.montant_vente));
-                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_reapprovisionnement);
-                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_reapprovisionnement));
-                    $("#nombre_depense").text(data.depenses.nombre_depense);
-                    $("#montant_depense").text(money(data.depenses.montant_depense));
-
-                }
-            });
-        }
     }
 
     // CONFIGUE BOUTIQUE
@@ -3046,7 +3011,7 @@ $(function () {
             },
             // dataType: 'JSON',
             success: function (data) {
-
+return
                 var res = JSON.parse(data);
 
                 if (res.code == 400) {
@@ -3312,7 +3277,7 @@ $(function () {
         var chart = new Chart(canvas, data);
     }
 
-    //   probleme zone //////******************* */
+
 
     // doughnutChart1()
     function doughnutChart1() {
@@ -3448,555 +3413,336 @@ $(function () {
         var chart = new Chart(canvas, data);
     }
 
+})
 
-    // no probleme 3
 
-    function initGlobalLoader(loaderSelector = '#globalLoader') {
-        // S'assure que le loader est à la fin du body
-        if (!$(loaderSelector).parent().is('body')) {
-            $(loaderSelector).appendTo('body');
-        }
-
-        $(document).ajaxStart(function () {
-            $(loaderSelector).removeClass('hidden');
-        });
-
-        $(document).ajaxStop(function () {
-            $(loaderSelector).addClass('hidden');
-        });
+function initGlobalLoader(loaderSelector = '#globalLoader') {
+    // S'assure que le loader est à la fin du body
+    if (!$(loaderSelector).parent().is('body')) {
+        $(loaderSelector).appendTo('body');
     }
 
-    function showLoader(options) {
-        const settings = $.extend({
-            target: 'global', // 'global' ou sélecteur (#btnSave)
-            action: 'show' // 'show' ou 'hide'
-        }, options);
-
-        if (settings.target === 'global') {
-            if (settings.action === 'show') {
-                $('#globalLoader').removeClass('hidden');
-            } else {
-                $('#globalLoader').addClass('hidden');
-            }
-        } else {
-            const btn = $(settings.target);
-            if (settings.action === 'show') {
-                btn.addClass('loading-btn').prop('disabled', true);
-            } else {
-                btn.removeClass('loading-btn').prop('disabled', false);
-            }
-        }
-    }
-
-    // Initialiser le loader global une fois
-    $(document).ready(function () {
-        initGlobalLoader();
+    $(document).ajaxStart(function () {
+        $(loaderSelector).removeClass('hidden');
     });
 
+    $(document).ajaxStop(function () {
+        $(loaderSelector).addClass('hidden');
+    });
+}
 
-    // showLoader({ target: '#btnSave', action: 'show' }); // Exemple d'utilisation pour afficher le loader sur un bouton spécifique
-    // showLoader({ target: '#btnSave', action: 'hide' }); // Exemple d'utilisation pour masquer le loader sur un bouton spécifique
+function showLoader(options) {
+    const settings = $.extend({
+        target: 'global', // 'global' ou sélecteur (#btnSave)
+        action: 'show' // 'show' ou 'hide'
+    }, options);
 
-    get_fournisseur_info();
-
-    function get_fournisseur_info() {
-        $('body').delegate('.fournisseur-link', 'click', function (e) {
-            e.preventDefault();
-            var fournisseurId = $(this).data('id');
-
-            // Ouvre le modal
-            $('#fournisseurModal').modal('show');
-            $('#fournisseurContent').html('<p class="text-center">Chargement...</p>');
-
-            // Requête AJAX pour récupérer les infos
-            $.ajax({
-                url: "../partials/rooter.php", // ton endpoint PHP
-                method: "POST",
-                data: {
-                    id_fournisseur: fournisseurId,
-                    btn_get_fournisseur: 1
-                },
-                dataType: 'html',
-                success: function (data) {
-                    $('#fournisseurContent').html(data);
-                },
-                error: function () {
-                    $('#fournisseurContent').html('<p class="text-danger text-center">Erreur lors du chargement</p>');
-                }
-            });
-        });
+    if (settings.target === 'global') {
+        if (settings.action === 'show') {
+            $('#globalLoader').removeClass('hidden');
+        } else {
+            $('#globalLoader').addClass('hidden');
+        }
+    } else {
+        const btn = $(settings.target);
+        if (settings.action === 'show') {
+            btn.addClass('loading-btn').prop('disabled', true);
+        } else {
+            btn.removeClass('loading-btn').prop('disabled', false);
+        }
     }
+}
+
+// Initialiser le loader global une fois
+$(document).ready(function () {
+    initGlobalLoader();
+});
 
 
+// showLoader({ target: '#btnSave', action: 'show' }); // Exemple d'utilisation pour afficher le loader sur un bouton spécifique
+// showLoader({ target: '#btnSave', action: 'hide' }); // Exemple d'utilisation pour masquer le loader sur un bouton spécifique
 
-    initDateRangeFilterAchat("datefilterAchatArticle", 2);
-    initDateRangeFilterAchat("datefilterAchat", 1);
+get_fournisseur_info();
 
-    initDateRangeFilterVente("datefilterVenteByARticle", 2);
-    initDateRangeFilterVente("datefilterVente", 1);
+function get_fournisseur_info() {
+    $('body').delegate('.fournisseur-link', 'click', function (e) {
+        e.preventDefault();
+        var fournisseurId = $(this).data('id');
 
-    function initDateRangeFilterAchat(selector, type) {
-        $('input[name="' + selector + '"]').daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
+        // Ouvre le modal
+        $('#fournisseurModal').modal('show');
+        $('#fournisseurContent').html('<p class="text-center">Chargement...</p>');
+
+        // Requête AJAX pour récupérer les infos
+        $.ajax({
+            url: "../partials/rooter.php", // ton endpoint PHP
+            method: "POST",
+            data: {
+                id_fournisseur: fournisseurId,
+                btn_get_fournisseur: 1
+            },
+            dataType: 'html',
+            success: function (data) {
+                $('#fournisseurContent').html(data);
+            },
+            error: function () {
+                $('#fournisseurContent').html('<p class="text-danger text-center">Erreur lors du chargement</p>');
             }
         });
-
-        $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
-            let dateDebut = picker.startDate.format('YYYY-MM-DD');
-            let dateFin = picker.endDate.format('YYYY-MM-DD');
-            let dateD = picker.startDate.format('DD-MM-YYYY');
-            let dateF = picker.endDate.format('DD-MM-YYYY');
-            $(this).val(dateD + ' - ' + dateF);
-            // Appeler la fonction de recherche avec les dates sélectionnées
-            $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    dateDebut: dateDebut,
-                    dateFin: dateFin,
-                    btn_filter_achat: type
-                },
-                success: function (data) {
-                    // ;return;
-
-                    let res = JSON.parse(data);
-
-
-                    $('#nb_achats').text(res.total_achat);
-                    $('#total_montant').text(res.mont_achat + " FCFA");
-                    $(".achat-table").html(res.output);
-
-                }
-            });
-        });
-
-        $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-
-    }
-
-    // no probleme 2
-    function initDateRangeFilterVente(selector, type) {
-        $('input[name="' + selector + '"]').daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
-            }
-        });
-
-        $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
-            let dateDebut = picker.startDate.format('YYYY-MM-DD');
-            let dateFin = picker.endDate.format('YYYY-MM-DD');
-            let dateD = picker.startDate.format('DD-MM-YYYY');
-            let dateF = picker.endDate.format('DD-MM-YYYY');
-            $(this).val(dateD + ' - ' + dateF);
-            // Appeler la fonction de recherche avec les dates sélectionnées
-            $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    dateDebut: dateDebut,
-                    dateFin: dateFin,
-                    btn_filter_vente: type
-                },
-                success: function (data) {
-                    let res = JSON.parse(data);
-
-
-                    $('#nb_ventes').text(res.total_vente);
-                    $('#total_montant').text(res.mont_vente + " FCFA");
-                    $(".vente-table").html(res.output);
-
-                }
-            });
-        });
-
-        $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-
-    }
-
-    // initDateRangeFilter(
-    //     "#achatDateRange",     // champ input
-    //     ".achat-table",        // tbody à remplacer
-    //     "../partials/rooter.php", // URL du serveur
-    //     { btn_filter_achat: 1 }  // données supplémentaires
-    // );
-    // initDateRangeFilter(
-    //     "#achatDateRange",     // champ input
-    //     ".achat_by_article-table",        // tbody à remplacer
-    //     "../partials/rooter.php", // URL du serveur
-    //     { btn_filter_achat_by_article: 1 }  // données supplémentaires
-    // );
-    // initDateRangeFilter(
-    //     "#venteDateRange",
-    //     ".vente-table",
-    //     "../partials/rooter.php",
-    //     { btn_filter_vente: 1 },
-    //     { nb: '#nb_ventes', total: '#total_montant' }
-    // );
-    // initDateRangeFilter(
-    //     "#venteByArticleDateRange",
-    //     ".vente_by_article-table",
-    //     "../partials/rooter.php",
-    //     { btn_filter_vente_by_article: 1 },
-    //     { nb: '#nb_ventes', total: '#total_montant' }
-    // );
-    // function initDateRangeFilter(selectorInput, selectorTarget, ajaxUrl, extraData = {}, totalsSelectors = {}) {
-    //     flatpickr(selectorInput, {
-    //         mode: "range",
-    //         dateFormat: "d-m-Y",
-    //         defaultDate: [new Date().setDate(1), new Date()],
-    //         onClose: function(selectedDates) {
-    //             if (selectedDates.length === 2) {
-    //                 var start = selectedDates[0];
-    //                 var end = selectedDates[1];
-
-    //                 // Formater les dates
-    //                 var startStr = ("0" + start.getDate()).slice(-2) + '-' +
-    //                               ("0" + (start.getMonth()+1)).slice(-2) + '-' +
-    //                               start.getFullYear();
-    //                 var endStr = ("0" + end.getDate()).slice(-2) + '-' +
-    //                              ("0" + (end.getMonth()+1)).slice(-2) + '-' +
-    //                              end.getFullYear();
-
-    //                 // Préparer les données pour AJAX
-    //                 var postData = Object.assign({}, extraData, {
-    //                     start_date: startStr,
-    //                     end_date: endStr
-    //                 });
-
-    //                 // Lancer l'AJAX
-    //                 $.ajax({
-    //                     url: ajaxUrl,
-    //                     method: 'POST',
-    //                     data: postData,
-    //                     dataType: 'json', // Important pour JSON
-    //                   success: function(response){
-    //                         $(selectorTarget).html(response.html);
-
-    //                         if (totalsSelectors.nb && response.totaux.nb_ventes !== undefined) {
-    //                             $(totalsSelectors.nb).text(response.totaux.nb_ventes);
-    //                         }
-    //                         if (totalsSelectors.total && response.totaux.total_montant !== undefined) {
-    //                             $(totalsSelectors.total).text(
-    //                                 new Intl.NumberFormat('fr-FR').format(response.totaux.total_montant) + ' CFA'
-    //                             );
-    //                         }
-    //                     },
-    //                     error: function(){
-    //                         alert('Erreur lors du filtrage');
-    //                     }
-    //                 });
-    //             }
-    //         }
-    //     });
-    // }
-
-    $('.search_depense').select2();
+    });
+}
 
 
 
-    btn_ajouter_depense();
+initDateRangeFilterAchat("datefilterAchatArticle", 2);
+initDateRangeFilterAchat("datefilterAchat", 1);
 
-    function btn_ajouter_depense() {
-        $('body').delegate('#btn_ajouter_depense', 'submit', function (e) {
-            e.preventDefault();
+initDateRangeFilterVente("datefilterVenteByARticle", 2);
+initDateRangeFilterVente("datefilterVente", 1);
 
-            var depense = $(this).serialize();
+function initDateRangeFilterAchat(selector, type) {
+    $('input[name="' + selector + '"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
 
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: depense,
-                // dataType:"JSON",
-                success: function (data) {
-                    console.log(data);
-                    return;
-
-                    var verif = data.split("&");
-                    if (verif[0] == 1) {
-                        swal("Notification", verif[1], "success")
-                            .then(function () {
-                                history.go(0);
-                            });
-
-                        //  $("#btn_ajouter_depense")[0].reset()
-                        // resetForm();
-                        // $('#depense-modal').modal('hide');
-                        // liste_depense();
-
-                        // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
-                    } else {
-                        swal("Notification", verif[1], "warning");
-                        // // 
-
-
-                    }
-
-                }
-            });
-
-        });
-    }
-
-    // no probleme 1
-    function ajouter_depense(depense) {
+    $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
+        let dateDebut = picker.startDate.format('YYYY-MM-DD');
+        let dateFin = picker.endDate.format('YYYY-MM-DD');
+        let dateD = picker.startDate.format('DD-MM-YYYY');
+        let dateF = picker.endDate.format('DD-MM-YYYY');
+        $(this).val(dateD + ' - ' + dateF);
+        // Appeler la fonction de recherche avec les dates sélectionnées
+        $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
         $.ajax({
             url: "../partials/rooter.php",
             method: "POST",
-            data: depense,
+            data: {
+                dateDebut: dateDebut,
+                dateFin: dateFin,
+                btn_filter_achat: type
+            },
             success: function (data) {
+                // ;return;
+
+                let res = JSON.parse(data);
 
 
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-                    swal("Notification", verif[1], "success")
-                        .then(function () {
-                            history.go(0);
-                        });
-
-                    //  $("#btn_ajouter_depense")[0].reset()
-                    // resetForm();
-                    // $('#depense-modal').modal('hide');
-                    // liste_depense();
-
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
-                } else {
-                    swal("Notification", verif[1], "warning");
-                    // // 
-
-
-                }
+                $('#nb_achats').text(res.total_achat);
+                $('#total_montant').text(res.mont_achat + " FCFA");
+                $(".achat-table").html(res.output);
 
             }
         });
-    }
+    });
 
-    btn_update_depense();
+    $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+    });
 
-    function btn_update_depense() {
-        $('body').delegate('.btn_update_depense', 'click', function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
+}
 
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    id_depense: id,
-                    frm_updepense: 1
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    // // 
-                    $(".menu-modal").html(data);
-                    $("#depense-modal").modal('show');
-                }
-            });
+function initDateRangeFilterVente(selector, type) {
+    $('input[name="' + selector + '"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
+        let dateDebut = picker.startDate.format('YYYY-MM-DD');
+        let dateFin = picker.endDate.format('YYYY-MM-DD');
+        let dateD = picker.startDate.format('DD-MM-YYYY');
+        let dateF = picker.endDate.format('DD-MM-YYYY');
+        $(this).val(dateD + ' - ' + dateF);
+        // Appeler la fonction de recherche avec les dates sélectionnées
+        $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                dateDebut: dateDebut,
+                dateFin: dateFin,
+                btn_filter_vente: type
+            },
+            success: function (data) {
+                let res = JSON.parse(data);
+
+
+                $('#nb_ventes').text(res.total_vente);
+                $('#total_montant').text(res.mont_vente + " FCFA");
+                $(".vente-table").html(res.output);
+
+            }
         });
-    }
+    });
 
-    btn_suprimer_depense();
+    $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+    });
 
-    function btn_suprimer_depense() {
-        $('body').delegate('.btn_remove_depense', 'click', function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            swal({
-                title: "Etes vous sure",
-                text: "de vouloir supprimer cet element ?",
-                icon: "warning",
-                buttons: ['Non', 'Oui'],
-                dangerMode: true,
-            }).then((a) => {
-                if (a) {
+}
 
-                    $.ajax({
-                        url: "../partials/rooter.php",
-                        method: "POST",
-                        data: {
-                            id_depense: id,
-                            btn_supprimer_depense: 1
-                        },
-                        dataType: 'JSON',
-                        success: function (data) {
+// initDateRangeFilter(
+//     "#achatDateRange",     // champ input
+//     ".achat-table",        // tbody à remplacer
+//     "../partials/rooter.php", // URL du serveur
+//     { btn_filter_achat: 1 }  // données supplémentaires
+// );
+// initDateRangeFilter(
+//     "#achatDateRange",     // champ input
+//     ".achat_by_article-table",        // tbody à remplacer
+//     "../partials/rooter.php", // URL du serveur
+//     { btn_filter_achat_by_article: 1 }  // données supplémentaires
+// );
+// initDateRangeFilter(
+//     "#venteDateRange",
+//     ".vente-table",
+//     "../partials/rooter.php",
+//     { btn_filter_vente: 1 },
+//     { nb: '#nb_ventes', total: '#total_montant' }
+// );
+// initDateRangeFilter(
+//     "#venteByArticleDateRange",
+//     ".vente_by_article-table",
+//     "../partials/rooter.php",
+//     { btn_filter_vente_by_article: 1 },
+//     { nb: '#nb_ventes', total: '#total_montant' }
+// );
+// function initDateRangeFilter(selectorInput, selectorTarget, ajaxUrl, extraData = {}, totalsSelectors = {}) {
+//     flatpickr(selectorInput, {
+//         mode: "range",
+//         dateFormat: "d-m-Y",
+//         defaultDate: [new Date().setDate(1), new Date()],
+//         onClose: function(selectedDates) {
+//             if (selectedDates.length === 2) {
+//                 var start = selectedDates[0];
+//                 var end = selectedDates[1];
+
+//                 // Formater les dates
+//                 var startStr = ("0" + start.getDate()).slice(-2) + '-' +
+//                               ("0" + (start.getMonth()+1)).slice(-2) + '-' +
+//                               start.getFullYear();
+//                 var endStr = ("0" + end.getDate()).slice(-2) + '-' +
+//                              ("0" + (end.getMonth()+1)).slice(-2) + '-' +
+//                              end.getFullYear();
+
+//                 // Préparer les données pour AJAX
+//                 var postData = Object.assign({}, extraData, {
+//                     start_date: startStr,
+//                     end_date: endStr
+//                 });
+
+//                 // Lancer l'AJAX
+//                 $.ajax({
+//                     url: ajaxUrl,
+//                     method: 'POST',
+//                     data: postData,
+//                     dataType: 'json', // Important pour JSON
+//                   success: function(response){
+//                         $(selectorTarget).html(response.html);
+
+//                         if (totalsSelectors.nb && response.totaux.nb_ventes !== undefined) {
+//                             $(totalsSelectors.nb).text(response.totaux.nb_ventes);
+//                         }
+//                         if (totalsSelectors.total && response.totaux.total_montant !== undefined) {
+//                             $(totalsSelectors.total).text(
+//                                 new Intl.NumberFormat('fr-FR').format(response.totaux.total_montant) + ' CFA'
+//                             );
+//                         }
+//                     },
+//                     error: function(){
+//                         alert('Erreur lors du filtrage');
+//                     }
+//                 });
+//             }
+//         }
+//     });
+// }
 
 
-                            $('.row' + id).remove();
-                            swal("Notification", "Element supprimé avec succès", "success")
-                                .then(function () {
-                                    history.go(0);
-                                });
-                        }
+btn_ajouter_depense();
+
+function btn_ajouter_depense() {
+    $('body').delegate('#btn_ajouter_depense', 'submit', function (e) {
+        e.preventDefault();
+
+
+        var depense = $(this).serialize();
+
+        ajouter_depense(depense);
+
+    });
+}
+
+function ajouter_depense(depense) {
+    $.ajax({
+        url: "../partials/rooter.php",
+        method: "POST",
+        data: depense,
+        success: function (data) {
+
+
+            var verif = data.split("&");
+            if (verif[0] == 1) {
+                swal("Notification", verif[1], "success")
+                    .then(function () {
+                        history.go(0);
                     });
-                }
-            })
-        });
-    }
 
-    initDateRangeFilterDepense(date_start_picker,date_end_picker);
+                //  $("#btn_ajouter_depense")[0].reset()
+                // resetForm();
+                // $('#depense-modal').modal('hide');
+                // liste_depense();
 
-    function initDateRangeFilterDepense(startDate, endDate) {
-        
-        $('#datefilterDepense').daterangepicker({
-            startDate: startDate,
-            endDate: endDate,
-            autoUpdateInput: true,
-            locale: {
-                // format: 'YYYY-MM-DD',
-                format: 'DD-MM-YYYY',
-                cancelLabel: 'Clear'
+                // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
+            } else {
+                swal("Notification", verif[1], "warning");
+                // // 
+
+
             }
-        });
 
-        $('#datefilterDepense').on('apply.daterangepicker', function (ev, picker) {
-            let dateDebut = picker.startDate.format('YYYY-MM-DD 00:00:00');
-            let dateFin = picker.endDate.format('YYYY-MM-DD 23:59:59');
-            let dateD = picker.startDate.format('DD-MM-YYYY');
-            let dateF = picker.endDate.format('DD-MM-YYYY');
-            $(this).val(dateD + ' - ' + dateF);
-            // Appeler la fonction de recherche avec les dates sélectionnées
-            $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
-
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    dateDebut: dateDebut,
-                    dateFin: dateFin,
-                    btn_filter_depense: 1
-                },
-                dataType: "JSON",
-                success: function (data) {
-                    console.log(data);
-
-                    // $('#montant_depense_approuve').text("008888000");
-                    $('#montant_depense_approuve').text(data.depense_approuve.montant_depense_approuve);
-                    $('#nombre_depense_approuve').text(data.depense_approuve.nombre_depense_approuve);
-
-                     $('#montant_depense_en_attente').text(data.depense_en_attente.montant_depense_en_attente);
-                    $('#nombre_depense_en_attente').text(data.depense_en_attente.nombre_depense_en_attente);
-
-                     $('#montant_depense_annule').text(data.depense_annule.montant_depense_annule);
-                    $('#nombre_depense_annule').text(data.depense_annule.nombre_depense_annule);
-
-
-                }
-            });
-        });
-
-        $('#datefilterDepense').on('cancel.daterangepicker', function (ev, picker) {
-            // $(this).val('');
-        });
-
-    }
-
-
-    filterInventaire();
-
-    function filterInventaire() {
-        $('#filterInventaire').daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
-            }
-        });
-
-        $('#filterInventaire').on('apply.daterangepicker', function (ev, picker) {
-            let dateDebut = picker.startDate.format('YYYY-MM-DD');
-            let dateFin = picker.endDate.format('YYYY-MM-DD');
-            let dateD = picker.startDate.format('DD-MM-YYYY');
-            let dateF = picker.endDate.format('DD-MM-YYYY');
-            $(this).val(dateD + ' - ' + dateF);
-            // Appeler la fonction de recherche avec les dates sélectionnées
-            $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
-
-            $.ajax({
-                url: "../partials/rooter.php",
-                method: "POST",
-                data: {
-                    dateDebut: dateDebut,
-                    dateFin: dateFin,
-                    btn_filter_inventaire: 1
-                },
-                //typeData :"JSON",
-                success: function (data) {
-                    let res = JSON.parse(data);
-
-                    console.log('res', res);
-                    $("#total_caisse").addClass(res.type)
-                    $('#total_achat').text(res.achat_mois);
-                    $('#total_depense').text(res.depenses_mois);
-                    $('#total_vente').text(res.vente_mois);
-                    $("#total_caisse").text(res.benefice);
-
-                }
-            });
-        });
-
-        $('#filterInventaire').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-
-    }
-
-
-   
-
-
-    filterDashboardAdmin(date_start_picker, date_end_picker, dashboardAdmin);
-
-    function filterDashboardAdmin(startDate, endDate, dashboardAdmin) {
-        // console.log(start,end);
-
-        // let date_start = moment().startOf('month'); // 1er du mois
-        // let date_end = moment(); // aujourd’hui
-        $('#filterDashboardAdmin').daterangepicker({
-            startDate: startDate,
-            endDate: endDate,
-            autoUpdateInput: true,
-            locale: {
-                // format: 'YYYY-MM-DD',
-                format: 'DD-MM-YYYY',
-                cancelLabel: 'Clear'
-            }
-        });
-
-        $('#filterDashboardAdmin').on('apply.daterangepicker', function (ev, picker) {
-            let dateDebut = picker.startDate.format('YYYY-MM-DD');
-            let dateFin = picker.endDate.format('YYYY-MM-DD');
-            let dateD = picker.startDate.format('DD-MM-YYYY');
-            let dateF = picker.endDate.format('DD-MM-YYYY');
-            $(this).val(dateD + ' - ' + dateF);
-            // Appeler la fonction de recherche avec les dates sélectionnées
-            $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
-            dashboardAdmin(dateDebut, dateFin)
-
-
-        });
-
-        $('#filterDashboardAdmin').on('cancel.daterangepicker', function (ev, picker) {
-            // $(this).val('');
-        });
-
+        }
+    });
 }
 
-function retour() {
-    history.back();
+btn_update_depense();
+
+function btn_update_depense() {
+    $('body').delegate('.btn_update_depense', 'click', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                id_depense: id,
+                frm_updepense: 1
+            },
+            dataType: 'JSON',
+            success: function (data) {
+                // // 
+                $(".menu-modal").html(data);
+                $("#depense-modal").modal('show');
+            }
+        });
+    });
 }
 
-function updateELement(btn_action,code) {
-    let btn = btn_action.id;
-    swal({
+btn_suprimer_depense();
+
+function btn_suprimer_depense() {
+    $('body').delegate('.btn_remove_depense', 'click', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        swal({
             title: "Etes vous sure",
-            text: "de vouloir effectuer cette opération?",
+            text: "de vouloir supprimer cet element ?",
             icon: "warning",
             buttons: ['Non', 'Oui'],
             dangerMode: true,
@@ -4007,30 +3753,185 @@ function updateELement(btn_action,code) {
                     url: "../partials/rooter.php",
                     method: "POST",
                     data: {
-                        code: code,
-                        btn_action: btn
+                        id_depense: id,
+                        btn_supprimer_depense: 1
                     },
                     dataType: 'JSON',
                     success: function (data) {
-                        // console.log(data);return
-                        
-                        if (data.success) {
-                            swal("Notification", data.msg, "success")
-                            .then(function () {
-                                history.go(0);
-                            });
-                        }else{
-                            swal("Notification", data.msg, "error")
-                            .then(function () {
-                                history.go(0);
-                            });
-                        }
 
-                        
+
+                        $('.row' + id).remove();
+                        swal("Notification", "Element supprimé avec succès", "success")
+                            .then(function () {
+                                history.go(0);
+                            });
                     }
                 });
             }
+        })
     });
 }
+
+initDateRangeFilterDepense("datefilterDepense", 1);
+
+function initDateRangeFilterDepense(selector, type) {
+    $('input[name="' + selector + '"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
+        let dateDebut = picker.startDate.format('YYYY-MM-DD 00:00:00');
+        let dateFin = picker.endDate.format('YYYY-MM-DD 23:59:59');
+        let dateD = picker.startDate.format('DD-MM-YYYY');
+        let dateF = picker.endDate.format('DD-MM-YYYY');
+        $(this).val(dateD + ' - ' + dateF);
+        // Appeler la fonction de recherche avec les dates sélectionnées
+        $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                dateDebut: dateDebut,
+                dateFin: dateFin,
+                btn_filter_depense: type
+            },
+            dataType: "JSON",
+            success: function (data) {
+
+                // let res = JSON.parse(data);
+
+                $('#depense_precedente').text(data.depense_precedente);
+                $(".depense-table").html(data.output);
+
+            }
+        });
+    });
+
+    $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+    });
+
+}
+
+
+filterInventaire();
+
+function filterInventaire() {
+    $('#filterInventaire').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('#filterInventaire').on('apply.daterangepicker', function (ev, picker) {
+        let dateDebut = picker.startDate.format('YYYY-MM-DD');
+        let dateFin = picker.endDate.format('YYYY-MM-DD');
+        let dateD = picker.startDate.format('DD-MM-YYYY');
+        let dateF = picker.endDate.format('DD-MM-YYYY');
+        $(this).val(dateD + ' - ' + dateF);
+        // Appeler la fonction de recherche avec les dates sélectionnées
+        $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
+
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                dateDebut: dateDebut,
+                dateFin: dateFin,
+                btn_filter_inventaire: 1
+            },
+            //typeData :"JSON",
+            success: function (data) {
+                let res = JSON.parse(data);
+
+                console.log('res', res);
+                $("#total_caisse").addClass(res.type)
+                $('#total_achat').text(res.achat_mois);
+                $('#total_depense').text(res.depenses_mois);
+                $('#total_vente').text(res.vente_mois);
+                $("#total_caisse").text(res.benefice);
+
+            }
+        });
+    });
+
+    $('#filterInventaire').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+    });
+
+}
+
+
+    //DASHBORD ADMIN
+    dashboardAdmin();
+
+    function dashboardAdmin(dateStart="",dateEnd="") {
+        if ($(".dashboard_admin").length > 0) {
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    dashboard_admin: 1,
+                    dateStart: dateStart,
+                    dateEnd:dateEnd
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    // return
+                    $("#nombre_vente").text(data.ventes.nombre_vente);
+                    $("#montant_vente").text(money(data.ventes.montant_vente));
+                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_reapprovisionnement);
+                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_reapprovisionnement));
+                    $("#nombre_depense").text(data.depenses.nombre_depense);
+                    $("#montant_depense").text(money(data.depenses.montant_depense));
+
+                }
+            });
+        }
     }
-});
+
+
+    let date_start_picker = moment().startOf('month'); // 1er du mois
+    let date_end_picker = moment(); // aujourd’hui
+
+filterDashboardAdmin(date_start_picker,date_end_picker,dashboardAdmin);
+
+function filterDashboardAdmin(startDate,endDate,dashboardAdmin) {
+    // console.log(start,end);
+    
+    // let date_start = moment().startOf('month'); // 1er du mois
+    // let date_end = moment(); // aujourd’hui
+    $('#filterDashboardAdmin').daterangepicker({
+         startDate: startDate,
+    endDate: endDate,
+    autoUpdateInput: true,
+    locale: {
+        // format: 'YYYY-MM-DD',
+        format: 'DD-MM-YYYY',
+        cancelLabel: 'Clear'
+    }
+    });
+
+    $('#filterDashboardAdmin').on('apply.daterangepicker', function (ev, picker) {
+        let dateDebut = picker.startDate.format('YYYY-MM-DD');
+        let dateFin = picker.endDate.format('YYYY-MM-DD');
+        let dateD = picker.startDate.format('DD-MM-YYYY');
+        let dateF = picker.endDate.format('DD-MM-YYYY');
+        $(this).val(dateD + ' - ' + dateF);
+        // Appeler la fonction de recherche avec les dates sélectionnées
+        $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
+        dashboardAdmin(dateDebut,dateFin)
+
+        
+    });
+
+    $('#filterDashboardAdmin').on('cancel.daterangepicker', function (ev, picker) {
+        // $(this).val('');
+    });
+
+}

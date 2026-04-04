@@ -18,12 +18,15 @@ class ControllerDashboard extends Connexion
 
       $reapprovisionnements = Soutra::getTotalReapprovisionnementDashboard($start, $end, $entrepot);
       $ventes = Soutra::getTotalVenteDashboard($start, $end, $entrepot);
+      $depenses = Soutra::getTotalDepenseDAshboard($start, $end, $entrepot);
 
-      $data = [
-        "ventes" => $ventes,
-        "reapprovisionnements" => $reapprovisionnements
-      ];
-      echo json_encode($data);
+      // $data = [
+      //   "ventes" => $ventes,
+      //   "reapprovisionnements" => $reapprovisionnements,
+      //   "depenses" => $depenses
+      // ];
+      // echo json_encode($data);
+      echo json_encode(compact('reapprovisionnements', 'ventes', 'depenses'));
     }
   }
 } //fin de la class
