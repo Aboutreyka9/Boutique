@@ -1124,15 +1124,37 @@ class Soutra extends Connexion
     }
 
 
+    public static function singleAchat($id)
+    {
+        $data = [];
+        // $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id  WHERE etat_article = ?  ORDER BY ID_article DESC";
+        $sql = "SELECT v.*, en.*, ar.libelle_article,fn.*,SUM(en.prix_achat * en.qte) as prix_total FROM achat v
+        INNER JOIN entree en ON v.code_achat = en.achat_id 
+        INNER JOIN article ar ON ar.ID_article = en.article_id
+        INNER JOIN fournisseur fn ON fn.ID_fournisseur = v.fournisseur_id 
+        WHERE v.code_achat =? 
+        GROUP BY en.ID_entree
+        ";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([$id]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
     public static function singleVente($id)
     {
         $data = [];
         // $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id  WHERE etat_article = ?  ORDER BY ID_article DESC";
-        $sql = "SELECT v.*, so.*, ar.libelle_article,cl.* FROM vente v
+        $sql = "SELECT v.*, so.*, ar.libelle_article,cl.*,SUM(so.prix_vente * so.qte) as prix_total FROM vente v
         INNER JOIN sortie so ON v.code_vente = so.vente_id 
         INNER JOIN article ar ON ar.ID_article = so.article_id
         INNER JOIN client cl ON cl.ID_client = v.client_id 
-        WHERE v.code_vente =? ";
+        WHERE v.code_vente =? 
+        GROUP BY so.ID_sortie
+        ";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([$id]);
 
@@ -2145,6 +2167,32 @@ class Soutra extends Connexion
         return $data;
     }
 
+    public static function getAllListeBonCommandeFournisseur($dateStart, $dateEnd)
+    {
+        $data = [];
+        $sql = 'SELECT ach.*, 
+            SUM(en.qte) AS article,
+            SUM(en.prix_achat * en.qte) AS total,
+            -- ach._achat,ach.created_at,
+            fr.nom_fournisseur AS fournisseur, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
+            FROM achat ach 
+            JOIN entree en ON en.achat_id = ach.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ach.fournisseur_id
+            JOIN employe emp ON emp.ID_employe = ach.employe_id
+            WHERE DATE(ach.created_at) BETWEEN :dateStart AND :dateEnd
+            GROUP BY ach.ID_achat 
+            ORDER BY ach.ID_achat DESC';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+
+        return $data;
+    }
     public static function getAllListeBonCommandeClient($dateStart, $dateEnd)
     {
         $data = [];
