@@ -663,6 +663,39 @@ class Soutra extends Connexion
         }
     }
 
+    public static function getTotalDepenseDAshboard($startDate, $endDate, $entrepot = null)
+    {
+        $data = [];
+
+        $sql = 'SELECT  COALESCE(SUM(d.montant),0) montant_depense,  COALESCE(COUNT(d.ID_depense),0) nombre_depense
+            FROM type_depense t
+            JOIN depense d ON t.ID_type = d.type_id AND d.etat_depense = :etat_depense
+            WHERE DATE(d.date_created) BETWEEN :startDate AND :endDate ';
+
+        $params = [
+            ':startDate' => $startDate,
+            ':endDate'   => $endDate,
+            ':etat_depense'   => 1,
+        ];
+
+        // Ajout condition dynamique
+        if (!empty($entrepot)) {
+            $sql .= ' AND d.entrepot_id = :entrepot_id ';
+            $params[':entrepot_id'] = $entrepot;
+        }
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute($params);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
     public static function getStockLimitAlert()
     {
         $tab = [];
@@ -2462,7 +2495,7 @@ class Soutra extends Connexion
     public static function getSingleDepense($id_depense)
     {
         $data = [];
-        $sql = 'SELECT *, date(d.periode) AS periode_depense FROM depense d JOIN type_depense td ON td.id_type = d.type_id WHERE d.id_depense = ? LIMIT 1';
+        $sql = 'SELECT *, date(d.periode) AS periode_depense FROM depense d JOIN type_depense td ON td.ID_type = d.type_id WHERE d.ID_depense = ? LIMIT 1';
         $query = self::getConnexion()->prepare($sql);
         $query->execute([$id_depense]);
 
@@ -2489,13 +2522,36 @@ class Soutra extends Connexion
         return $tab;
     }
 
+    public static function getDepenseByMouth($startDate, $endDate, $etat = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT SUM(d.montant) total
+            FROM type_depense t
+            JOIN depense d ON t.ID_type = d.type_id
+            WHERE  DATE(d.periode) BETWEEN ? AND ?
+            AND d.etat_depense = ?
+            ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([$startDate, $endDate, $etat]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
     public static function getTotauxDepenseByMouth($startDate, $endDate, $etat = 1)
     {
         $data = [];
 
         $sql = 'SELECT SUM(d.montant) total
             FROM type_depense t
-            JOIN depense d ON t.id_type = d.type_id
+            JOIN depense d ON t.ID_type = d.type_id
             WHERE  DATE(d.periode) BETWEEN ? AND ?
             AND d.etat_depense = ?
             ';
@@ -2517,11 +2573,11 @@ class Soutra extends Connexion
 
         $sql = "SELECT d.*,t.*, CONCAT(e.nom_employe,' ',prenom_employe) AS employe
             FROM type_depense t
-            JOIN depense d ON t.id_type = d.type_id
+            JOIN depense d ON t.ID_type = d.type_id
             JOIN employe e ON e.id_employe = d.employe_id
             WHERE  DATE(d.periode) BETWEEN ? AND ?
             AND d.etat_depense = ?
-            GROUP BY d.id_depense ORDER BY d.id_depense DESC
+            GROUP BY d.ID_depense ORDER BY d.ID_depense DESC
             ";
 
         $query = self::getConnexion()->prepare($sql);
