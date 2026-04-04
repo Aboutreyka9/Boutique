@@ -90,12 +90,12 @@ $(function () {
 
     function toconf(callback = "") {
         swal({
-            title: "Etes vous sure",
-            text: "de vouloir supprimer cet element ?",
-            icon: "warning",
-            buttons: ['Non', 'Oui'],
-            dangerMode: true,
-        })
+                title: "Etes vous sure",
+                text: "de vouloir supprimer cet element ?",
+                icon: "warning",
+                buttons: ['Non', 'Oui'],
+                dangerMode: true,
+            })
             .then((a) => {
                 if (a) {
                     callback
@@ -2534,7 +2534,7 @@ $(function () {
 
                 if (res.code == 400) {
                     charts['canvas_fournisseur'].destroy();
-                    swal("Notification", "Aucune donnée disponible", "warning",);
+                    swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
 
@@ -2571,12 +2571,12 @@ $(function () {
             labels,
             datasets: [{
 
-                backgroundColor: colors,
-                //   backgroundColor: gradient,
-                borderColor: "#c5c6c6",
-                data: total,
-                label: "Montant achat"
-            },
+                    backgroundColor: colors,
+                    //   backgroundColor: gradient,
+                    borderColor: "#c5c6c6",
+                    data: total,
+                    label: "Montant achat"
+                },
 
             ],
 
@@ -2641,7 +2641,7 @@ $(function () {
 
                 if (res.code == 400) {
                     charts['canvas_client'].destroy();
-                    swal("Notification", "Aucune donnée disponible", "warning",);
+                    swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
 
@@ -2679,12 +2679,12 @@ $(function () {
             labels,
             datasets: [{
 
-                backgroundColor: colors,
-                //   backgroundColor: gradient,
-                borderColor: "#c5c6c6",
-                data: total,
-                label: "Montant vente"
-            },
+                    backgroundColor: colors,
+                    //   backgroundColor: gradient,
+                    borderColor: "#c5c6c6",
+                    data: total,
+                    label: "Montant vente"
+                },
 
             ],
 
@@ -2807,7 +2807,7 @@ $(function () {
 
                 if (res.code == 400) {
                     charts['month_canvas'].destroy();
-                    swal("Notification", "Aucune donnée disponible", "warning",);
+                    swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
 
@@ -2844,11 +2844,11 @@ $(function () {
             labels,
             datasets: [{
 
-                backgroundColor: gradient,
-                borderColor: "#c5c6c6",
-                data: total,
-                label: "Montant vente"
-            },
+                    backgroundColor: gradient,
+                    borderColor: "#c5c6c6",
+                    data: total,
+                    label: "Montant vente"
+                },
 
             ],
 
@@ -2914,7 +2914,7 @@ $(function () {
 
                 if (res.code == 400) {
                     charts['month_achat_canvas'].destroy();
-                    swal("Notification", "Aucune donnée disponible", "warning",);
+                    swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
 
@@ -2951,11 +2951,11 @@ $(function () {
             labels,
             datasets: [{
 
-                backgroundColor: gradient,
-                borderColor: "#c5c6c6",
-                data: total,
-                label: "Montant achat"
-            },
+                    backgroundColor: gradient,
+                    borderColor: "#c5c6c6",
+                    data: total,
+                    label: "Montant achat"
+                },
 
             ],
 
@@ -3001,7 +3001,7 @@ $(function () {
         if (page != undefined) {
             getDateInterval();
 
-            ajaxEmployeAndAccueil(employe,);
+            ajaxEmployeAndAccueil(employe, );
         }
     }
 
@@ -3022,7 +3022,7 @@ $(function () {
 
                 if (res.code == 400) {
                     charts['canvas_employe'].destroy();
-                    swal("Notification", "Aucune donnée disponible", "warning",);
+                    swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
 
@@ -3670,6 +3670,9 @@ $(function () {
     //     });
     // }
 
+    $('.search_depense').select2();
+
+
 
     btn_ajouter_depense();
 
@@ -3677,10 +3680,39 @@ $(function () {
         $('body').delegate('#btn_ajouter_depense', 'submit', function (e) {
             e.preventDefault();
 
-
             var depense = $(this).serialize();
 
-            ajouter_depense(depense);
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: depense,
+                // dataType:"JSON",
+                success: function (data) {
+                    console.log(data);
+                    return;
+
+                    var verif = data.split("&");
+                    if (verif[0] == 1) {
+                        swal("Notification", verif[1], "success")
+                            .then(function () {
+                                history.go(0);
+                            });
+
+                        //  $("#btn_ajouter_depense")[0].reset()
+                        // resetForm();
+                        // $('#depense-modal').modal('hide');
+                        // liste_depense();
+
+                        // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
+                    } else {
+                        swal("Notification", verif[1], "warning");
+                        // // 
+
+
+                    }
+
+                }
+            });
 
         });
     }
