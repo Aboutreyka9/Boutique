@@ -1,6 +1,6 @@
 <!-- HEADER ACTIONS -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <button class="btn btn-dark"> <i class="bi bi-arrow-left"></i> Retour </button>
+  <button class="btn btn-dark" onclick="retour()" > <i class="bi bi-arrow-left"></i> Retour </button>
 
   <div class="d-flex gap-5">
     <button class="btn btn-success ml-2" data-toggle="tooltip" title="" data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>

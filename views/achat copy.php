@@ -65,108 +65,66 @@ $totaux = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée 
   </div>
 </header>
 
-<!-- .page-section -->
-<div class="table-responsive bg-light py-3 px-2 border rounded">
-  <!-- .table -->
-  <table class="table table-hover my-table">
-    <!-- thead -->
-    <thead class="bg-light">
-      <tr>
-        <th style="width: 2%;">#</th>
-        <th style="width: 8%;">Ref</th>
-        <th style="width: 10%;">Statut</th>
-        <th style="width: 10%;">Fournisseur</th>
-        <th style="width: 5%;">Produit</th>
-        <th style="width: 10%;">Total</th>
-        <!-- <th style="width: 6%;">Paiement</th> -->
-        <th style="width: 12%;">Fait par</th>
-        <th style="width: 8%;">Date</th>
-        <th style="width: 20%;">Actions</th>
-      </tr>
-    </thead><!-- /thead -->
-    <!-- tbody -->
-    <tbody class="vente-table">
-      <?php
+ <div class="table-responsive">
+<!-- .table -->
+<table class="table table-striped table-hover my-table">
+  <!-- thead -->
+  <thead class="thead-dark">
+    <tr>
+      <th> # </th>
+      <th class="text-right"> CODE </th>
+      <th class="text-right"> NB ARTICLE </th>
+      <th class="text-right"> MONTANT </th>
+      <th> FOURNISSEUR </th>
+      <th> DATE </th>
+      <th class="text-right"> ACTION </th>
+    </tr>
+  </thead><!-- /thead -->
+  <!-- tbody -->
+  <tbody class="achat-table">
+   <?php
+   // Dates par défaut
+$start = (new DateTime('first day of this month'))->format('Y-m-d');
+$end   = (new DateTime('last day of this month'))->format('Y-m-d');
 
-      // Récupérer les achats du mois courant
-      $achat = Soutra::getAllListeBonCommandeFournisseur($start, $end);
+// Récupérer les achats du mois courant
+$achat = Soutra::getAllListeAchatByDateRange($start, $end);
 
-      $output = '';
-      if (!empty($achat)) {
+    $output = '';
+    // $achat = Soutra::getAllListeAchat();
+    if (!empty($achat)) {
         $i = 0;
         foreach ($achat as $row) {
-          $i++;
-          $output .= '
-            <tr class="row' . $row['ID_achat'] . '">
-               <td>' . $i . '</td>
-               <td>' . $row['code_achat'] . '</td>
-               <td>' . checkStatusCommande($row['statut_achat']) . '</td>
-               <td>' . $row['fournisseur'] . '</td>
-               <td>' . $row['article'] . '</td>
-               <td>' . number_format($row['total'], 0, ",", " ") . '</td>
-               <td>' . $row['employe'] . ' </td>
-               <td>' . Soutra::date_format($row['created_at']) . '</td>
-               ';
-          $output .= '<td class="form-button-action"> 
-          <a href="' . URL . 'detail_achat&id=' . $row['code_achat'] . '" data-toggle="tooltip" title="" data-original-title="Voir les détails de la commande" class="btn btn-link btn-primary btn-sm">
-            <i class="fa fa-eye text-icon-primary"></i> </a>
-            ';
-
-          // btn validation la commande
-        if ($row['statut_achat'] == STATUT_COMMANDE[0]):
-    $output .= '
-        <button type="button" data-toggle="tooltip" 
-        id="btn_validation_achat"
-            onclick="updateELement(this,\'' . $row['code_achat'] . '\')"
-            title="Valider la commande" 
-            class="btn btn-link btn-success btn-sm">
-            <i class="fa fa-save text-icon-success"></i>
-        </button>
-    ';
-endif;
-
-                  if ($row['statut_achat'] == STATUT_COMMANDE[1]):
-    $output .= '
-        <button type="button" 
-        id="btn_encaisser_achat"
-            onclick="updateELement(this,\'' . $row['code_achat'] . '\')"
-            data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i>
-        </button>
-    ';
-endif;
-
-          // btn Modifier la commande
-          if ($row['statut_achat'] == STATUT_COMMANDE[0]):
-            $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm" data-original-title="Modifier la commande"> <i class="fa fa-edit text-icon-primary"></i> </button>';
-          endif;
-
-          // btn Annuler la commande
-          if ($row['statut_achat'] == STATUT_COMMANDE[0]):
-            $output .= '<button type="button"
-            id="btn_annuler_achat"
-            onclick="updateELement(this,\'' . $row['code_achat'] . '\')" 
-            data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Annuler la commande"> <i class="fa fa-times text-icon-danger"></i> </button>';
-          endif;
-
-          // btn Retourner la commande
-          if ($row['statut_achat'] == STATUT_COMMANDE[1] || $row['statut_achat'] == STATUT_COMMANDE[2]):
-            $output .= '<button type="button" 
-            id="btn_retourner_achat"
-            onclick="updateELement(this,\'' . $row['code_achat'] . '\')" 
-            data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Retourner la commande"> <i class="fa fa-undo text-icon-danger"></i> </button>';
-          endif;
-
-          // btn Imprimer la facture
-          $output .= '<a href="'.RACINE .'views/print_achat.php?id='.$row['code_achat'].'&statut='.$row['statut_achat'].'" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>
-            </td>
-            </tr>';
+            ++$i;
+            $output .= '
+    <tr class="row'.$row['ID_achat'].'">
+       <td>'.$i.'</td>
+       <td class="text-right">'.$row['code_achat'].'</td>
+       <td class="text-right">'.$row['article'].'</td>
+       <td class="text-right">'.number_format($row['total'], 0, ',', ' ').'</td>
+       <td>
+           <a href="#" class="fournisseur-link" data-id="'.$row['code_fournisseur'].'" title="Voir fournisseur">
+               '.$row['code_fournisseur'].'
+           </a>
+       </td>
+       <td>'.Soutra::date_format($row['created_at']).'</td>
+       <td class="text-right"> 
+            <a href="'.URL.'detail_achat&id='.$row['code_achat'].'" title="Detail achat" class="btn btn-primary btn-sm">
+            <i class="fa fa-eye"></i> Detail </a>
+            <div class="d-inline ">
+                <button data-id="'.$row['ID_achat'].'" title="Supprimer achat" class="btn btn-warning btn-sm btn_remove_achat d_none">
+                <i class="fa fa-trash"></i> Supprimer</button>
+            </div>
+       </td>
+     </tr>
+     ';
         }
-      }
-      echo $output; ?>
-
-
-    </tbody><!-- /tbody -->
-  </table><!-- /.table -->
+    }
+    echo $output; ?>
+    
+  
+  </tbody><!-- /tbody -->
+</table><!-- /.table -->
 </div><!-- /.table-responsive -->
 
 

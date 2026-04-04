@@ -112,14 +112,22 @@ ControllerAchat::getAchat();
 ControllerAchat::suppresion_achat();
 ControllerAchat::btn_remove_achat_detail();
 ControllerAchat::getCanvasfournisseur();
-// ControllerAchat::initDateRangeFilter();
 ControllerAchat::getDataDateRangeFilterAchat();
 
+<<<<<<< HEAD
 // DEPENSES
 ControllerDepense::ajouter_depense();
 ControllerDepense::getDataDateRangeFilterDepense();
 // 
 // ControllerAchat::ajouter_depense();
+=======
+ControllerAchat::validation_achat();
+ControllerAchat::encaissement_achat();
+ControllerAchat::annulation_achat();
+ControllerAchat::retourner_achat();
+
+ControllerAchat::ajouter_depense();
+>>>>>>> 4f67b81aa83702bea3323c0dc39ec08b8ceffb8b
 ControllerAchat::getDepense();
 ControllerAchat::suppresion_depense();
 // ControllerAchat::getDataDateRangeFilterDepense();
@@ -138,6 +146,12 @@ ControllerVente::verifDetail();
 ControllerVente::suppresion_vente();
 ControllerVente::btn_remove_vente_detail();
 ControllerVente::getDataDateRangeFilterInventaire();
+
+
+ControllerVente::validation_vente();
+ControllerVente::encaissement_vente();
+ControllerVente::annulation_vente();
+ControllerVente::retourner_vente();
 
 ControllerVente::getCanvasMonth();
 ControllerVente::getCanvasWeek();

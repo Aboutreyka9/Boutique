@@ -1,72 +1,200 @@
+
 <?php 
 require '../fpdf/list_data.php';
 include '../models/Connexion.php';
 include '../controllers/Soutra.php';
+use Dompdf\Dompdf;
 
-    // $prod = "";
-    // $ref = "";
-    // $prod = Soutra::singleVente($_GET['id']);
+if (isset($_GET['pg']) && !empty($_GET['pg'])) {
 
-    if (isset($_GET['pg']) && !empty($_GET['pg'])) {
+$dompdf = new Dompdf();
 
-       $page= $_GET['pg'];
+$page= $_GET['pg'];
 
         // if(isset($_GET['f']) && $_GET['f']  == 'p5'){
             $print = new ListeData("p", "mm", "A4");
             // $w = array(45, 24, 20, 39);
 
-                $print->addPage();
-                $print->setTextColor(0, 0, 0);
+                // $print->addPage();
+                // $print->setTextColor(0, 0, 0);
                 // $print->docBody($w,$prod);
                 // $print->output('',date('YmdHis').'.pdf');
         // }
 
         switch ($page) {
             case 'employes':
-                // var_dump("employe");
                 $employe = Soutra::getAllEmployerToPrint();
 
-                $print->pageTitle("LISTE DES EMPLOYES");
-                $print->employer($employe);
-                $print->output('',date('YmdHis').'.pdf',true);
+                  
+                // Exemple dynamique (employes)
+                $title = "LISTE DES EMPLOYES";
+                $headers = ["CODE EMPLOYE", "NOM", "PRENOM", "TELEPHONE", "ROLE"];
+                $data = Soutra::getAllEmployerToPrint();
+
+                $rows = array_map(function($c){
+                    return [
+                        $c['code_employe'],
+                        $c['nom_employe'],
+                        $c['prenom_employe'],
+                        $c['telephone_employe'],
+                        $c['role']
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("employe.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
 
                 break;
                 case 'clients':
-                $client = Soutra::getAllClient();
-                
-                $print->pageTitle("LISTE DES CLIENTS");
-                $print->client($client);
-                $print->output('',date('YmdHis').'.pdf',true);
+                                    
+                // Exemple dynamique (clients)
+                $title = "LISTE DES CLIENTS";
+                $headers = ["CODE CLIENT", "NOM", "PRENOM", "TELEPHONE"];
+                $data = Soutra::getAllClient();
+
+                $rows = array_map(function($c){
+                    return [
+                        $c['code_client'],
+                        $c['nom_client'],
+                        $c['prenom_client'],
+                        $c['telephone_client']
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("clients.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
+
+
+
                 break;
                 case 'fournisseurs':
                 $fournisseur = Soutra::getAllFournisseur();
-                $print->pageTitle("LISTE DES FOURNISSEURS");
-                $print->fournisseur($fournisseur);
-                $print->output('',date('YmdHis').'.pdf',true);
+                                  
+                // Exemple dynamique (fournisseurs)
+                $title = "LISTE DES FOURNISSEURS";
+                $headers = ["CODE FOURNISSEUR", "NOM", "PRENOM", "TELEPHONE"];
+                $data = Soutra::getAllFournisseur();
+
+                $rows = array_map(function($c){
+                    return [
+                        $c['code_fournisseur'],
+                        $c['nom_fournisseur'],
+                        $c['prenom_fournisseur'],
+                        $c['telephone_fournisseur']
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("fournisseur.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
+
                 break;
                 case 'ventes':
-                    $vente = Soutra::getAllListeVente();
-                    $print->pageTitle("LISTE DES VENTES");
-                    $print->vente($vente);
-                    $print->output('',date('YmdHis').'.pdf',true);
+                                      
+                // Exemple dynamique (ventes)
+                $title = "LISTE DES VENTES";
+                $headers = ["CODE VENTE", "ARTICLE","TOTAL", "CODE CLIENT", "DATE"];
+                $data = Soutra::getAllListeVente();
+
+                $rows = array_map(function($c){
+                    return [
+                        $c['code_vente'],
+                        $c['article'],
+                        $c['total'],
+                        $c['code_client'],
+                        $c['created_at']
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("ventes.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
+
                 break;
                 case 'achats':
-                    $achat = Soutra::getAllListeAchat();
-                    $print->pageTitle("LISTE DES ACHATS");
-                    $print->achat($achat);
-                    $print->output('',date('YmdHis').'.pdf',true);
+                // Exemple dynamique (achats)
+                $title = "LISTE DES ACHATS";
+                $headers = ["CODE ACHAT", "ARTICLE","TOTAL", "CODE FOURNISSEUR"];
+                $data = Soutra::getAllListeAchat();
+                $rows = array_map(function($c){
+                    return [
+                        $c['code_achat'],
+                        $c['article'],
+                        $c['total'],
+                        $c['code_fournisseur'],
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("achats.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
+
                 break;
                 case 'bilan':
                     $inventaire = Soutra::getComptabiliteBilant();
-                    $print->pageTitle("LISTE DES RAPPORTS");
-                    $print->inventaire($inventaire);
-                    $print->output('',date('YmdHis').'.pdf',true);
+                // Exemple dynamique (bilan)
+                $title = "BILAN";
+                $headers = ["ARTICLES", "DEPENSES", "VENTES", "QTE REST", "M. REST", "GAIN"];
+                $data = Soutra::getComptabiliteBilant();
+                $rows = array_map(function($c){
+                    return [
+                        $c['article'],
+                        $c['depenses'],
+                        $c['ventes'],
+                        $c['qte_reste'],
+                        $c['mt_reste'],
+                        $c['gain']
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("bilan.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
+
                 break;
                 case 'articles':
-                    $article = Soutra::getAllarticle();
-                    $print->pageTitle("LISTE DES ARTICLES");
-                    $print->article($article);
-                    $print->output('',date('YmdHis').'.pdf',true);
+                    $data = Soutra::getAllarticle();
+                    // var_dump($data);return;
+                // Exemple dynamique (articles)
+                $title = "ARTICLES";
+                $headers = ["CODE", "DESIGNATION", "FAMILLE", "MARQUE", "ENTREPOT"];
+                $rows = array_map(function($c){
+                    return [
+                        $c['code_article'],
+                        $c['libelle_article'],
+                        $c['famille'],
+                        $c['mark'],
+                        $c['entrepot']
+                    ];
+                }, $data);
+
+                $html = $print->generateHTMLList($title, $headers, $rows);
+
+                $dompdf->loadHtml($html);
+                $dompdf->setPaper('A4', 'portrait');
+                $dompdf->render();
+                $dompdf->stream("articles.pdf", ["Attachment" => false]); // false pour afficher dans le navigateur
+
                 break;
             
             default:
@@ -78,4 +206,8 @@ include '../controllers/Soutra.php';
     }else{
         http_response_code(400);
     }
+
+
+
+
  ?>
