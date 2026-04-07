@@ -1,7 +1,7 @@
 <?php
-require '../vendor/autoload.php';
-include '../models/Connexion.php';
-include '../controllers/Soutra.php';
+require_once '../vendor/autoload.php';
+require_once '../models/Connexion.php';
+require_once '../controllers/Soutra.php';
 
 use Dompdf\Dompdf;
 

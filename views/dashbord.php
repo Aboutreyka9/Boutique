@@ -1,4 +1,5 @@
-<?php if (strtolower($_SESSION['role']) == ADMIN):
+<?php 
+if (strtolower($_SESSION['role']) == ADMIN):
 
   $today = date("Y-m-d");
 

@@ -3994,7 +3994,7 @@ $(function () {
 
 
 function retour() {
-    history.back();
+    window.history.back();
 }
 
 function updateELement(btn_action,code) {
@@ -4037,3 +4037,78 @@ function updateELement(btn_action,code) {
             }
     });
 }
+form_encaisser_vente();
+    function form_encaisser_vente() {
+
+        $('#form_encaisser_vente').on('submit', function (e) {
+            e.preventDefault();
+
+            var codeVente = $(this).find('#code_vente').val();
+            var montantVersement = $(this).find('#montant_versement').val();
+            
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code_vente: codeVente,
+                    montant_versement: montantVersement,
+                    btn_encaisser_vente: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);return;
+                    
+                    if(data.status) {
+                        swal("Notification", data.message, "success");
+                    }else{
+                        swal("Notification", data.message, "error");
+                    }
+                    $("#encaisser-modal").modal('hide');
+                }
+            });
+        });
+    }
+form_encaisser_achat();
+    function form_encaisser_achat() {
+
+        $('#form_encaisser_achat').on('submit', function (e) {
+            e.preventDefault();
+
+            var codeAchat = $(this).find('#code_achat').val();
+            var montantVersement = $(this).find('#montant_versement').val();
+            
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code_achat: codeAchat,
+                    montant_versement: montantVersement,
+                    btn_encaisser_achat: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);return;
+                    
+                    if(data.status) {
+                        swal("Notification", data.message, "success");
+                    }else{
+                        swal("Notification", data.message, "error");
+                    }
+                    $("#encaisser-modal").modal('hide');
+                }
+            });
+        });
+    }
+    modal_encaisser("#btn_encaisser_achat","#code_achat")
+    modal_encaisser("#btn_encaisser_vente","#code_vente")
+function modal_encaisser(selector,code_select) {    
+    $(document).on('click', selector, function () {
+        let code = $(this).data('code');
+
+        // injecter dans le champ hidden
+        $(code_select).val(code);
+
+        console.log(code); // pour vérifier
+    });
+}
+

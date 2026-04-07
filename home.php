@@ -15,32 +15,36 @@ if (!isset($_SESSION) || empty($_SESSION)) {
 if ($_SERVER['REQUEST_URI'] == "/home.php") {
   header("LOCATION:home.php/");
 }
+if(isset($_SESSION) && !empty($_SESSION)) {
+  $_SESSION['entrepot'] = 6;
+}
+
 
 ?>
-<?php include './config/const.php' ?>
-<?php include './config/helpers.php' ?>
-<?php include './config/action.php' ?>
-<?php include './models/Connexion.php' ?>
-<?php include './controllers/Soutra.php' ?>
-<?php include './controllers/ControllerEmploye.php' ?>
-<?php include './controllers/ControllerClient.php' ?>
-<?php include './controllers/ControllerFournisseur.php' ?>
-<?php include './controllers/ControllerCategorie.php' ?>
-<?php include './controllers/ControllerFamille.php' ?>
-<?php include './controllers/ControllerMark.php' ?>
-<?php include './controllers/ControllerUnite.php' ?>
-<?php include './controllers/ControllerArticle.php' ?>
-<?php include './controllers/ControllerAchat.php' ?>
-<?php include './controllers/ControllerVente.php' ?>
-<?php include './controllers/ControllerCommande.php' ?>
-<?php include './controllers/ControllerConfig.php' ?>
-<?php include './controllers/ControllerPrinter.php' ?>
+<?php include_once './config/const.php' ?>
+<?php include_once './config/helpers.php' ?>
+<?php include_once './config/action.php' ?>
+<?php include_once './models/Connexion.php' ?>
+<?php include_once './controllers/Soutra.php' ?>
+<?php include_once './controllers/ControllerEmploye.php' ?>
+<?php include_once './controllers/ControllerClient.php' ?>
+<?php include_once './controllers/ControllerFournisseur.php' ?>
+<?php include_once './controllers/ControllerCategorie.php' ?>
+<?php include_once './controllers/ControllerFamille.php' ?>
+<?php include_once './controllers/ControllerMark.php' ?>
+<?php include_once './controllers/ControllerUnite.php' ?>
+<?php include_once './controllers/ControllerArticle.php' ?>
+<?php include_once './controllers/ControllerAchat.php' ?>
+<?php include_once './controllers/ControllerVente.php' ?>
+<?php include_once './controllers/ControllerCommande.php' ?>
+<?php include_once './controllers/ControllerConfig.php' ?>
+<?php include_once './controllers/ControllerPrinter.php' ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 
 <!-- Mirrored from uselooper.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 07 Dec 2018 11:18:28 GMT -->
-<?php include './partials/header.php' ?>
+<?php include_once './partials/header.php' ?>
 
 <body>
   <!-- .app -->
@@ -49,9 +53,9 @@ if ($_SERVER['REQUEST_URI'] == "/home.php") {
       <div class="page-message" role="alert">You are using an <strong>outdated</strong> browser. Please <a class="alert-link" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</div>
       <![endif]-->
     <!-- .app-header -->
-    <?php include './partials/nav.php' ?>
+    <?php include_once './partials/nav.php' ?>
     <!-- .app-aside -->
-    <?php include './partials/sidebar.php' ?>
+    <?php include_once './partials/sidebar.php' ?>
 
     <!-- .app-main -->
     <main style="background-color: #e4e6ec !important;" class="app-main">
@@ -64,17 +68,17 @@ if ($_SERVER['REQUEST_URI'] == "/home.php") {
           <div class="page-inner">
 
             <!-- .page-title-bar -->
-            <?php include './content.php' ?>
+            <?php include_once './content.php' ?>
           </div><!-- /.page-inner -->
         </div><!-- /.page -->
       </div><!-- .app-footer -->
-      <?php include './partials/footer.php' ?>
+      <?php include_once './partials/footer.php' ?>
 
       <!-- /.wrapper -->
     </main><!-- /.app-main -->
   </div><!-- /.app -->
   <!-- BEGIN BASE JS -->
-  <?php include './partials/scripte.php' ?>
+  <?php include_once './partials/scripte.php' ?>
 </body>
 
 <!-- Mirrored from uselooper.com/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 07 Dec 2018 11:19:30 GMT -->
