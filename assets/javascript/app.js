@@ -151,6 +151,7 @@ $(function () {
             method: "POST",
             data: employe,
             success: function (data) {
+                
                 var verif = data.split("&");
                 if (verif[0] == 1) {
                     notify(verif[1]);
@@ -425,6 +426,15 @@ $(function () {
 
     // FOURNISSEUR
 
+       btn_add_fournisseur();
+
+    function btn_add_fournisseur() {
+        $('body').on('click', '#fournisseur-data-modal', function (e) {
+            e.preventDefault();
+            $("#fournisseur-modal").modal('show');
+        });
+    }
+
     btn_ajouter_fournisseur();
 
     function btn_ajouter_fournisseur() {
@@ -453,7 +463,6 @@ $(function () {
                     $('#fournisseur-modal').modal('hide');
                     liste_fournisseur();
 
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
                 } else {
                     // // 
                     notify(verif[1], "", "alert", "warning");
@@ -1273,6 +1282,7 @@ $(function () {
     //         })
     //     });
     // }
+
     // SEXION VENTE
     $('#select_code_vente').select2();
     $('.client_search').select2();
@@ -1297,7 +1307,7 @@ $(function () {
                 },
                 dataType: 'json',
                 success: function (response) {
-
+                    
                     if (response.code === 200) {
 
                         const c = response.client;
@@ -1315,6 +1325,52 @@ $(function () {
             });
         });
     }
+
+    
+    // SEXION VENTE
+    $('#select_code_achat').select2();
+    $('.fournisseur_search').select2();
+    $('#select_article_achat').select2();
+
+// console.log('debut');
+    selectFournisseurToSearchachat();
+
+    function selectFournisseurToSearchachat() {
+
+        $('body').on('change', '.fournisseur_search', function (e) {
+            e.preventDefault();
+
+            var id = $(this).val();
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_fournisseur: id,
+                    btn_search_fournisseur_achat: 1
+                },
+                dataType: 'json',
+                success: function (response) {
+                    // console.log(response.code);return
+
+                    if (response.code === 200) {
+
+                        const f = response.fournisseur;
+                        $("#nom_fournisseur").val(f.nom_fournisseur);
+                        $("#telephone_fournisseur").val(f.telephone_fournisseur);
+                        $("#email_fournisseur").val(f.email_fournisseur);
+
+                    } else {
+                        console.log("Fournisseur non trouvé");
+                    }
+                },
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+        });
+    }
+
 
     // espace clean 1
 
@@ -1373,7 +1429,7 @@ $(function () {
             method: "POST",
             data: achat,
             success: function (data) {
-
+                alert(data);
                 if (data) {
                     changerMontant();
                     $('.achat-table').html(data);
@@ -1385,7 +1441,6 @@ $(function () {
             }
         });
     }
-
 
 
     totalRow()

@@ -248,7 +248,7 @@ endif;
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="stock_alert">Stock Alert</label>
-                       <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
+                      <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
                     </div>
                   </div>
                 </div><!-- /.form-row -->

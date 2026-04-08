@@ -39,6 +39,7 @@ if(isset($_SESSION) && !empty($_SESSION)) {
 <?php include_once './controllers/ControllerCommande.php' ?>
 <?php include_once './controllers/ControllerConfig.php' ?>
 <?php include_once './controllers/ControllerPrinter.php' ?>
+<?php include_once './controllers/ControllerMailer.php' ?>
 
 <!DOCTYPE html>
 <html lang="fr">

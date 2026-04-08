@@ -107,6 +107,12 @@
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
+                      <label for="email_employe">Email</label>
+                      <input type="email" name="email_employe" id="email_employe" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group">
                       <label for="role_employe">Role</label>
                       <select name="role_employe" id="role_employe" class="form-control" id="">
                         <?php 

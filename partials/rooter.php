@@ -1,7 +1,10 @@
 <?php
 session_start();
 date_default_timezone_set('Africa/Abidjan');
+require_once __DIR__ . '/../vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
 require_once "../config/const.php";
 require_once "../config/helpers.php";
 require_once "../models/Connexion.php";
@@ -22,6 +25,7 @@ require_once "../controllers/ControllerCommande.php";
 require_once "../controllers/ControllerConfig.php";
 require_once "../controllers/ControllerDashboard.php";
 require_once "../controllers/ControllerDepense.php";
+require_once "../controllers/ControllerMailer.php";
 
 // setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 // $sql = self::getConnexion()->query(" SET lc_time_names = 'fr_FR' ;");
@@ -63,6 +67,7 @@ ControllerFournisseur::liste_fournisseur();
 ControllerFournisseur::getfournisseur();
 ControllerFournisseur::suppresion_fournisseur();
 ControllerFournisseur::get_fournisseur_info();
+ControllerFournisseur::getFournisseurForAchat();
 
 
 // ENTREPOT
