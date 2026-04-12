@@ -14,4 +14,6 @@ const GESTIONNAIRE = 'gestionnaire';
 const COMPTABLE = 'comptable';
 const STATUT_COMMANDE = ['en attente', 'validé', 'encaissé', 'retourné', 'annulé'];
 const PAYMENT_MODE = ['espèce', 'mobile money', 'credit', 'virement', 'chèque', 'autre'];
+const ETATS = [0,1];
 const STATUT_DEPENSE = ['en attente', 'approuvé', 'annulé'];
+

@@ -248,9 +248,8 @@ class ControllerEmploye extends Connexion
     public static function ajouter_employe()
     {
         if (isset($_POST['btn_ajouter_employe'])) {
-
             if (isset($_POST['id_employe'])) {
-                // mod()
+                // mod();
                 self::modifier_employe();
             } else {
                 // Ajouter
@@ -268,7 +267,12 @@ class ControllerEmploye extends Connexion
         } elseif (!Soutra::verif_type($telephone_employe) || mb_strlen($telephone_employe) != 10) {
             $msg = '2&Le numéro de téléphone invalide !';
             // $msg = mb_strlen($telephone_employe);
-        } elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe)) {
+        } 
+        elseif (!filter_var($email_employe, FILTER_VALIDATE_EMAIL)) {
+            $msg = '2&L\'email invalide !';
+        } 
+        
+        elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe)) {
             $msg = '2&Le téléphone ' . $telephone_employe . ' existe déjà !';
         } else {
             $date = "NOW()";
@@ -277,6 +281,7 @@ class ControllerEmploye extends Connexion
                 'nom_employe' => strtoupper($nom_employe),
                 'prenom_employe' => ucfirst($prenom_employe),
                 'telephone_employe' => $telephone_employe,
+                'email_employe' => $email_employe,
                 'role_id' => $role_employe,
                 'etat_employe' => 1,
                 'code_employe' => $code,
@@ -285,7 +290,17 @@ class ControllerEmploye extends Connexion
             );
             //var_dump($data);die();
             if (Soutra::insert("employe", $data)) {
-                $msg = "1&Employé enregistré avec succès";
+                  $mail = new ControllerMailer();
+                  $nom = $nom_employe . ' ' . $prenom_employe;
+                  $email = $email_employe;
+                  $tel = $telephone_employe;
+                  $pass = '123@123';
+                  $sendMail = $mail->sendUserCredentials($email, $nom, $tel, $pass);
+                  if($sendMail){
+                    $msg = "1&Employé enregistré avec succès";
+                  }else{
+                    $msg = '2&Une erreur est survenue ! ';
+                  }
             } else {
                 $msg = '2&Une erreur est survenue ! ';
             }
@@ -497,5 +512,7 @@ class ControllerEmploye extends Connexion
     // }
 
 }
+
+//fin de la class
 
 //fin de la class
