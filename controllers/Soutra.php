@@ -449,6 +449,30 @@ class Soutra extends Connexion
         }
         return $tab;
     }
+    
+public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
+    {
+        $nb = 0;
+        $sql = "SELECT COUNT(id_entrepot_article) AS nb FROM entrepot_article WHERE etat_article = :etat AND entrepot_id = :entrepot_id";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat, 'entrepot_id' => $entrepot_id]);
+        if($query->rowCount() > 0) {
+            $data = $query->fetch();
+            $nb = $data['nb'];
+        }
+        $query->closeCursor();
+        return $nb;
+    }
+
+      public static function getStockDisponibleEntrepot($entrepot_id, $etat=1)
+    {
+        $sql = "SELECT SUM(qte) AS nb FROM entrepot_article WHERE entrepot_id = ? AND etat_article = ?";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([$entrepot_id, $etat]);
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data['nb'];
+    }
 
     public static function getCompterVenteToDay($date, $etat)
     {
@@ -469,6 +493,7 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data['nb'];
     }
+
     public static function getCompterAchatToDay($etat)
     {
         $sql = "SELECT SUM(qte) AS nb FROM entree en INNER JOIN achat ac ON ac.code_achat = en.achat_id WHERE DATE(ac.created_at) = CURDATE() AND ac.etat_achat =?";
@@ -2869,6 +2894,21 @@ class Soutra extends Connexion
             $data = $query->fetch(PDO::FETCH_ASSOC);
         }
 
+        $query->closeCursor();
+
+        return $data;
+    }
+
+     public static function getSingleEntrepotByCode($id_entrepot)
+    {
+        $data = [];
+        $sql = 'SELECT * FROM entrepot WHERE ID_entrepot = :id_entrepot';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['id_entrepot' => $id_entrepot]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
         $query->closeCursor();
 
         return $data;
