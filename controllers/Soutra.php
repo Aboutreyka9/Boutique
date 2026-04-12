@@ -241,9 +241,9 @@ class Soutra extends Connexion
 
     public static function exist2($table, $lib1, $lib2, $v1, $v2)
     {
-        $query = "SELECT * FROM $table WHERE $lib1 = ? AND $lib2 = ? ";
+        $query = "SELECT * FROM $table WHERE $lib1 = :val1 AND $lib2 = :val2 ";
         $statement = self::getConnexion()->prepare($query);
-        $statement->execute(array($v1, $v2));
+        $statement->execute(array('val1' => $v1, 'val2' => $v2));
         if ($statement->rowCount() > 0)
             return true;
         else
@@ -1043,7 +1043,7 @@ class Soutra extends Connexion
     public static function getAllArticle($etat = 1)
     {
         $data = [];
-        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, en.libelle_entrepot entrepot FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id JOIN entrepot en ON en.ID_entrepot = ar.entrepot_id   ORDER BY ID_article DESC";
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id LEFT JOIN mark ma ON ma.ID_mark = ar.mark_id LEFT JOIN unite un ON un.ID_unite = ar.unite_id  ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([]);
 
@@ -2188,6 +2188,19 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data;
     }
+
+    public static function getAllByElement($table, $element, $val)
+    {
+        $data = [];
+        $sql = "SELECT * FROM $table WHERE $element = :val";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['val' => $val]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
 // get all table by 2 elements 
     public static function getAllTableByClauses($table, $clause1, $val1, $clause2, $val2)
     {
@@ -2316,6 +2329,7 @@ class Soutra extends Connexion
 
         return $data;
     }
+
 
     public static function getSingleVenteByCode($codeVente)
     {

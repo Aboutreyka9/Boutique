@@ -1,4 +1,5 @@
 <?php
+// session_destroy();
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
      //var_dump(md5(123));

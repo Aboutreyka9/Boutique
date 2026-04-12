@@ -107,6 +107,8 @@ ControllerArticle::ajouter_article();
 ControllerArticle::liste_article();
 ControllerArticle::getArticle();
 ControllerArticle::suppresion_article();
+ControllerArticle::modalAttributionArticle();
+ControllerArticle::createAntrepotArticle();
 
 // ACHAT
 ControllerAchat::ajouter_panier_achat();

@@ -1,4 +1,5 @@
-<?php if (session_status() == PHP_SESSION_NONE)
+<?php 
+if (session_status() == PHP_SESSION_NONE)
   session_start();
 
 error_reporting(E_ALL);
@@ -15,10 +16,10 @@ if (!isset($_SESSION) || empty($_SESSION)) {
 if ($_SERVER['REQUEST_URI'] == "/home.php") {
   header("LOCATION:home.php/");
 }
-if(isset($_SESSION) && !empty($_SESSION)) {
-  $_SESSION['entrepot'] = 6;
-}
-
+// if(isset($_SESSION) && !empty($_SESSION)) {
+//   $_SESSION['entrepot'] = 6;
+// }
+// var_dump($_SESSION);return;
 
 ?>
 <?php include_once './config/const.php' ?>

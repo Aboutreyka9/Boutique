@@ -1014,7 +1014,6 @@ $(function () {
             method: "POST",
             data: article,
             success: function (data) {
-
                 var verif = data.split("&");
                 if (verif[0] == 1) {
                     notify(verif[1]);
@@ -1034,6 +1033,9 @@ $(function () {
             }
         });
     }
+
+
+
 
     function liste_article() {
         $.ajax({
@@ -1071,6 +1073,65 @@ $(function () {
                     // 
                     $(".menu-modal").html(data.data);
                     $("#article-modal").modal('show');
+                }
+            });
+        });
+    }
+
+    form_attribuer_entrepot_article();
+
+    function form_attribuer_entrepot_article() {
+        $('body').delegate('#form_add_attribuer_entrepot_article', 'submit', function (e) {
+            e.preventDefault();
+
+            var article = $(this).serialize();
+               $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: article,
+            dataType:"JSON",
+            success: function (data) {
+                console.log(data);
+                
+                // return;
+                if (data.code == 200) {
+                    notify(data.message);
+                    $('#attribuer-modal').modal('hide');
+
+                } else {
+                    // 
+                    notify(data.message, "", "alert", "warning");
+                }
+            }
+        });
+
+        });
+    }
+
+
+    btn_attribuer_article();
+
+    function btn_attribuer_article() {
+        $('body').delegate('.btn_attribuer_article', 'click', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let action = $(this).data('action');
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_action: id,
+                    frm_attribution_action: action
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    // return
+
+                    // 
+                    $(".menu-modal-attribuer").html(data.data);
+                    $("#attribuer-modal").modal('show');
                 }
             });
         });
