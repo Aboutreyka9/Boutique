@@ -166,6 +166,9 @@ switch (@$_GET['pg']) {
 	case '/':
 		include 'views/dashbord.php';
 		break;
+	case 'transfert':
+		include 'views/transfert.php';
+		break;
 
 
 	default:
