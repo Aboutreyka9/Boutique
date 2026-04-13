@@ -1,19 +1,33 @@
 <?php 
 // session_destroy();
 
-if (strtolower($_SESSION['role']) == ADMIN):
+  if (isset($_GET['id']) && !empty($_GET['id'])) {
+  $code = $_GET['id'] ?? '';
+  // TODO: Get command data from database
+  $entrepot = Soutra::getSingleEntrepotByCode($code);
+  // var_dump($entrepot);
+  // $montant_versement_total = Soutra::getSumMontantVersementByVente(1, $code);
+    // $versements = Soutra::getAllTableByClauses('versement', 'transaction_code', $code, 'etat_versement', 1);
+}else{
+  // error 404
+  http_response_code(404);
+  exit();
+}
 
-  $today = date("Y-m-d");
+
+// if (strtolower($_SESSION['role']) == ADMIN):
+
+//   $today = date("Y-m-d");
 
   // Dates par défaut
-  $start = (new DateTime('first day of this month'))->format('Y-m-d');
-  $end = (new DateTime('today'))->format('Y-m-d');
+  // $start = (new DateTime('first day of this month'))->format('Y-m-d');
+  // $end = (new DateTime('today'))->format('Y-m-d');
 
-  $dateD = (new DateTime('first day of this month'))->format('d-m-Y');
-  $dateF = (new DateTime('today'))->format('d-m-Y');
-  $entrepot = $_SESSION['entrepot'] ?? null;
-  $reapprovisionnements = Soutra::getTotalReapprovisionnementDashboard($start, $end, $entrepot);
-  $ventes = Soutra::getTotalVenteDashboard($start, $end, $entrepot);
+  // $dateD = (new DateTime('first day of this month'))->format('d-m-Y');
+  // $dateF = (new DateTime('today'))->format('d-m-Y');
+  // // $entrepot = $_SESSION['entrepot'] ?? null;
+  // $reapprovisionnements = Soutra::getTotalReapprovisionnementDashboard($start, $end, $entrepot);
+  // $ventes = Soutra::getTotalVenteDashboard($start, $end, $entrepot);
 
   // var_dump($ventes);
 ?>
@@ -35,16 +49,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
     <div class="col-md-12 mb-4 mt-2">
       <div class="mb-3" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
         <div class="title">
-          <h1 class="page-title">Statistiques</h1>
-        </div>
-        <div class="activity">
-          <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF; ?> </b>
-        </div>
-        <div class="input-group" style="max-width: 40%;">
-          <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-          <input type="text" id="filterDashboardAdmin" class="form-control" placeholder="Sélectionner la période">
-          <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
-
+          <h1 class="page-title"> <?= $entrepot['libelle_entrepot'] ?>  <?= checkEtatData($entrepot['etat_entrepot']) ?> </h1>
         </div>
       </div>
     </div>
@@ -270,8 +275,16 @@ if (strtolower($_SESSION['role']) == ADMIN):
     <div class="col-md-4 col-sm-4 col-xl-3">
       <div class="card stat-card">
         <div class="icon bg-info"><i class="bi bi-cart-dash-fill"></i></div>
-        <h6>PRODUITS </h6>
-        <h5><?= Soutra::getCompter('article', 'ID_article', 'etat_article', 1); ?> </h5>
+        <h6>NOMBRE DE PRODUITS</h6>
+        <h5><?= Soutra::getCompterArticleEntrepot($code); ?> </h5>
+      </div>
+    </div>
+    
+     <div class="col-md-4 col-sm-4 col-xl-3">
+      <div class="card stat-card">
+        <div class="icon bg-info"><i class="bi bi-cart-dash-fill"></i></div>
+        <h6>STOCK DISPONIBLE</h6>
+        <h5><?= Soutra::getCompterArticleEntrepot($code); ?> </h5>
       </div>
     </div>
 
@@ -279,7 +292,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-purple"><i class="bi bi-person-plus-fill"></i></div>
         <h6>CLIENTS</h6>
-        <h5> <span> <?= Soutra::getCompter('client', 'ID_client', 'etat_client', 1); ?></span></h5>
+        <h5><?= Soutra::getCompter('client', 'ID_client', 'etat_client', 1); ?></span></h5>
       </div>
     </div>
 
@@ -287,7 +300,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-danger"><i class="bi bi-person-plus-fill"></i></div>
         <h6>FOURNISSEURS</h6>
-        <h5> <span> <?= Soutra::getCompter('fournisseur', 'ID_fournisseur', 'etat_fournisseur', 1); ?></span></h5>
+        <h5><?= Soutra::getCompter('fournisseur', 'ID_fournisseur', 'etat_fournisseur', 1); ?></span></h5>
       </div>
     </div>
 
@@ -303,23 +316,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
 
 
 
-  <script>
-    // Script réutilisable pour tous les boutons toggle
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        setTimeout(() => {
-          if (this.getAttribute('aria-expanded') === 'true') {
-            this.textContent = '−';
-          } else {
-            this.textContent = '+';
-          }
-        }, 200); // petit délai pour que bootstrap mette à jour aria-expanded
-      });
-    });
-  </script>
 
-<?php else: ?>
-  <!-- AUTRE EMPLOYE -->
-  <?php include 'accueil.php'; ?>
 
-<?php endif; ?>
+
+<?php // endif; ?>

@@ -35,9 +35,10 @@
              <th style="width: 2%;">#</th>
              <th style="width: 20%;">Produit</th>
              <th style="width: 15%;">Catégorie</th>
-             <th style="width: 8%;">Mark</th>
-             <th style="width: 8%;">Unité</th>
-             <th style="width: 8%;">Actions</th>
+             <th style="width: 15%;">Entrepot</th>
+             <th style="width: 8%;">Prix d'achat</th>
+             <th style="width: 8%;">Prix de vente</th>
+             <th style="width: 5%;">Actions</th>
            </tr>
          </thead><!-- /thead -->
          <!-- tbody -->
@@ -55,16 +56,15 @@
                <td>' . $i . '</td>
                <td>' . $row['libelle_article'] . '</td>
                <td>' . $row['famille'] . '</td>
-               <td>' . $row['mark'] . '</td>
-               <td>' . $row['unite'] . '</td>
+               <td>' . $row['entrepot'] . '</td>
+               <td>' . number_format($row['prix_achat'] ?? 0, 0, ",", " ") . '</td>
+               <td>' . number_format($row['prix_vente'] ?? 0, 0, ",", " ") . '</td>
                ';
 
 
                 $output .= '<td style="display: flex; flex-direction: row; align-items: center; gap: 10px;"> 
             <button data-id="' . $row['ID_article'] . '" title="Modifier article" class="btn btn-primary btn-sm btn_update_article">
             <i class="fa fa-edit"></i> </button>
-            <button data-id="' . $row['ID_article'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article"  data-action="article">
-            <i class="fa fa-link"></i></button>
                 <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_article">
                 <i class="fa fa-trash"></i></button>
           </td>
@@ -100,22 +100,42 @@
          <div class="modal-body">
            <!-- .form-row -->
            <div class="form-row menu-modal">
-             <div class="col-md-6">
+             <div class="col-md-4">
                <div class="form-group">
                  <label for="libelle_article">Nom produit <span class="text-danger">*</span> </label>
                  <input type="text" name="libelle_article" id="libelle_article" class="form-control">
                </div>
              </div>
-             <div class="col-md-6">
+             <div class="col-md-4">
                <div class="form-group">
                  <label for="slug">Slug</label>
                  <input type="text" name="slug" id="slug" class="form-control" placeholder="Ex:P-005">
                </div>
              </div>
-             
              <div class="col-md-4">
                <div class="form-group">
-                 <label for="famille_id">Catégorie <span class="text-danger">*</span> </label>
+                 <label for="entrepot_id">Entrepot <span class="text-danger">*</span> </label>
+                 <select name="entrepot_id" id="entrepot_id" class="form-control entrepot_search">
+                   <option value="">Sélectionner un entrepot</option>
+                   <?php
+                    $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot', 1);
+                    $output = "";
+                    if (!empty($entrepot)) {
+                      foreach ($entrepot as $row) {
+                        $output .= '
+                          <option value="' . $row['ID_entrepot'] . '">' . $row['libelle_entrepot'] . '</option>
+                          ';
+                      }
+                    }
+                    echo $output;
+                    ?>
+
+                 </select>
+               </div>
+             </div>
+             <div class="col-md-4">
+               <div class="form-group">
+                 <label for="famille_id">Famille <span class="text-danger">*</span> </label>
                  <select name="famille_id" id="famille_id" class="form-control">
                    <?php
                     $famille = Soutra::getAllTable('famille', 'etat_famille', 1);
@@ -135,7 +155,7 @@
              </div>
              <div class="col-md-4">
                <div class="form-group">
-                 <label for="mark_id">Marque </label>
+                 <label for="mark_id">Mark <span class="text-danger">*</span> </label>
                  <select name="mark_id" id="mark_id" class="form-control">
                    <?php
                     $mark = Soutra::getAllTable('mark', 'etat_mark', 1);
@@ -158,7 +178,7 @@
               ?>
              <div class="col-md-4">
                <div class="form-group">
-                 <label for="unite">Uinité </label>
+                 <label for="unite">Uinité <span class="text-danger">*</span> </label>
                  <select name="unite" id="unite" class="form-control">
                    <?php
                     $unite = Soutra::getAllTable('unite', 'etat_unite', 1);
@@ -179,7 +199,31 @@
              <?php
               // endif;
               ?>
-             
+             <div class="col-md-3">
+               <div class="form-group">
+                 <label for="prix_achat">Prix achat <span class="text-danger">*</span> </label>
+                 <input type="number" name="prix_achat" min="0" id="prix_achat" class="form-control">
+               </div>
+             </div>
+             <div class="col-md-3">
+               <div class="form-group">
+                 <label for="prix_vente">Prix vente <span class="text-danger">*</span> </label>
+                 <input type="number" name="prix_vente" min="0" id="prix_vente" class="form-control">
+               </div>
+             </div>
+
+             <div class="col-md-3">
+               <div class="form-group">
+                 <label for="stock_alert">Stock Alert <span class="text-danger">*</span></label>
+                 <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
+               </div>
+             </div>
+             <div class="col-md-3">
+               <div class="form-group">
+                 <label for="garantie_article">Garantie (Mois) <span class="text-danger">*</span> </label>
+                 <input type="number" name="garantie_article" min="0" id="garantie_article" class="form-control">
+               </div>
+             </div>
            </div><!-- /.form-row -->
          </div><!-- /.modal-body -->
          <!-- .modal-footer -->
@@ -192,10 +236,3 @@
      </div><!-- /.modal-dialog -->
    </div><!-- /.m -->
  </form><!-- /.modal -->
-
-
- <!-- .modal attribuer-->
-
- <?= modalAttribution() ?>
-
- <!-- /.modal -->

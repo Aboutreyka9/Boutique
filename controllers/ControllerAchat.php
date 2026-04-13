@@ -247,8 +247,10 @@ class ControllerAchat extends Connexion
   }
 
   public static function annulation_achat()
+  
+  public static function retourner_achat()
   {
-    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_achat") {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
       extract($_POST);
       $msg = [];
 
@@ -258,16 +260,16 @@ class ControllerAchat extends Connexion
       );
       if (Soutra::update("achat", $data)) {
         $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
+        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
       echo json_encode($msg);
     }
   }
-
-  public static function retourner_achat()
+  public static function annulation_achat()
   {
-    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_achat") {
       extract($_POST);
       $msg = [];
 
@@ -277,6 +279,7 @@ class ControllerAchat extends Connexion
       );
       if (Soutra::update("achat", $data)) {
         $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
+        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -327,6 +330,15 @@ class ControllerAchat extends Connexion
             'qte' => $qte[$i]
           );
 
+          $dataMouvement = [
+            'article_id' => $id[$i],
+            'type_mouvement' => 'ENTREE',
+            'quantite' => $qte[$i],
+            'employe_id' => $data['employe_id'],
+            'prix_achat' => $pu[$i],
+            'entrepot_id' => $_SESSION['entrepot'],
+            'date_mouvement' => $data['created_at']
+          ];
           Soutra::inserted("entree", $achat);
         }
 
@@ -1095,6 +1107,81 @@ class ControllerAchat extends Connexion
 
     return $output;
   }
+
+      public static function ajouter_versement_achat()
+    {
+        if (isset($_POST['btn_encaisser_achat'])) {
+
+            extract($_POST);
+            $msg = [];
+            // var_dump($_POST);return;
+
+            if (isset($montant_versement) && !empty($montant_versement)) {
+              if(isset($code_achat) && !empty($code_achat)) {
+                $achat = Soutra::getByItem("achat", "code_achat", $code_achat);
+                if(!empty($achat)){
+                  $montant_total = Soutra::getSumMontantAchatByAchat(1, $code_achat);
+                  $montant_versement_total = Soutra::getSumMontantVersementByAchat(1, $code_achat);
+                  if($montant_total >= ($montant_versement + $montant_versement_total)){
+                
+                if (Soutra::verif_type($montant_versement)) {
+                $date = date('Y-m-d');
+                $code = strtoupper(self::checkCode());
+                $data_versement = array(
+                    'montant_versement' => $montant_versement,
+                    'fournisseur_id' => $achat["fournisseur_id"],
+                    'employe_id' => $_SESSION['id_employe'],
+                    'etat_versement' => 1,
+                    'code_versement' => $code,
+                    'created_at' => $date,
+                    'transaction_code' => $code_achat,
+                    'type_versement' => 'achat'
+                );
+
+                $connect = Soutra::getConnexion();
+                $connect->query("SET AUTOCOMMIT = 0");
+                $connect->beginTransaction();
+                try {
+
+                    if (Soutra::insert("versement", $data_versement)) {
+                      if(Soutra::getSumMontantachatByachat(1, $code_achat) == Soutra::getSumMontantVersementByachat(1, $code_achat)){
+                        $data_updated = [
+                          'statut_achat' => STATUT_COMMANDE[2],
+                          'code_achat' => $code_achat
+                        ];
+                        Soutra::update('achat', $data_updated);
+                      }
+                        $connect->commit();
+                        $msg = ['status' => true, 'message' => 'Versement enregistré avec succès.'];
+                    } else {
+
+                        $connect->rollBack();
+                    }
+                    // $connect->commit();
+                } catch (Exception $ex) {
+                    //throw $th;
+                    $connect->rollBack();
+                    $msg = ['status' => false, 'message' => 'Une erreur est survenue !' . $ex->getMessage()];
+                }
+                } else {
+                $msg = ['status' => false, 'message' => 'Le montant invalide !'];
+            }
+                }else{
+                  $reste = Soutra::getSumMontantachatByachat(1, $code_achat) - Soutra::getSumMontantVersementByachat(1, $code_achat);
+                  $msg = ['status' => false, 'message' => "Il reste " . $reste ." pour finaliser le paiement"];
+                }
+                } else {
+              $msg = ['status'=> false, 'message' => 'achat introuvable'];
+            }
+            } else {
+                $msg = ['status' => false, 'message' => 'Le code de achat invalide !'];
+            }
+              } else{
+              $msg =  ['status' => false, 'message' => 'Veuillez remplir tous les champs !'];
+              }
+            echo json_encode($msg);
+        }
+    }
 }
 
 //fin de la class
