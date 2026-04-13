@@ -299,46 +299,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
            </tr>
          </thead><!-- /thead -->
          <!-- tbody -->
-         <tbody class="achat-table">
-           <?php
-            $detail = Soutra::getDetailAchat($_GET['id']);
 
-            $i = 0;
-            $output = "";
-            foreach ($detail as $row) {
-              $i++;
-
-              $output .= '
-        <tr class="row' . $row['ID_entree'] . '">
-           <td class="col id d_none">' . $row['ID_entree'] . '</td>
-           <td>' . $i . '</td>
-           <td>' . $row['article'] . '</td>
-           <td>' . $row['mark'] . '</td>
-          <td>' . $row['famille'] . '</td>
-          <td class="text-right pu">' . number_format($row['prix_achat'], 0, ",", " ") . '</td>
-          <td class="text-right qte">' . $row['qte'] . '</td>
-          <td class="text-right total">' . number_format($row['prix_achat'] * $row['qte'], 0, ",", " ") . '</td>
-           ';
-
-              $output .= '
-           <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-           <button data-id="' . $row['ID_entree'] . '" class="btn btn-primary btn-sm btn_update_achat">
-            <i class="fa fa-edit"></i> modiier </button>
-           <div class="d-inline">
-               <button data-id="' . $row['ID_entree'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_achat_detail">
-               <i class="fa fa-trash"></i> Supprimer</button>
-           </div>';
-
-              $output .= '   
-         </td>
-            </tr>
-            ';
-            }
-            echo $output;
-            ?>
-
-
-         </tbody><!-- /tbody -->
        </table><!-- /.table -->
      </div><!-- /.table-responsive -->
    </div>

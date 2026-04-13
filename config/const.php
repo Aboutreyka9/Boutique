@@ -16,4 +16,5 @@ const STATUT_COMMANDE = ['en attente', 'validé', 'encaissé', 'retourné', 'ann
 const PAYMENT_MODE = ['espèce', 'mobile money', 'credit', 'virement', 'chèque', 'autre'];
 const ETATS = [0,1];
 const STATUT_DEPENSE = ['en attente', 'approuvé', 'annulé'];
+const STATUT = ['0', '1', '2'];
 
