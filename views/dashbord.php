@@ -270,8 +270,8 @@ if (strtolower($_SESSION['role']) == ADMIN):
     <div class="col-md-4 col-sm-4 col-xl-3">
       <div class="card stat-card">
         <div class="icon bg-info"><i class="bi bi-cart-dash-fill"></i></div>
-        <h6>PRODUITS (<?= Soutra::getCompter('article', 'ID_article', 'etat_article', 1); ?></span>)</h6>
-        <h5>542 </h5>
+        <h6>PRODUITS </h6>
+        <h5><?= Soutra::getCompter('article', 'ID_article', 'etat_article', 1); ?> </h5>
       </div>
     </div>
 
@@ -279,7 +279,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-purple"><i class="bi bi-person-plus-fill"></i></div>
         <h6>CLIENTS</h6>
-        <h5><?= Soutra::getCompter('client', 'ID_client', 'etat_client', 1); ?></span></h5>
+        <h5> <span> <?= Soutra::getCompter('client', 'ID_client', 'etat_client', 1); ?></span></h5>
       </div>
     </div>
 
@@ -287,7 +287,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-danger"><i class="bi bi-person-plus-fill"></i></div>
         <h6>FOURNISSEURS</h6>
-        <h5><?= Soutra::getCompter('fournisseur', 'ID_fournisseur', 'etat_fournisseur', 1); ?></span></h5>
+        <h5> <span> <?= Soutra::getCompter('fournisseur', 'ID_fournisseur', 'etat_fournisseur', 1); ?></span></h5>
       </div>
     </div>
 

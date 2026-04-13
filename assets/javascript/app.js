@@ -298,9 +298,11 @@ $(function () {
             },
             dataType: 'JSON',
             success: function (data) {
-                localStorage.setItem(KEY, null);
-                // // ;
-                document.location.href = ROOT_SIMPLE;
+                if (data.code == 200) {
+                    localStorage.setItem(KEY, null);
+                    // // ;
+                    document.location.href = ROOT_SIMPLE;
+                }
             }
         });
     }
@@ -1659,9 +1661,9 @@ $(function () {
                         button: true,
 
                     }).then(() =>
-                        document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
+                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
 
-                        //    window.history.back()
+                        window.history.go(0)
                     );
 
                 } else {
@@ -2012,7 +2014,7 @@ $(function () {
                     var code = verif[1].split("#");
 
                     notify(code[1]);
-                    window.open(ROOT_SIMPLE + "views/print.php?id=" + code[0]);
+                    //window.open(ROOT_SIMPLE + "views/print.php?id=" + code[0]);
                     window.history.go(0);
 
                 } else {
@@ -2718,7 +2720,7 @@ $(function () {
                 var res = JSON.parse(data);
 
                 if (res.code == 400) {
-                    charts['canvas_fournisseur'].destroy();
+                    // charts['canvas_fournisseur'].destroy();
                     swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
@@ -2825,7 +2827,7 @@ $(function () {
                 var res = JSON.parse(data);
 
                 if (res.code == 400) {
-                    charts['canvas_client'].destroy();
+                    // charts['canvas_client'].destroy();
                     swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
@@ -2901,7 +2903,7 @@ $(function () {
                 },
                 // dataType: 'JSON',
                 success: function (data) {
-                    return
+                    // return
                     var vente = JSON.parse(data);
                     const total = vente.map(function (val) {
                         return val.total;
@@ -2975,7 +2977,7 @@ $(function () {
         }
     }
 
-
+// tu est proble
 
     function ajaxDashboard(select = '') {
         $.ajax({
@@ -3094,7 +3096,7 @@ $(function () {
             },
             // dataType: 'JSON',
             success: function (data) {
-                return
+                // return
                 var res = JSON.parse(data)
 
                 if (res.code == 400) {
@@ -3206,7 +3208,7 @@ $(function () {
                 var res = JSON.parse(data);
 
                 if (res.code == 400) {
-                    charts['canvas_employe'].destroy();
+                    // charts['canvas_employe'].destroy();
                     swal("Notification", "Aucune donnée disponible", "warning", );
                     return;
                 }
