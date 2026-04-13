@@ -1,6 +1,24 @@
+ <?php
+  if (!isset($_GET['id']) || empty($_GET['id'])) {
+    http_response_code(404);
+    // header('Location: index.php');
+    exit;
+  }
+  $code = $_GET['id'];
+  // recupper data achat
+  $approvision = Soutra::getElementSingle('achat', 'code_achat', $code);
+  $detail_achat = Soutra::getSingleDataBonCommandeFournisseur($code);
+
+  var_dump($detail_achat);
+  // exit;
+
+
+  ?>
+
+
  <!-- HEADER ACTIONS -->
  <div class="d-flex justify-content-between align-items-center mb-3">
-   <button class="btn btn-dark" onclick="retour()" > <i class="bi bi-arrow-left"></i> Retour </button>
+   <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
 
    <div class="d-flex gap-5">
      <button class="btn btn-success ml-2" data-toggle="tooltip" title="" data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
@@ -12,10 +30,12 @@
  <!-- TITLE -->
  <div class="card custom-card-detail mb-3 ">
    <div class="card-body">
-     <p class="text-muted mb-1">Administration / Approvisionnement / REF-2026-0005</p>
+     <p class="text-muted mb-1">Administration / Approvisionnement / <?= $approvision['code_achat'] ?>
+     </p>
      <h3 class="fw-bold"> <span> <i class="bi bi-info-circle"></i> Details</span>
-       <span class="ms-2" id="reference-produit">N° REF-2026-0005</span>
-       <?= checkStatusCommande("en attente") ?>
+       <span class="ms-2" id="reference-produit">N° <?= $approvision['code_achat'] ?>
+       </span>
+       <?= checkStatusCommande($approvision['statut_achat']) ?>
      </h3>
    </div>
  </div>
@@ -47,7 +67,8 @@
            </div>
            <h6><span class="text-muted">TOTAL TTC</span></h6>
          </div>
-         <h5>712 548.360 CFA</h5>
+         <h5> <?= $detail_achat['total'] ?>
+           FCFA</h5>
        </div>
      </div>
    </div>
@@ -59,9 +80,9 @@
            <div class="icon bg-success mr-2">
              <i class="bi bi-cart4"></i>
            </div>
-           <h6><span class="text-muted">Montant encaissé</span></h6>
+           <h6><span class="text-muted">Facture reglé</span></h6>
          </div>
-         <h5>712 548.360 CFA</h5>
+         <h5><?= $detail_achat['total'] ?> CFA</h5>
        </div>
      </div>
    </div>
@@ -73,9 +94,9 @@
            <div class="icon bg-success mr-2">
              <i class="bi bi-cart4"></i>
            </div>
-           <h6><span class="text-muted">Reliquat rendu</span></h6>
+           <h6><span class="text-muted">Reste</span></h6>
          </div>
-         <h5>712 548.360 CFA</h5>
+         <h5>0 CFA</h5>
        </div>
      </div>
    </div>
@@ -232,46 +253,7 @@
            </tr>
          </thead><!-- /thead -->
          <!-- tbody -->
-         <tbody class="achat-table">
-           <?php
-            $detail = Soutra::getDetailAchat($_GET['id']);
 
-            $i = 0;
-            $output = "";
-            foreach ($detail as $row) {
-              $i++;
-
-              $output .= '
-        <tr class="row' . $row['ID_entree'] . '">
-           <td class="col id d_none">' . $row['ID_entree'] . '</td>
-           <td>' . $i . '</td>
-           <td>' . $row['article'] . '</td>
-           <td>' . $row['mark'] . '</td>
-          <td>' . $row['famille'] . '</td>
-          <td class="text-right pu">' . number_format($row['prix_achat'], 0, ",", " ") . '</td>
-          <td class="text-right qte">' . $row['qte'] . '</td>
-          <td class="text-right total">' . number_format($row['prix_achat'] * $row['qte'], 0, ",", " ") . '</td>
-           ';
-
-              $output .= '
-           <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-           <button data-id="' . $row['ID_entree'] . '" class="btn btn-primary btn-sm btn_update_achat">
-            <i class="fa fa-edit"></i> modiier </button>
-           <div class="d-inline">
-               <button data-id="' . $row['ID_entree'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_achat_detail">
-               <i class="fa fa-trash"></i> Supprimer</button>
-           </div>';
-
-              $output .= '   
-         </td>
-            </tr>
-            ';
-            }
-            echo $output;
-            ?>
-
-
-         </tbody><!-- /tbody -->
        </table><!-- /.table -->
      </div><!-- /.table-responsive -->
    </div>

@@ -15,3 +15,4 @@ const COMPTABLE = 'comptable';
 const STATUT_COMMANDE = ['en attente', 'validé', 'encaissé', 'retourné', 'annulé'];
 const PAYMENT_MODE = ['espèce', 'mobile money', 'credit', 'virement', 'chèque', 'autre'];
 const STATUT_DEPENSE = ['en attente', 'approuvé', 'annulé'];
+const STATUT = ['0', '1', '2'];
