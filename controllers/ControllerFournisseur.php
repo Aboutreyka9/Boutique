@@ -354,6 +354,20 @@ class ControllerFournisseur extends Connexion
             }
         }
     }
+
+    public static function getFournisseurForAchat()
+    {
+        if (isset($_POST["btn_search_fournisseur_achat"])) {
+            $msg["code"] = 400;
+            if (!empty($_POST['id_fournisseur'])) {
+
+                $fournisseur = Soutra::getAllByItemsa('fournisseur', 'ID_fournisseur', $_POST['id_fournisseur']);
+                $msg["code"] = 200;
+                $msg["fournisseur"] = $fournisseur;
+            }
+            echo json_encode($msg);
+        }
+    }
 }
 
 //fin de la class

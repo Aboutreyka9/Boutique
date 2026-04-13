@@ -1,13 +1,24 @@
 <?php
+// session_destroy();
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
   //var_dump(md5(123));
 }
+<<<<<<< HEAD
 include './config/const.php';
 
 if (isset($_SESSION) && !empty($_SESSION)) {
   header('location:' . URL . 'dashbord');
 }
+=======
+
+    include './config/const.php';
+
+    if (isset($_SESSION) && !empty($_SESSION)) {
+        header('location:'.URL.'dashbord');
+    }
+
+>>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
 // var_dump(md5(12345));
 ?>
 <!DOCTYPE html>

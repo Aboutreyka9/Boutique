@@ -1,27 +1,31 @@
 <?php
 session_start();
 date_default_timezone_set('Africa/Abidjan');
+require_once __DIR__ . '/../vendor/autoload.php';
 
-require "../config/const.php";
-require "../config/helpers.php";
-require "../models/Connexion.php";
-require "../models/Employe.php";
-require '../controllers/Soutra.php';
-require "../controllers/ControllerEntrepot.php";
-require "../controllers/ControllerEmploye.php";
-require "../controllers/ControllerClient.php";
-require "../controllers/ControllerFournisseur.php";
-require "../controllers/ControllerCategorie.php";
-require "../controllers/ControllerFamille.php";
-require "../controllers/ControllerMark.php";
-require "../controllers/ControllerUnite.php";
-require "../controllers/ControllerArticle.php";
-require "../controllers/ControllerAchat.php";
-require "../controllers/ControllerVente.php";
-require "../controllers/ControllerCommande.php";
-require "../controllers/ControllerConfig.php";
-require "../controllers/ControllerDashboard.php";
-require "../controllers/ControllerDepense.php";
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+require_once "../config/const.php";
+require_once "../config/helpers.php";
+require_once "../models/Connexion.php";
+require_once "../models/Employe.php";
+require_once '../controllers/Soutra.php';
+require_once "../controllers/ControllerEntrepot.php";
+require_once "../controllers/ControllerEmploye.php";
+require_once "../controllers/ControllerClient.php";
+require_once "../controllers/ControllerFournisseur.php";
+require_once "../controllers/ControllerCategorie.php";
+require_once "../controllers/ControllerFamille.php";
+require_once "../controllers/ControllerMark.php";
+require_once "../controllers/ControllerUnite.php";
+require_once "../controllers/ControllerArticle.php";
+require_once "../controllers/ControllerAchat.php";
+require_once "../controllers/ControllerVente.php";
+require_once "../controllers/ControllerCommande.php";
+require_once "../controllers/ControllerConfig.php";
+require_once "../controllers/ControllerDashboard.php";
+require_once "../controllers/ControllerDepense.php";
+require_once "../controllers/ControllerMailer.php";
 
 // setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 // $sql = self::getConnexion()->query(" SET lc_time_names = 'fr_FR' ;");
@@ -63,6 +67,7 @@ ControllerFournisseur::liste_fournisseur();
 ControllerFournisseur::getfournisseur();
 ControllerFournisseur::suppresion_fournisseur();
 ControllerFournisseur::get_fournisseur_info();
+ControllerFournisseur::getFournisseurForAchat();
 
 
 // ENTREPOT
@@ -102,6 +107,8 @@ ControllerArticle::ajouter_article();
 ControllerArticle::liste_article();
 ControllerArticle::getArticle();
 ControllerArticle::suppresion_article();
+ControllerArticle::modalAttributionArticle();
+ControllerArticle::createAntrepotArticle();
 
 // ACHAT
 ControllerAchat::ajouter_panier_achat();
@@ -113,6 +120,7 @@ ControllerAchat::suppresion_achat();
 ControllerAchat::btn_remove_achat_detail();
 ControllerAchat::getCanvasfournisseur();
 ControllerAchat::getDataDateRangeFilterAchat();
+ControllerAchat::ajouter_versement_achat();
 
 ControllerAchat::validation_achat();
 ControllerAchat::encaissement_achat();
@@ -143,6 +151,7 @@ ControllerVente::verifDetail();
 ControllerVente::suppresion_vente();
 ControllerVente::btn_remove_vente_detail();
 ControllerVente::getDataDateRangeFilterInventaire();
+ControllerVente::ajouter_versement_vente();
 
 
 ControllerVente::validation_vente();
