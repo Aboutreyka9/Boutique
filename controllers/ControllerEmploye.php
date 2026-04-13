@@ -21,6 +21,7 @@ class ControllerEmploye extends Connexion
                     $_SESSION["id_employe"] = $emp["ID_employe"];
                     $_SESSION["role"] = $emp["role"];
                     $_SESSION["nom"] = $emp["nom_employe"];
+                    $_SESSION["id_entrepot"] = $emp["ID_entrepot"] ?? null;
                     Soutra::update("employe", ['login' => date("Y-m-d h:i:s"), "ID_employe" => $emp['ID_employe']]);
                     $msg['code'] = 200;
                     $msg['message'] = "Connexion réussie";
