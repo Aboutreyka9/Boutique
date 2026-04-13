@@ -124,16 +124,25 @@
         </button>
     ';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
             endif;
 
             if ($row['statut_achat'] == STATUT_COMMANDE[1]):
               $output .= '
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 endif;
 // encaisser
     if ($row['statut_achat'] == STATUT_COMMANDE[1]):
     $output .= '
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
         <button type="button" 
         id="btn_encaisser_achat"
             data-toggle="modal" data-target="#encaisser-modal"
@@ -228,10 +237,16 @@ endif;
                         <option value="' . $row['ID_mark'] . '">' . $row['libelle_mark'] . '</option>
                         ';
 <<<<<<< HEAD
+<<<<<<< HEAD
                     }
                     echo $output;
                     ?>
 =======
+=======
+                    }
+                    echo $output;
+                    ?>
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
                       }
                       echo $output;
                       ?>
@@ -268,7 +283,10 @@ endif;
               <!-- .modal-footer -->
               <div class="modal-footer">
               <input type="hidden" name="btn_ajouter_achat" class="form-control">
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 
                  </select>
                </div>
@@ -311,6 +329,9 @@ endif;
  </form><!-- /.modal -->
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
  <!-- Modal fournisseur -->
  <div class="modal fade" id="fournisseurModal" tabindex="-1" aria-labelledby="fournisseurModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-lg">
@@ -326,7 +347,10 @@ endif;
    </div>
  </div>
  <!-- End Modal fournisseur -->
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
             
   <!-- .modal -->
   
@@ -363,4 +387,7 @@ endif;
             </form><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.m -->
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a

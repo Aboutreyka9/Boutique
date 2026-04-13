@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
  <?php
   if (!isset($_GET['id']) || empty($_GET['id'])) {
     http_response_code(404);
@@ -21,6 +22,8 @@
  <div class="d-flex justify-content-between align-items-center mb-3">
    <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
 =======
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 <?php 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
@@ -34,12 +37,16 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   exit();
 }
 ?>
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 
 <!-- HEADER ACTIONS -->
 <div class="d-flex justify-content-between align-items-center mb-3">
   <button class="btn btn-dark" onclick="retour()" > <i class="bi bi-arrow-left"></i> Retour </button>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
  <!-- TITLE -->
  <div class="card custom-card-detail mb-3 ">
@@ -54,6 +61,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
    </div>
  </div>
 =======
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
   <div class="d-flex gap-5">
     <button class="btn btn-success ml-2" title="" 
     id="btn_encaisser_achat"
@@ -63,7 +72,10 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <a href="<?= RACINE ?>views/print_achat.php?id=<?= $code ?>&statut=<?= $achat['statut_achat'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
   </div>
 </div>
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 
 <!-- TITLE -->
 <div class="card custom-card-detail mb-3">
@@ -94,6 +106,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   </div>
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
    <div class="col-md-3">
      <div class="card custom-card-detail">
@@ -138,6 +151,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
      </div>
    </div>
 =======
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
   <div class="col-md-3">
     <div class="card custom-card-detail">
       <div class="card-body">
@@ -179,7 +194,10 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
       </div>
     </div>
   </div>
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 
 </div>
 

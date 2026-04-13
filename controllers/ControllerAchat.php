@@ -246,12 +246,19 @@ class ControllerAchat extends Connexion
     }
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   public static function annulation_achat()
 =======
   
   public static function retourner_achat()
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+
+  public static function annulation_achat()
+  
+  public static function retourner_achat()
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
       extract($_POST);
@@ -263,10 +270,15 @@ class ControllerAchat extends Connexion
       );
       if (Soutra::update("achat", $data)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
 =======
         $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+        $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
+        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -285,10 +297,15 @@ class ControllerAchat extends Connexion
       );
       if (Soutra::update("achat", $data)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
 =======
         $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+        $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
+        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -339,8 +356,12 @@ class ControllerAchat extends Connexion
             'qte' => $qte[$i]
           );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
           $dataMouvement = [
             'article_id' => $id[$i],
             'type_mouvement' => 'ENTREE',
@@ -350,7 +371,10 @@ class ControllerAchat extends Connexion
             'entrepot_id' => $_SESSION['entrepot'],
             'date_mouvement' => $data['created_at']
           ];
+<<<<<<< HEAD
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
           Soutra::inserted("entree", $achat);
         }
 

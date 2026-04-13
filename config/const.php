@@ -17,7 +17,12 @@ const PAYMENT_MODE = ['espèce', 'mobile money', 'credit', 'virement', 'chèque'
 const ETATS = [0,1];
 const STATUT_DEPENSE = ['en attente', 'approuvé', 'annulé'];
 <<<<<<< HEAD
+<<<<<<< HEAD
 const STATUT = ['0', '1', '2'];
 =======
 
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+const STATUT = ['0', '1', '2'];
+
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a

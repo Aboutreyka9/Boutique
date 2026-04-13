@@ -2350,6 +2350,9 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         return $data;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
 
     public static function getSingleDataBonCommandeFournisseur($code_achat)
     {
@@ -2378,9 +2381,13 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
     }
 
 
+<<<<<<< HEAD
 =======
     
 >>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
+=======
+    
+>>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
     public static function getAllListeBonCommandeClient($dateStart, $dateEnd)
     {
         $data = [];
