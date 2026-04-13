@@ -241,9 +241,9 @@ class Soutra extends Connexion
 
     public static function exist2($table, $lib1, $lib2, $v1, $v2)
     {
-        $query = "SELECT * FROM $table WHERE $lib1 = ? AND $lib2 = ? ";
+        $query = "SELECT * FROM $table WHERE $lib1 = :val1 AND $lib2 = :val2 ";
         $statement = self::getConnexion()->prepare($query);
-        $statement->execute(array($v1, $v2));
+        $statement->execute(array('val1' => $v1, 'val2' => $v2));
         if ($statement->rowCount() > 0)
             return true;
         else
@@ -450,6 +450,30 @@ class Soutra extends Connexion
         return $tab;
     }
 
+    public static function getCompterArticleEntrepot($entrepot_id, $etat = 1)
+    {
+        $nb = 0;
+        $sql = "SELECT COUNT(id_entrepot_article) AS nb FROM entrepot_article WHERE etat_article = :etat AND entrepot_id = :entrepot_id";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat, 'entrepot_id' => $entrepot_id]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+            $nb = $data['nb'];
+        }
+        $query->closeCursor();
+        return $nb;
+    }
+
+    public static function getStockDisponibleEntrepot($entrepot_id, $etat = 1)
+    {
+        $sql = "SELECT SUM(qte) AS nb FROM entrepot_article WHERE entrepot_id = ? AND etat_article = ?";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([$entrepot_id, $etat]);
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data['nb'];
+    }
+
     public static function getCompterVenteToDay($date, $etat)
     {
         $sql = "SELECT SUM(qte) AS nb FROM sortie so INNER JOIN vente ve ON ve.code_vente = so.vente_id WHERE DATE(ve.created_at) = ? AND ve.etat_vente =?";
@@ -469,6 +493,7 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data['nb'];
     }
+
     public static function getCompterAchatToDay($etat)
     {
         $sql = "SELECT SUM(qte) AS nb FROM entree en INNER JOIN achat ac ON ac.code_achat = en.achat_id WHERE DATE(ac.created_at) = CURDATE() AND ac.etat_achat =?";
@@ -817,6 +842,45 @@ class Soutra extends Connexion
         return $data['nb'];
     }
 
+    public static function getSumMontantVenteByVente($etat, $id_vente)
+    {
+        $sql = "SELECT SUM(prix_vente * qte) AS nb FROM sortie so WHERE so.etat_sortie = :etat AND so.vente_id = :id_vente";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat, 'id_vente' => $id_vente]);
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data['nb'] ?? 0;
+    }
+    public static function getSumMontantAchatByAchat($etat, $id_achat)
+    {
+        $sql = "SELECT SUM(prix_achat * qte) AS nb FROM entree en WHERE en.etat_entree = :etat AND en.achat_id = :id_achat";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat, 'id_achat' => $id_achat]);
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data['nb'] ?? 0;
+    }
+
+    public static function getSumMontantVersementByVente($etat, $id_vente)
+    {
+        $sql = "SELECT SUM(montant_versement) AS nb FROM versement WHERE etat_versement = :etat AND transaction_code = :id_vente";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat, 'id_vente' => $id_vente]);
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data['nb'] ?? 0;
+    }
+
+    public static function getSumMontantVersementByAchat($etat, $id_achat)
+    {
+        $sql = "SELECT SUM(montant_versement) AS nb FROM versement WHERE etat_versement = :etat AND transaction_code = :id_achat";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat, 'id_achat' => $id_achat]);
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data['nb'] ?? 0;
+    }
+
     public static function getAllEmployer($id, $etat = 1)
     {
         $data = [];
@@ -1004,7 +1068,7 @@ class Soutra extends Connexion
     public static function getAllArticle($etat = 1)
     {
         $data = [];
-        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, en.libelle_entrepot entrepot FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id JOIN entrepot en ON en.ID_entrepot = ar.entrepot_id   ORDER BY ID_article DESC";
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id LEFT JOIN mark ma ON ma.ID_mark = ar.mark_id LEFT JOIN unite un ON un.ID_unite = ar.unite_id  ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([]);
 
@@ -2085,12 +2149,23 @@ class Soutra extends Connexion
         }
     }
 
+    public static function getByItem($table, $ref, $value)
+    {
+
+        $sql = "SELECT * FROM $table WHERE $ref = :value ";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(array('value' => $value));
+        $data = $query->fetch();
+        $query->closeCursor();
+        return $data;
+    }
+
     public static function getItem($table, $libelle, $ref, $value)
     {
 
-        $sql = "SELECT $libelle FROM $table WHERE $ref = ? ";
+        $sql = "SELECT $libelle FROM $table WHERE $ref = :value ";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(array($value));
+        $query->execute(array('value' => $value));
         $data = $query->fetch();
         $query->closeCursor();
         return $data[$libelle];
@@ -2111,9 +2186,9 @@ class Soutra extends Connexion
 
     public static function getAllBetweenByItem($table, $lib, $clause, $d1, $d2, $value)
     {
-        $sql = "SELECT * FROM $table WHERE $lib BETWEEN ? AND ? AND $clause = ?";
+        $sql = "SELECT * FROM $table WHERE $lib BETWEEN :d1 AND :d2 AND $clause = :value";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(array($d1, $d2, $value));
+        $query->execute(array('d1' => $d1, 'd2' => $d2, 'value' => $value));
         $tab = array();
         if ($query->rowCount() > 0) {
             while ($data = $query->fetch()) {
@@ -2156,6 +2231,32 @@ class Soutra extends Connexion
         $query->execute([$val]);
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getAllByElement($table, $element, $val)
+    {
+        $data = [];
+        $sql = "SELECT * FROM $table WHERE $element = :val";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['val' => $val]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+    // get all table by 2 elements 
+    public static function getAllTableByClauses($table, $clause1, $val1, $clause2, $val2)
+    {
+        $data = [];
+        $sql = "SELECT * FROM $table WHERE $clause1 =:val1 AND $clause2 =:val2";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['val1' => $val1, 'val2' => $val2]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -2249,6 +2350,7 @@ class Soutra extends Connexion
         return $data;
     }
 
+
     public static function getSingleDataBonCommandeFournisseur($code_achat)
     {
         $data = [];
@@ -2280,10 +2382,10 @@ class Soutra extends Connexion
     {
         $data = [];
         $sql = 'SELECT ve.*, 
-                   SUM(so.qte) AS article,
+                SUM(so.qte) AS article,
                    SUM(so.prix_vente * so.qte) AS total,
                 --    ve._vente,ve.created_at,
-                   CONCAT(cl.nom_client, " ", cl.prenom_client) AS client, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
+                CONCAT(cl.nom_client, " ", cl.prenom_client) AS client, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
             FROM vente ve 
             JOIN sortie so ON so.vente_id = ve.code_vente
             JOIN client cl ON cl.ID_client = ve.client_id
@@ -2302,6 +2404,100 @@ class Soutra extends Connexion
 
         return $data;
     }
+
+
+    public static function getSingleVenteByCode($codeVente)
+    {
+        $data = [];
+        $sql = 'SELECT
+            v.code_vente AS reference,
+            v.statut_vente,
+            v.pay_mode AS mode_paiement,
+            v.created_at AS date_emission,
+            CONCAT(c.nom_client, \' \', c.prenom_client) AS nom_client,
+            c.telephone_client AS telephone_client,
+            c.email_client AS email_client,
+            e.nom_employe AS fait_par,   -- si vous avez une table employe
+            SUM(s.prix_vente * s.qte) AS total_ttc,
+            ent.libelle_entrepot AS entrepot
+        FROM vente v
+        JOIN client c ON v.client_id = c.ID_client
+        LEFT JOIN sortie s ON s.vente_id = v.code_vente
+        LEFT JOIN entrepot ent ON ent.ID_entrepot = v.entrepot_id
+        LEFT JOIN employe e ON e.ID_employe = v.employe_id  -- si table employe existe
+        WHERE v.code_vente = :codeVente
+        ';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['codeVente' => $codeVente]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getSingleAchatByCode($codeVente)
+    {
+        $data = [];
+        $sql = 'SELECT
+            a.code_achat AS reference,
+            a.statut_achat,
+            a.pay_mode AS mode_paiement,
+            a.created_at AS date_emission,
+            fn.nom_fournisseur,
+            fn.telephone_fournisseur AS telephone_fournisseur,
+            fn.email_fournisseur AS email_fournisseur,
+            e.nom_employe AS fait_par,   -- si vous avez une table employe
+            SUM(s.prix_achat * s.qte) AS total_ttc,
+            ent.libelle_entrepot AS entrepot
+        FROM achat a
+        JOIN fournisseur fn ON a.fournisseur_id = fn.ID_fournisseur
+        LEFT JOIN entree s ON s.achat_id = a.code_achat
+        LEFT JOIN entrepot ent ON ent.ID_entrepot = a.entrepot_id
+        LEFT JOIN employe e ON e.ID_employe = a.employe_id  -- si table employe existe
+        WHERE a.code_achat = :codeAchat
+        ';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['codeAchat' => $codeVente]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    // public static function getAllArticleByVenteCode($codeVente)
+    // {
+    //     $data = [];
+    //     $sql = 'SELECT
+    //         a.libelle_article AS article,
+    //         a.garantie_article AS garantie,
+    //         m.libelle_mark AS mark,
+    //         f.libelle_famille AS famille,
+    //         s.prix_vente AS `prix_vente`,
+    //         s.qte ,
+    //         s.da
+    //         (s.prix_vente * s.qte) AS total,
+    //         s.ID_sortie
+    //     FROM sortie s
+    //     JOIN article a ON s.article_id = a.ID_article
+    //     LEFT JOIN mark m ON a.mark_id = m.ID_mark
+    //     LEFT JOIN famille f ON a.famille_id = f.ID_famille
+    //     WHERE s.vente_id = :codeVente';
+    //     $query = self::getConnexion()->prepare($sql);
+    //     $query->execute(['codeVente' => $codeVente]);
+
+    //     if ($query->rowCount() > 0) {
+    //         $data = $query->fetchAll(PDO::FETCH_ASSOC);
+    //     }
+    //     $query->closeCursor();
+
+    //     return $data;
+    // }
 
     public static function getAllListeVenteByDateRange($startDate, $endDate, $etatvente = 1, $etatSortie = 1)
     {
@@ -2748,6 +2944,21 @@ class Soutra extends Connexion
             $data = $query->fetch(PDO::FETCH_ASSOC);
         }
 
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getSingleEntrepotByCode($id_entrepot)
+    {
+        $data = [];
+        $sql = 'SELECT * FROM entrepot WHERE ID_entrepot = :id_entrepot';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['id_entrepot' => $id_entrepot]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
         $query->closeCursor();
 
         return $data;

@@ -443,6 +443,78 @@ class ControllerVente extends Connexion
       }
     }
   }
+    public static function ajouter_versement_vente()
+    {
+        if (isset($_POST['btn_encaisser_vente'])) {
+
+            extract($_POST);
+            $msg = [];
+            if (isset($montant_versement) && !empty($montant_versement)) {
+              if(isset($code_vente) && !empty($code_vente)) {
+                $vente = Soutra::getByItem("vente", "code_vente", $code_vente);
+                if(!empty($vente)){
+                  $montant_total = Soutra::getSumMontantVenteByVente(1, $code_vente);
+                  $montant_versement_total = Soutra::getSumMontantVersementByVente(1, $code_vente);
+                  if($montant_total >= ($montant_versement + $montant_versement_total)){
+                
+                if (Soutra::verif_type($montant_versement)) {
+                $date = date('Y-m-d');
+                $code = strtoupper(self::checkCode());
+                $data_versement = array(
+                    'montant_versement' => $montant_versement,
+                    'client_id' => $vente["client_id"],
+                    'employe_id' => $_SESSION['id_employe'],
+                    'etat_versement' => 1,
+                    'code_versement' => $code,
+                    'created_at' => $date,
+                    'transaction_code' => $code_vente,
+                    'type_versement' => 'vente'
+                );
+
+                $connect = Soutra::getConnexion();
+                $connect->query("SET AUTOCOMMIT = 0");
+                $connect->beginTransaction();
+                try {
+
+                    if (Soutra::insert("versement", $data_versement)) {
+                      if(Soutra::getSumMontantVenteByVente(1, $code_vente) == Soutra::getSumMontantVersementByVente(1, $code_vente)){
+                        $data_updated = [
+                          'statut_vente' => STATUT_COMMANDE[2],
+                          'code_vente' => $code_vente
+                        ];
+                        Soutra::update('vente', $data_updated);
+                      }
+                        $connect->commit();
+                        $msg = ['status' => true, 'message' => 'Versement enregistré avec succès.'];
+                    } else {
+
+                        $connect->rollBack();
+                    }
+                    // $connect->commit();
+                } catch (Exception $ex) {
+                    //throw $th;
+                    $connect->rollBack();
+                    $msg = ['status' => false, 'message' => 'Une erreur est survenue !' . $ex->getMessage()];
+                }
+                } else {
+                $msg = ['status' => false, 'message' => 'Le montant invalide !'];
+            }
+                }else{
+                  $reste = Soutra::getSumMontantVenteByVente(1, $code_vente) - Soutra::getSumMontantVersementByVente(1, $code_vente);
+                     $msg = ['status' => false, 'message' => "Il reste " . $reste ." pour finaliser le paiement"];
+                }
+                } else {
+              $msg = ['status'=> false, 'message' => 'vente introuvable'];
+            }
+            } else {
+                $msg = ['status' => false, 'message' => 'Le code de vente invalide !'];
+            }
+              } else{
+              $msg =  ['status' => false, 'message' => 'Veuillez remplir tous les champs !'];
+              }
+            echo json_encode($msg);
+        }
+    }
 
   public static function createVente()
   {
@@ -480,7 +552,7 @@ class ControllerVente extends Connexion
           'code_vente' => $code,
           'client_id' => $client,
           'employe_id' => $employe_id,
-          'entrepot_id' => 6,
+          'entrepot_id' => $_SESSION['entrepot'],
           'etat_vente' => 1,
           'pay_mode' => PAYMENT_MODE[0],
           'statut_vente' => STATUT_COMMANDE[0],
@@ -503,11 +575,11 @@ class ControllerVente extends Connexion
               'employe_id' => $data['employe_id'],
               'prix_vente' => $pu[$i],
               'prix_achat' => $pu[$i],
-              'entrepot_id' => 6,
+              'entrepot_id' => $_SESSION['entrepot'],
               'date_mouvement' => $data['created_at']
             ];
             Soutra::inserted("sortie", $vente);
-            // Soutra::inserted('mouvement_stock', $dataMouvement);
+            Soutra::inserted('mouvement_stock', $dataMouvement);
             // return true;
           }
 
@@ -770,15 +842,22 @@ class ControllerVente extends Connexion
 
         // btn Valider la commande
         if ($row['statut_vente'] == STATUT_COMMANDE[0]):
-          $output .= '
-              <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Valider la commande"> <i class="fa fa-save text-icon-success"></i> </button>
+           $output .= '
+              <button type="button" 
+              id="btn_validation_vente"
+              onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+              data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Valider la commande"> <i class="fa fa-save text-icon-success"></i> </button>
               ';
         endif;
 
         // btn Encaisser la facture
         if ($row['statut_vente'] == STATUT_COMMANDE[1]):
-          $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i> </button>';
-        endif;
+          $output .= '<button type="button" 
+            id="btn_encaisser_vente"
+            data-toggle="modal" data-target="#encaisser-modal"
+            data-code="' . $row['code_vente'] . '"
+            data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i> </button>';
+          endif;
 
         // btn Modifier la commande
         if ($row['statut_vente'] == STATUT_COMMANDE[0]):
@@ -787,13 +866,19 @@ class ControllerVente extends Connexion
 
         // btn Annuler la commande
         if ($row['statut_vente'] == STATUT_COMMANDE[0]):
-          $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Annuler la commande"> <i class="fa fa-times text-icon-danger"></i> </button>';
-        endif;
+            $output .= '<button type="button" 
+            id="btn_annuler_vente"
+            onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+            data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Annuler la commande"> <i class="fa fa-times text-icon-danger"></i> </button>';
+          endif;
 
         // btn Retourner la commande
         if ($row['statut_vente'] == STATUT_COMMANDE[1] || $row['statut_vente'] == STATUT_COMMANDE[2]):
-          $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Retourner la commande"> <i class="fa fa-undo text-icon-danger"></i> </button>';
-        endif;
+          $output .= '<button type="button"
+            id="btn_retourner_vente"
+            onclick="updateELement(this,\'' . $row['code_vente'] . '\')"
+            data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm" data-original-title="Retourner la commande"> <i class="fa fa-undo text-icon-danger"></i> </button>';
+          endif;
 
         // btn Imprimer la facture
         $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </button>
@@ -912,10 +997,9 @@ class ControllerVente extends Connexion
       echo json_encode($msg);
     }
   }
-  
-  public static function annulation_vente()
+    public static function retourner_vente()
   {
-    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_vente") {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_vente") {
       extract($_POST);
     $msg = [];
 
@@ -924,17 +1008,16 @@ class ControllerVente extends Connexion
         'code_vente' => $code
       );
       if (Soutra::update("vente", $data)) {
-        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
+        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
       } else {
         $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
       }
       echo json_encode($msg);
     }
   }
-
-  public static function retourner_vente()
+  public static function annulation_vente()
   {
-    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_vente") {
+    if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_annuler_vente") {
       extract($_POST);
     $msg = [];
 
@@ -943,7 +1026,7 @@ class ControllerVente extends Connexion
         'code_vente' => $code
       );
       if (Soutra::update("vente", $data)) {
-        $msg = ["success"=>true,"msg"=>"Commande retournée avec succès"];
+        $msg = ["success"=>true,"msg"=>"Commande annulée avec succès"];
       } else {
         $msg = ["success"=>false,"msg"=>"Une erreur est survenue !"];
       }

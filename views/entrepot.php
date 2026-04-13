@@ -15,7 +15,10 @@ if (notAdmin()) {
         <button style="border: none;" type="button" class="btn btn-outline-dark w-50 btn_reload"><i class="bi bi-arrow-repeat"></i> &nbsp; Mettre à jour</button>
       </div>
       <div class="col-md-8 d-flex justify-content-end">
-        <button type="button" data-toggle="modal" data-target="#entrepot-modal" class="btn btn-primary w-25" title="Ajouter entrepot" aria-label="Close"> <i class="fa fa-plus"></i> &nbsp; Créer</button>
+
+        <a href="<?= URL ?>transfert" class="btn btn-primary w-25" title="Transfert produits" aria-label="Close"> <i class="bi bi-arrow-right-circle"></i> &nbsp; Transfert Produits</a>
+        &nbsp;
+        <button type="button" data-toggle="modal" data-target="#entrepot-modal" class="btn btn-primary w-25" title="Créer entrepot" aria-label="Close"> <i class="fa fa-plus"></i> &nbsp; Créer</button>
       </div>
     </div>
   </div>
@@ -65,12 +68,16 @@ if (notAdmin()) {
                <td>' . $row['ville_entrepot'] . '</td>
                <td>' . $row['adresse_entrepot'] . '</td>
                <td>' . $row['responsable'] . '</td>
-               <td>' . $etat . '</td>
+               <td>' . checkEtatData($row['etat_entrepot']) . '</td>
                <td>' . Soutra::date_format($row['created_at_entrepot']) . '</td>
                ';
 
 
               $output .= '<td style="display: flex; flex-direction: row; align-items: center;"> 
+               <a href="'.URL.'detail_entrepot&id='. $row['ID_entrepot'].'"  title="Voir details entrepot" class="btn btn-info btn-sm ">
+            <i class="fa fa-eye"></i></a>
+             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article" data-action="entrepot">
+            <i class="fa fa-link"></i></button>
             <button title="Modifier entrepot" data-id="' . $row['ID_entrepot'] . '" class="btn btn-primary mr-2 btn-sm btn_update_entrepot">
             <i class="fa fa-edit"></i>  </button>
                 ' . $btn . '
@@ -165,3 +172,6 @@ if (notAdmin()) {
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.m -->
+
+<?= modalAttribution() ?>
+

@@ -151,6 +151,7 @@ $(function () {
             method: "POST",
             data: employe,
             success: function (data) {
+                
                 var verif = data.split("&");
                 if (verif[0] == 1) {
                     notify(verif[1]);
@@ -427,6 +428,15 @@ $(function () {
 
     // FOURNISSEUR
 
+       btn_add_fournisseur();
+
+    function btn_add_fournisseur() {
+        $('body').on('click', '#fournisseur-data-modal', function (e) {
+            e.preventDefault();
+            $("#fournisseur-modal").modal('show');
+        });
+    }
+
     btn_ajouter_fournisseur();
 
     function btn_ajouter_fournisseur() {
@@ -455,7 +465,6 @@ $(function () {
                     $('#fournisseur-modal').modal('hide');
                     liste_fournisseur();
 
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
                 } else {
                     // // 
                     notify(verif[1], "", "alert", "warning");
@@ -1007,7 +1016,6 @@ $(function () {
             method: "POST",
             data: article,
             success: function (data) {
-
                 var verif = data.split("&");
                 if (verif[0] == 1) {
                     notify(verif[1]);
@@ -1027,6 +1035,9 @@ $(function () {
             }
         });
     }
+
+
+
 
     function liste_article() {
         $.ajax({
@@ -1064,6 +1075,65 @@ $(function () {
                     // 
                     $(".menu-modal").html(data.data);
                     $("#article-modal").modal('show');
+                }
+            });
+        });
+    }
+
+    form_attribuer_entrepot_article();
+
+    function form_attribuer_entrepot_article() {
+        $('body').delegate('#form_add_attribuer_entrepot_article', 'submit', function (e) {
+            e.preventDefault();
+
+            var article = $(this).serialize();
+               $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: article,
+            dataType:"JSON",
+            success: function (data) {
+                console.log(data);
+                
+                // return;
+                if (data.code == 200) {
+                    notify(data.message);
+                    $('#attribuer-modal').modal('hide');
+
+                } else {
+                    // 
+                    notify(data.message, "", "alert", "warning");
+                }
+            }
+        });
+
+        });
+    }
+
+
+    btn_attribuer_article();
+
+    function btn_attribuer_article() {
+        $('body').delegate('.btn_attribuer_article', 'click', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let action = $(this).data('action');
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_action: id,
+                    frm_attribution_action: action
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    // return
+
+                    // 
+                    $(".menu-modal-attribuer").html(data.data);
+                    $("#attribuer-modal").modal('show');
                 }
             });
         });
@@ -1275,6 +1345,7 @@ $(function () {
     //         })
     //     });
     // }
+
     // SEXION VENTE
     $('#select_code_vente').select2();
     $('.client_search').select2();
@@ -1299,7 +1370,7 @@ $(function () {
                 },
                 dataType: 'json',
                 success: function (response) {
-
+                    
                     if (response.code === 200) {
 
                         const c = response.client;
@@ -1317,6 +1388,92 @@ $(function () {
             });
         });
     }
+
+    
+    // SEXION VENTE
+    $('#select_code_achat').select2(); // Select2 pour la recherche de code d'achat
+    $('.fournisseur_search').select2(); // Select2 pour la recherche de fournisseur
+    $('#select_article_achat').select2(); // Select2 pour la recherche d'article
+    $('#transfert_entrepot_source').select2(); // Select2 pour l'entrepôt source
+    $('#transfert_entrepot_destination').select2(); // Select2 pour l'entrepôt destination
+
+// console.log('debut');
+    selectFournisseurToSearchachat();
+
+    function selectFournisseurToSearchachat() {
+
+        $('body').on('change', '.fournisseur_search', function (e) {
+            e.preventDefault();
+
+            var id = $(this).val();
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_fournisseur: id,
+                    btn_search_fournisseur_achat: 1
+                },
+                dataType: 'json',
+                success: function (response) {
+                    // console.log(response.code);return
+
+                    if (response.code === 200) {
+
+                        const f = response.fournisseur;
+                        $("#nom_fournisseur").val(f.nom_fournisseur);
+                        $("#telephone_fournisseur").val(f.telephone_fournisseur);
+                        $("#email_fournisseur").val(f.email_fournisseur);
+
+                    } else {
+                        console.log("Fournisseur non trouvé");
+                    }
+                },
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+        });
+    }
+    
+    selectEntrepotToSearchTransfert();
+
+    function selectEntrepotToSearchTransfert() {
+
+        $('body').on('change', '.entrepot_search', function (e) {
+            e.preventDefault();
+            let id = $(this).val();
+            let action = $(this).find(':selected').data('action');
+            console.log(action);
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_entrepot: id,
+                    btn_search_entrepot_transfert: action
+                },
+                dataType: 'json',
+                success: function (response) {
+                    // alert(action);return
+                    // console.log(response.entrepot);return
+
+                    if (response.code === 200) {
+
+                        const f = response.entrepot;
+                        $("#libelle_entrepot").val(f.libelle_entrepot);
+                        $("#adresse_entrepot").val(f.adresse_entrepot);
+
+                    } else {
+                        console.log("Entrepot non trouvé");
+                    }
+                },
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+        });
+    }
+
 
     // espace clean 1
 
@@ -1375,7 +1532,7 @@ $(function () {
             method: "POST",
             data: achat,
             success: function (data) {
-
+                alert(data);
                 if (data) {
                     changerMontant();
                     $('.achat-table').html(data);
@@ -1387,7 +1544,6 @@ $(function () {
             }
         });
     }
-
 
 
     totalRow()
@@ -3996,7 +4152,7 @@ $(function () {
 
 
 function retour() {
-    history.back();
+    window.history.back();
 }
 
 function updateELement(btn_action,code) {
@@ -4039,3 +4195,78 @@ function updateELement(btn_action,code) {
             }
     });
 }
+form_encaisser_vente();
+    function form_encaisser_vente() {
+
+        $('#form_encaisser_vente').on('submit', function (e) {
+            e.preventDefault();
+
+            var codeVente = $(this).find('#code_vente').val();
+            var montantVersement = $(this).find('#montant_versement').val();
+            
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code_vente: codeVente,
+                    montant_versement: montantVersement,
+                    btn_encaisser_vente: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);return;
+                    
+                    if(data.status) {
+                        swal("Notification", data.message, "success");
+                    }else{
+                        swal("Notification", data.message, "error");
+                    }
+                    $("#encaisser-modal").modal('hide');
+                }
+            });
+        });
+    }
+form_encaisser_achat();
+    function form_encaisser_achat() {
+
+        $('#form_encaisser_achat').on('submit', function (e) {
+            e.preventDefault();
+
+            var codeAchat = $(this).find('#code_achat').val();
+            var montantVersement = $(this).find('#montant_versement').val();
+            
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code_achat: codeAchat,
+                    montant_versement: montantVersement,
+                    btn_encaisser_achat: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);return;
+                    
+                    if(data.status) {
+                        swal("Notification", data.message, "success");
+                    }else{
+                        swal("Notification", data.message, "error");
+                    }
+                    $("#encaisser-modal").modal('hide');
+                }
+            });
+        });
+    }
+    modal_encaisser("#btn_encaisser_achat","#code_achat")
+    modal_encaisser("#btn_encaisser_vente","#code_vente")
+function modal_encaisser(selector,code_select) {    
+    $(document).on('click', selector, function () {
+        let code = $(this).data('code');
+
+        // injecter dans le champ hidden
+        $(code_select).val(code);
+
+        console.log(code); // pour vérifier
+    });
+}
+
