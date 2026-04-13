@@ -51,7 +51,8 @@
               <!-- .dropdown-menu -->
             </li><!-- /.nav-item -->
             <?php
-            $limit = Soutra::getStockLimitAlert();
+            $limit = [];
+            // $limit = Soutra::getStockLimitAlert();
 
             if (count($limit) > 0): ?>
 

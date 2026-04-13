@@ -75,7 +75,7 @@ ControllerEntrepot::ajouter_entrepot();
 // ControllerEntrepot::liste_famille();
 ControllerEntrepot::getEntrepot();
 ControllerEntrepot::modifier_entrepot();
-// ControllerEntrepot::suppresion_famille();
+ControllerEntrepot::getEntrepotForTransfert();
 
 
 // CATEGORIE

@@ -16,7 +16,7 @@ if (notAdmin()) {
       </div>
       <div class="col-md-8 d-flex justify-content-end">
 
-        <a href="<?= URL ?>ajouter_achat" class="btn btn-primary w-25" title="Transfert produits" aria-label="Close"> <i class="bi bi-arrow-right-circle"></i> &nbsp; Transfert Produits</a>
+        <a href="<?= URL ?>transfert" class="btn btn-primary w-25" title="Transfert produits" aria-label="Close"> <i class="bi bi-arrow-right-circle"></i> &nbsp; Transfert Produits</a>
         &nbsp;
         <button type="button" data-toggle="modal" data-target="#entrepot-modal" class="btn btn-primary w-25" title="Créer entrepot" aria-label="Close"> <i class="fa fa-plus"></i> &nbsp; Créer</button>
       </div>

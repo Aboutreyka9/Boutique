@@ -1389,9 +1389,11 @@ $(function () {
 
     
     // SEXION VENTE
-    $('#select_code_achat').select2();
-    $('.fournisseur_search').select2();
-    $('#select_article_achat').select2();
+    $('#select_code_achat').select2(); // Select2 pour la recherche de code d'achat
+    $('.fournisseur_search').select2(); // Select2 pour la recherche de fournisseur
+    $('#select_article_achat').select2(); // Select2 pour la recherche d'article
+    $('#transfert_entrepot_source').select2(); // Select2 pour l'entrepôt source
+    $('#transfert_entrepot_destination').select2(); // Select2 pour l'entrepôt destination
 
 // console.log('debut');
     selectFournisseurToSearchachat();
@@ -1423,6 +1425,44 @@ $(function () {
 
                     } else {
                         console.log("Fournisseur non trouvé");
+                    }
+                },
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+        });
+    }
+    
+    selectEntrepotToSearchTransfert();
+
+    function selectEntrepotToSearchTransfert() {
+
+        $('body').on('change', '.entrepot_search', function (e) {
+            e.preventDefault();
+            let id = $(this).val();
+            let action = $(this).find(':selected').data('action');
+            console.log(action);
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_entrepot: id,
+                    btn_search_entrepot_transfert: action
+                },
+                dataType: 'json',
+                success: function (response) {
+                    // alert(action);return
+                    // console.log(response.entrepot);return
+
+                    if (response.code === 200) {
+
+                        const f = response.entrepot;
+                        $("#libelle_entrepot").val(f.libelle_entrepot);
+                        $("#adresse_entrepot").val(f.adresse_entrepot);
+
+                    } else {
+                        console.log("Entrepot non trouvé");
                     }
                 },
                 error: function (err) {
