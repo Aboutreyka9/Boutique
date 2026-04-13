@@ -247,6 +247,9 @@ class ControllerAchat extends Connexion
   }
 
 
+
+
+
   public static function retourner_achat()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
@@ -258,6 +261,10 @@ class ControllerAchat extends Connexion
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
+
+        $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
+
         $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
         $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
       } else {
@@ -277,6 +284,7 @@ class ControllerAchat extends Connexion
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
+        $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
         $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
         $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
       } else {

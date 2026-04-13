@@ -4,12 +4,14 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
   //var_dump(md5(123));
 }
+
 include './config/const.php';
 
 if (isset($_SESSION) && !empty($_SESSION)) {
   header('location:' . URL . 'dashbord');
 }
-// var_dump(md5(12345));
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
