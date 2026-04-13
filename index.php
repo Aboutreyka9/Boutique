@@ -4,28 +4,14 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
   //var_dump(md5(123));
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
+
 include './config/const.php';
 
 if (isset($_SESSION) && !empty($_SESSION)) {
   header('location:' . URL . 'dashbord');
 }
-<<<<<<< HEAD
-=======
 
-    include './config/const.php';
 
-    if (isset($_SESSION) && !empty($_SESSION)) {
-        header('location:'.URL.'dashbord');
-    }
-
->>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
-// var_dump(md5(12345));
 ?>
 <!DOCTYPE html>
 <html lang="en">

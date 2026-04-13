@@ -449,14 +449,14 @@ class Soutra extends Connexion
         }
         return $tab;
     }
-    
-public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
+
+    public static function getCompterArticleEntrepot($entrepot_id, $etat = 1)
     {
         $nb = 0;
         $sql = "SELECT COUNT(id_entrepot_article) AS nb FROM entrepot_article WHERE etat_article = :etat AND entrepot_id = :entrepot_id";
         $query = self::getConnexion()->prepare($sql);
         $query->execute(['etat' => $etat, 'entrepot_id' => $entrepot_id]);
-        if($query->rowCount() > 0) {
+        if ($query->rowCount() > 0) {
             $data = $query->fetch();
             $nb = $data['nb'];
         }
@@ -464,7 +464,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         return $nb;
     }
 
-      public static function getStockDisponibleEntrepot($entrepot_id, $etat=1)
+    public static function getStockDisponibleEntrepot($entrepot_id, $etat = 1)
     {
         $sql = "SELECT SUM(qte) AS nb FROM entrepot_article WHERE entrepot_id = ? AND etat_article = ?";
         $query = self::getConnexion()->prepare($sql);
@@ -841,7 +841,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         $query->closeCursor();
         return $data['nb'];
     }
-    
+
     public static function getSumMontantVenteByVente($etat, $id_vente)
     {
         $sql = "SELECT SUM(prix_vente * qte) AS nb FROM sortie so WHERE so.etat_sortie = :etat AND so.vente_id = :id_vente";
@@ -849,7 +849,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         $query->execute(['etat' => $etat, 'id_vente' => $id_vente]);
         $data = $query->fetch();
         $query->closeCursor();
-        return $data['nb']??0;
+        return $data['nb'] ?? 0;
     }
     public static function getSumMontantAchatByAchat($etat, $id_achat)
     {
@@ -858,7 +858,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         $query->execute(['etat' => $etat, 'id_achat' => $id_achat]);
         $data = $query->fetch();
         $query->closeCursor();
-        return $data['nb']??0;
+        return $data['nb'] ?? 0;
     }
 
     public static function getSumMontantVersementByVente($etat, $id_vente)
@@ -868,7 +868,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         $query->execute(['etat' => $etat, 'id_vente' => $id_vente]);
         $data = $query->fetch();
         $query->closeCursor();
-        return $data['nb']??0;
+        return $data['nb'] ?? 0;
     }
 
     public static function getSumMontantVersementByAchat($etat, $id_achat)
@@ -878,7 +878,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         $query->execute(['etat' => $etat, 'id_achat' => $id_achat]);
         $data = $query->fetch();
         $query->closeCursor();
-        return $data['nb']??0;
+        return $data['nb'] ?? 0;
     }
 
     public static function getAllEmployer($id, $etat = 1)
@@ -2151,7 +2151,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
 
     public static function getByItem($table, $ref, $value)
     {
-        
+
         $sql = "SELECT * FROM $table WHERE $ref = :value ";
         $query = self::getConnexion()->prepare($sql);
         $query->execute(array('value' => $value));
@@ -2248,7 +2248,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         $query->closeCursor();
         return $data;
     }
-// get all table by 2 elements 
+    // get all table by 2 elements 
     public static function getAllTableByClauses($table, $clause1, $val1, $clause2, $val2)
     {
         $data = [];
@@ -2349,10 +2349,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
 
         return $data;
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
+
 
     public static function getSingleDataBonCommandeFournisseur($code_achat)
     {
@@ -2381,13 +2378,6 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
     }
 
 
-<<<<<<< HEAD
-=======
-    
->>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
-=======
-    
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
     public static function getAllListeBonCommandeClient($dateStart, $dateEnd)
     {
         $data = [];
@@ -2959,7 +2949,7 @@ public static function getCompterArticleEntrepot($entrepot_id, $etat=1)
         return $data;
     }
 
-     public static function getSingleEntrepotByCode($id_entrepot)
+    public static function getSingleEntrepotByCode($id_entrepot)
     {
         $data = [];
         $sql = 'SELECT * FROM entrepot WHERE ID_entrepot = :id_entrepot';
