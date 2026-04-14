@@ -1,11 +1,11 @@
-<?php 
-  if (isset($_GET['id']) && !empty($_GET['id'])) {
+<?php
+if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
   // TODO: Get command data from database
   $vente = Soutra::getSingleVenteByCode($code);
   $montant_versement_total = Soutra::getSumMontantVersementByVente(1, $code);
-    $versements = Soutra::getAllTableByClauses('versement', 'transaction_code', $code, 'etat_versement', 1);
-}else{
+  $versements = Soutra::getAllTableByClauses('versement', 'transaction_code', $code, 'etat_versement', 1);
+} else {
   // error 404
   http_response_code(404);
   exit();
@@ -14,14 +14,14 @@
 
 <!-- HEADER ACTIONS -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <button class="btn btn-dark" onclick="retour()" > <i class="bi bi-arrow-left"></i> Retour </button>
+  <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
 
   <div class="d-flex gap-5">
-    <button class="btn btn-success ml-2" title="" 
-    id="btn_encaisser_vente"
-            data-toggle="modal" data-target="#encaisser-modal"
-            data-code-vente="<?= $code ?>"
-    data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
+    <button class="btn btn-success ml-2" title=""
+      id="btn_encaisser_vente"
+      data-toggle="modal" data-target="#encaisser-modal"
+      data-code-vente="<?= $code ?>"
+      data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
 
     <a href="<?= RACINE ?>views/print.php?id=<?= $code ?>&statut=<?= $vente['statut_vente'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
   </div>
@@ -79,7 +79,7 @@
           </div>
           <h6><span class="text-muted">Montant encaissé</span></h6>
         </div>
-        <h5><?= number_format($montant_versement_total??0, 0, ',', ' ') ?> CFA</h5>
+        <h5><?= number_format($montant_versement_total ?? 0, 0, ',', ' ') ?> CFA</h5>
       </div>
     </div>
   </div>
@@ -93,7 +93,7 @@
           </div>
           <h6><span class="text-muted">Reliquat rendu</span></h6>
         </div>
-        <h5><?= number_format(($vente['total_ttc']-$montant_versement_total), 0, ',', ' ') ?> CFA</h5>
+        <h5><?= number_format(($vente['total_ttc'] - $montant_versement_total), 0, ',', ' ') ?> CFA</h5>
       </div>
     </div>
   </div>
@@ -158,33 +158,33 @@
 </div>
 
 
- <!-- Reglement facture(liste des versements de l'achat) -->
- <div class="card">
-   <div class="card-header">
-     <h5 class="text-info"> <i class="fa fa-credit-card"></i> Reglement facture </h5>
-   </div>
-   <div class="card-body">
-     <div class="table-responsive">
-       <!-- .table -->
-       <table class="table table-striped table-hover">
-         <!-- thead -->
-         <thead class="thead-dark">
-           <tr>
-             <th> # </th>
-             <th>REFERENCE</th>
-             <th>DATE </th>
-             <th>MONTANT </th>
-             <th style="width: 20%;text-align: center;"> STATUT </th>
+<!-- Reglement facture(liste des versements de l'achat) -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="text-info"> <i class="fa fa-credit-card"></i> Reglement facture </h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <!-- .table -->
+      <table class="table table-striped table-hover">
+        <!-- thead -->
+        <thead class="thead-dark">
+          <tr>
+            <th> # </th>
+            <th>REFERENCE</th>
+            <th>DATE </th>
+            <th>MONTANT </th>
+            <th style="width: 20%;text-align: center;"> STATUT </th>
 
-           </tr>
-         </thead><!-- /thead -->
-         <!-- tbody -->
-         <tbody class="achat-table">
-           <?php
+          </tr>
+        </thead><!-- /thead -->
+        <!-- tbody -->
+        <tbody class="achat-table">
+          <?php
 
-            $i = 0;
-            $output = "";
-            if (!empty($versements)) {
+          $i = 0;
+          $output = "";
+          if (!empty($versements)) {
             foreach ($versements as $row) {
               $i++;
 
@@ -202,22 +202,22 @@
             </tr>
             ';
             }
-            }else{
-              $output .= '
+          } else {
+            $output .= '
             <tr>
               <td colspan="6" class="text-center">Aucun versement trouvé</td>
             </tr>
             ';
-            }
-            echo $output;
-            ?>
+          }
+          echo $output;
+          ?>
 
 
-         </tbody><!-- /tbody -->
-       </table><!-- /.table -->
-     </div><!-- /.table-responsive -->
-   </div>
- </div>
+        </tbody><!-- /tbody -->
+      </table><!-- /.table -->
+    </div><!-- /.table-responsive -->
+  </div>
+</div>
 
 
 <!-- Detail des produits commandés -->
@@ -266,9 +266,9 @@
            <td>' . $row['article'] . '</td>
            <td>' . $row['mark'] . '</td>
           <td>' . $row['famille'] . '</td>
-          <td class="text-right pu">' . number_format($row['prix_vente']??0, 0, ",", " ") . '</td>
+          <td class="text-right pu">' . number_format($row['prix_vente'] ?? 0, 0, ",", " ") . '</td>
           <td class="text-right qte">' . $row['qte'] . '</td>
-          <td class="text-right total">' . number_format($row['prix_vente']??0 * $row['qte']??0, 0, ",", " ") . '</td>
+          <td class="text-right total">' . number_format($row['prix_vente'] ?? 0 * $row['qte'] ?? 0, 0, ",", " ") . '</td>
            ';
             $garantie = $row['garantie'];
             $dvente = Soutra::date_format($row['date_vente'], false);
@@ -354,38 +354,38 @@
 </form><!-- /.modal -->
 
 
-  <!-- .modal -->
-  
-        <div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
-          <!-- .modal-dialog -->
-          <div class="modal-dialog" role="document">
-            <!-- .modal-content -->
-            <div class="modal-content">
-              <!-- .modal-header -->
-              <div class="modal-header">
-                <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-                </h6>
-              </div><!-- /.modal-header -->
-              <!-- .modal-body -->
-              <form action="" id="form_encaisser_vente" method="POST">
-              <div class="modal-body">
-                <!-- .form-row -->
-                <div class="form-row menu-modal">
-                  <input type="hidden" name="code_vente" id="code_vente">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="montant_versement">Montant versement</label>
-                      <input type="text" name="montant_versement" id="montant_versement" class="form-control">
-                    </div>
-                  </div>
-                </div><!-- /.form-row -->
-              </div><!-- /.modal-body -->
-              <!-- .modal-footer -->
-              <div class="modal-footer">
-              <input type="hidden" name="btn_encaisser_vente" class="form-control">
+<!-- .modal -->
 
-                <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal" >Close</button>
-              </div><!-- /.modal-footer -->
-            </form><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.m -->
+<div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
+  <!-- .modal-dialog -->
+  <div class="modal-dialog" role="document">
+    <!-- .modal-content -->
+    <div class="modal-content">
+      <!-- .modal-header -->
+      <div class="modal-header">
+        <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
+        </h6>
+      </div><!-- /.modal-header -->
+      <!-- .modal-body -->
+      <form action="" id="form_encaisser_vente" method="POST">
+        <div class="modal-body">
+          <!-- .form-row -->
+          <div class="form-row menu-modal">
+            <input type="hidden" name="code_vente" id="code_vente">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="montant_versement">Montant versement</label>
+                <input type="text" name="montant_versement" id="montant_versement" class="form-control">
+              </div>
+            </div>
+          </div><!-- /.form-row -->
+        </div><!-- /.modal-body -->
+        <!-- .modal-footer -->
+        <div class="modal-footer">
+          <input type="hidden" name="btn_encaisser_vente" class="form-control">
+
+          <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+        </div><!-- /.modal-footer -->
+      </form><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.m -->

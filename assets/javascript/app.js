@@ -1532,7 +1532,6 @@ $(function () {
             method: "POST",
             data: achat,
             success: function (data) {
-                alert(data);
                 if (data) {
                     changerMontant();
                     $('.achat-table').html(data);
