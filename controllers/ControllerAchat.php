@@ -319,12 +319,14 @@ class ControllerAchat extends Connexion
       $date = date('Y-m-d');
       $code = strtoupper(self::checkCode());
       $employe_id = $_SESSION['id_employe'];
+      $entrepot_id = $_SESSION['id_entrepot'];
 
       $data = array(
         'code_achat' => $code,
         'employe_id' => $employe_id,
         'fournisseur_id' => $fournisseur,
-        'created_at' => $date
+        'created_at' => $date,
+        'entrepot_id' => 7
       );
 
       $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
@@ -337,15 +339,6 @@ class ControllerAchat extends Connexion
             'qte' => $qte[$i]
           );
 
-          $dataMouvement = [
-            'article_id' => $id[$i],
-            'type_mouvement' => 'ENTREE',
-            'quantite' => $qte[$i],
-            'employe_id' => $data['employe_id'],
-            'prix_achat' => $pu[$i],
-            'entrepot_id' => $_SESSION['entrepot'],
-            'date_mouvement' => $data['created_at']
-          ];
           Soutra::inserted("entree", $achat);
         }
 
