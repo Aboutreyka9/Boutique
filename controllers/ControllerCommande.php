@@ -106,7 +106,7 @@ class ControllerCommande extends Connexion
 
   public static function liste_detail_commande($id)
   {
-    $detail = Soutra::getDetailvente($id);
+    $detail = Soutra::getDetailvente($id, $_SESSION['id_entrepot']);
 
     $i = 0;
     $output = "";
@@ -160,7 +160,7 @@ class ControllerCommande extends Connexion
     if (isset($_POST['btn_ajouter_panier_commande'])) {
       $output = '';
       if (!empty($_POST['article'])) {
-        $commande = Soutra::getPanierAchat(implode(',', $_POST['article']));
+        $commande = Soutra::getPanierAchat(implode(',', $_POST['article']), $_SESSION['id_entrepot']);
         if (!empty($commande)) {
           $i = 0;
           foreach ($commande as $row) {

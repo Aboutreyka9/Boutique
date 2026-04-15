@@ -81,7 +81,7 @@ class ControllerAchat extends Connexion
   public static function liste_achat_detail($code_achat)
   {
     $output = '';
-    $detail = Soutra::getDetailAchat($code_achat);
+    $detail = Soutra::getDetailAchat($code_achat, $_SESSION['id_entrepot']);
 
     if (!empty($detail)) {
       $i = 0;
@@ -122,7 +122,7 @@ class ControllerAchat extends Connexion
     if (isset($_POST["btn_achat_fournisseur"])) {
       $id = $_POST["codeachat"];
 
-      $detail = Soutra::getDetailAchat($id);
+      $detail = Soutra::getDetailAchat($id, $_SESSION['id_entrepot']);
 
       $output = "";
       foreach ($detail as $row) {
@@ -148,7 +148,7 @@ class ControllerAchat extends Connexion
     if (isset($_POST['btn_ajouter_panier_achat'])) {
       $output = '';
       if (!empty($_POST['article'])) {
-        $achat = Soutra::getPanierAchat(implode(',', $_POST['article']));
+        $achat = Soutra::getPanierAchat(implode(',', $_POST['article']), $_SESSION['id_entrepot']);
         if (!empty($achat)) {
           $i = 0;
           foreach ($achat as $row) {
@@ -193,7 +193,7 @@ class ControllerAchat extends Connexion
       );
 
 
-      $ligneAchat = Soutra::getDetailAchat($code);
+      $ligneAchat = Soutra::getDetailAchat($code, $_SESSION['id_entrepot']);
 
 
       $results = Soutra::transactionData(
@@ -264,7 +264,7 @@ class ControllerAchat extends Connexion
         'code_achat' => $code
       );
 
-      $ligneAchat = Soutra::getDetailAchat($code);
+      $ligneAchat = Soutra::getDetailAchat($code, $_SESSION['id_entrepot']);
 
 
       $results = Soutra::transactionData(

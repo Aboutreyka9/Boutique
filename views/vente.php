@@ -80,7 +80,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
     <tbody class="vente-table">
       <?php
       // Récupérer les achats du mois courant
-      $vente = Soutra::getAllListeBonCommandeClient($start, $end);
+      $vente = Soutra::getAllListeBonCommandeClient($start, $end, $_SESSION['id_entrepot']);
 
       $output = '';
       // $vente = Soutra::getAllListeVenteByDateRange();

@@ -301,7 +301,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <!-- tbody -->
         <tbody class="achat-table">
           <?php
-          $detail = Soutra::getDetailAchat($_GET['id']);
+          $detail = Soutra::getDetailAchat($_GET['id'], $_SESSION['id_entrepot']);
 
           $i = 0;
           $output = "";

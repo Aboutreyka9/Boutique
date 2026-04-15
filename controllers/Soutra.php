@@ -1090,8 +1090,7 @@ class Soutra extends Connexion
         WHERE ar.etat_article = :etat  ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
-            // 'entrepot_id' => $_SESSION['entrepot_id'],
-            'entrepot_id' => 7,
+            'entrepot_id' => $_SESSION['entrepot_id'],
             'etat_entrepot_article' => STATUT[1],
             'etat' => STATUT[1]
         ]);
@@ -1287,7 +1286,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getPanierAchat($id_article)
+    public static function getPanierAchat($id_article, $entrepot)
     {
         $data = [];
         $sql = "SELECT ar.*, ent.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
@@ -1295,7 +1294,7 @@ class Soutra extends Connexion
         JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
         WHERE ar.ID_article IN($id_article)";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['entrepot_id' => 7]);
+        $query->execute(['entrepot_id' => $entrepot]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1304,7 +1303,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getPanierVente($id_article)
+    public static function getPanierVente($id_article, $entrepot)
     {
         $data = [];
         $sql = "SELECT ar.*, ent.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
@@ -1312,7 +1311,7 @@ class Soutra extends Connexion
         INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
         WHERE ar.ID_article IN($id_article)";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['entrepot_id' => 7]);
+        $query->execute(['entrepot_id' => $entrepot]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1711,7 +1710,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getDetailVente($id_vente, $entrepot = 7, $etat = 1)
+    public static function getDetailVente($id_vente, $entrepot, $etat = 1)
     {
         $data = [];
         $sql = "SELECT ent.*, so.*,ve.entrepot_id,ve.created_at AS date_vente,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark FROM sortie so  
@@ -1731,7 +1730,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getDetailAchat($id_achat, $entrepot = 7, $etat = 1)
+    public static function getDetailAchat($id_achat, $entrepot, $etat = 1)
     {
         $data = [];
         $sql = "SELECT en.*, ac.entrepot_id, ac.created_at AS date_achat,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark 
@@ -2385,7 +2384,7 @@ class Soutra extends Connexion
     }
 
 
-    public static function getAllListeBonCommandeClient($dateStart, $dateEnd, $entrepot = 7)
+    public static function getAllListeBonCommandeClient($dateStart, $dateEnd, $entrepot)
     {
         $data = [];
         $sql = 'SELECT ve.*, 

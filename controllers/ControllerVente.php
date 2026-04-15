@@ -127,7 +127,7 @@ class ControllerVente extends Connexion
 
   public static function liste_detail_vente($id)
   {
-    $detail = Soutra::getDetailVente($id);
+    $detail = Soutra::getDetailVente($id, $_SESSION['id_entrepot']);
 
     $i = 0;
     $output = "";
@@ -181,7 +181,7 @@ class ControllerVente extends Connexion
     if (isset($_POST["btn_vente_client"])) {
       $id = $_POST["codevente"];
 
-      $detail = Soutra::getDetailVente($id);
+      $detail = Soutra::getDetailVente($id, $_SESSION['id_entrepot']);
 
       $output = "";
       foreach ($detail as $row) {
@@ -205,7 +205,7 @@ class ControllerVente extends Connexion
     if (isset($_POST['btn_ajouter_panier_vente'])) {
       $output = '';
       if (!empty($_POST['article'])) {
-        $vente = Soutra::getPanierVente(implode(',', $_POST['article']));
+        $vente = Soutra::getPanierVente(implode(',', $_POST['article']), $_SESSION['id_entrepot']);
         if (!empty($vente)) {
           $i = 0;
           foreach ($vente as $row) {
@@ -777,7 +777,7 @@ class ControllerVente extends Connexion
       // si le btn = 1 on get par vente
       if ($btn_filter_vente == 1) {
 
-        $data = Soutra::getAllListeBonCommandeClient($dateDebut, $dateFin);
+        $data = Soutra::getAllListeBonCommandeClient($dateDebut, $dateFin, $_SESSION['id_entrepot']);
       }
       // si le btn = 2 on get par article
       if ($btn_filter_vente == 2) {
@@ -963,7 +963,7 @@ class ControllerVente extends Connexion
         'statut_vente' => STATUT_COMMANDE[1],
         'code_vente' => $code
       );
-      $ligneVente = Soutra::getDetailVente($code);
+      $ligneVente = Soutra::getDetailVente($code, $_SESSION['id_entrepot']);
 
       $results = Soutra::transactionData(function () use ($data, $ligneVente) {
 
@@ -1035,7 +1035,7 @@ class ControllerVente extends Connexion
       );
 
 
-      $ligneVente = Soutra::getDetailVente($code);
+      $ligneVente = Soutra::getDetailVente($code, $_SESSION['id_entrepot']);
       // var_dump($ligneVente);
       // return;
 

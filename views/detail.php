@@ -30,7 +30,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <!-- TITLE -->
 <div class="card custom-card-detail mb-3">
   <div class="card-body">
-    <p class="text-muted mb-1">Administration / Ventes / <?= $code ?></p>
+    <p class="text-muted mb-1">Espace / Ventes / <?= $code ?></p>
     <h3 class="fw-bold"> <span> <i class="bi bi-info-circle"></i> Details</span>
       <span class="ms-2" id="reference-produit">N° <?= $code ?></span>
       <?= checkStatusCommande($vente['statut_vente']) ?>
@@ -48,9 +48,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <div class="icon bg-success mr-2">
             <i class="bi bi-cart4"></i>
           </div>
-          <h6><span class="text-muted">Référence</span></h6>
+          <h6><span class="text-muted">Retour</span></h6>
         </div>
-        <h5><?= $vente['reference'] ?></h5>
+        <h6>05 Produit(s)</h6>
       </div>
     </div>
   </div>
@@ -91,7 +91,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <div class="icon bg-success mr-2">
             <i class="bi bi-cart4"></i>
           </div>
-          <h6><span class="text-muted">Reliquat rendu</span></h6>
+          <h6><span class="text-muted">Reste à payer</span></h6>
         </div>
         <h5><?= number_format(($vente['total_ttc'] - $montant_versement_total), 0, ',', ' ') ?> CFA</h5>
       </div>
@@ -157,6 +157,94 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 </div>
 
+<!-- Detail des produits commandés -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="text-success"> <i class="fa fa-list"></i> Detail des produits commandés </h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <!-- .table -->
+      <table class="table table-hover">
+        <!-- thead -->
+        <thead class="thead-light">
+          <tr>
+            <th> # </th>
+            <th> Article </th>
+            <th> MARK </th>
+            <th> FAMILLE </th>
+            <th class="text-right"> PRIX vente </th>
+            <th class="text-right"> QUANTITE </th>
+            <th class="text-right"> TOTAL </th>
+            <?php
+            //$emp = Soutra::getEmployeVente($_GET['id']);
+
+            //if($_SESSION["role"] == ADMIN || $emp['employe'] == $_SESSION["id_employe"]): 
+            ?>
+            <th style="width: 20%;text-align: center;"> ACTION </th>
+            <?php // endif;
+            ?>
+          </tr>
+        </thead><!-- /thead -->
+        <!-- tbody -->
+        <tbody class="achat-table">
+          <?php
+          $detail = Soutra::getDetailVente($_GET['id'], $_SESSION['id_entrepot']);
+
+          $i = 0;
+          $output = "";
+          foreach ($detail as $row) {
+            $i++;
+
+            $output .= '
+        <tr class="row' . $row['ID_sortie'] . '">
+           <td class="col id d_none">' . $row['ID_sortie'] . '</td>
+           <td>' . $i . '</td>
+           <td>' . $row['article'] . '</td>
+           <td>' . $row['mark'] . '</td>
+          <td>' . $row['famille'] . '</td>
+          <td class="text-right pu">' . number_format($row['prix_vente'] ?? 0, 0, ",", " ") . '</td>
+          <td class="text-right qte">' . $row['qte'] . '</td>
+          <td class="text-right total">' . number_format($row['prix_vente'] ?? 0 * $row['qte'] ?? 0, 0, ",", " ") . '</td>
+           ';
+            $garantie = $row['garantie'];
+            $dvente = Soutra::date_format($row['date_vente'], false);
+            // $testt = Soutra::dateDiff($dvente, $garantie);
+            //if ($_SESSION["role"] == ADMIN || $emp['employe'] == $_SESSION["id_employe"]) {
+            if (Soutra::dateDiff($dvente, $garantie)) {
+
+              $output .= '
+           <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+           <button data-id="' . $row['ID_sortie'] . '" class="btn btn-primary btn-sm btn_update_vente">
+            <i class="fa fa-edit"></i> modiier </button>
+           <div class="d-inline">
+               <button data-id="' . $row['ID_sortie'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_vente_detail">
+               <i class="fa fa-trash"></i> Supprimer</button>
+           </div>';
+            } else {
+
+              $output .= '
+           <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+           <span class=" badge badgge-danger bg-danger ">Date limite depassée! </span>
+           </div>';
+            }
+
+            $output .= '   
+         </td>
+            </tr>
+            ';
+            //}
+          }
+          echo $output;
+          ?>
+
+
+        </tbody><!-- /tbody -->
+      </table><!-- /.table -->
+    </div><!-- /.table-responsive -->
+  </div>
+</div>
+
 
 <!-- Reglement facture(liste des versements de l'achat) -->
 <div class="card">
@@ -220,93 +308,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 </div>
 
 
-<!-- Detail des produits commandés -->
-<div class="card">
-  <div class="card-header">
-    <h5 class="text-success"> <i class="fa fa-list"></i> Detail des produits commandés </h5>
-  </div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <!-- .table -->
-      <table class="table table-hover">
-        <!-- thead -->
-        <thead class="thead-light">
-          <tr>
-            <th> # </th>
-            <th> Article </th>
-            <th> MARK </th>
-            <th> FAMILLE </th>
-            <th class="text-right"> PRIX vente </th>
-            <th class="text-right"> QUANTITE </th>
-            <th class="text-right"> TOTAL </th>
-            <?php
-            //$emp = Soutra::getEmployeVente($_GET['id']);
 
-            //if($_SESSION["role"] == ADMIN || $emp['employe'] == $_SESSION["id_employe"]): 
-            ?>
-            <th style="width: 20%;text-align: center;"> ACTION </th>
-            <?php // endif;
-            ?>
-          </tr>
-        </thead><!-- /thead -->
-        <!-- tbody -->
-        <tbody class="achat-table">
-          <?php
-          $detail = Soutra::getDetailVente($_GET['id']);
-
-          $i = 0;
-          $output = "";
-          foreach ($detail as $row) {
-            $i++;
-
-            $output .= '
-        <tr class="row' . $row['ID_sortie'] . '">
-           <td class="col id d_none">' . $row['ID_sortie'] . '</td>
-           <td>' . $i . '</td>
-           <td>' . $row['article'] . '</td>
-           <td>' . $row['mark'] . '</td>
-          <td>' . $row['famille'] . '</td>
-          <td class="text-right pu">' . number_format($row['prix_vente'] ?? 0, 0, ",", " ") . '</td>
-          <td class="text-right qte">' . $row['qte'] . '</td>
-          <td class="text-right total">' . number_format($row['prix_vente'] ?? 0 * $row['qte'] ?? 0, 0, ",", " ") . '</td>
-           ';
-            $garantie = $row['garantie'];
-            $dvente = Soutra::date_format($row['date_vente'], false);
-            // $testt = Soutra::dateDiff($dvente, $garantie);
-            //if ($_SESSION["role"] == ADMIN || $emp['employe'] == $_SESSION["id_employe"]) {
-            if (Soutra::dateDiff($dvente, $garantie)) {
-
-              $output .= '
-           <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-           <button data-id="' . $row['ID_sortie'] . '" class="btn btn-primary btn-sm btn_update_vente">
-            <i class="fa fa-edit"></i> modiier </button>
-           <div class="d-inline">
-               <button data-id="' . $row['ID_sortie'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_vente_detail">
-               <i class="fa fa-trash"></i> Supprimer</button>
-           </div>';
-            } else {
-
-              $output .= '
-           <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-           <span class=" badge badgge-danger bg-danger ">Date limite depassée! </span>
-           </div>';
-            }
-
-            $output .= '   
-         </td>
-            </tr>
-            ';
-            //}
-          }
-          echo $output;
-          ?>
-
-
-        </tbody><!-- /tbody -->
-      </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
-  </div>
-</div>
 
 
 
@@ -389,3 +391,4 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
       </form><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.m -->
+</div>
