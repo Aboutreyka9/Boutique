@@ -1444,7 +1444,7 @@ $(function () {
             e.preventDefault();
             let id = $(this).val();
             let action = $(this).find(':selected').data('action');
-            console.log(action);
+            // console.log(id);
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
@@ -1454,14 +1454,14 @@ $(function () {
                 },
                 dataType: 'json',
                 success: function (response) {
-                    // alert(action);return
-                    // console.log(response.entrepot);return
 
                     if (response.code === 200) {
 
                         const f = response.entrepot;
-                        $("#libelle_entrepot").val(f.libelle_entrepot);
-                        $("#adresse_entrepot").val(f.adresse_entrepot);
+                        $("#libelle_entrepot_" + action).val(f.libelle_entrepot);
+                        $("#adresse_entrepot_" + action).val(f.adresse_entrepot);
+                        $("#id_entrepot_" + action).val(id);
+                        
 
                     } else {
                         console.log("Entrepot non trouvé");
@@ -1472,6 +1472,98 @@ $(function () {
                 }
             });
         });
+    }
+
+
+    
+    ajax_ajouter_panier_transfert();
+    function ajax_ajouter_panier_transfert() {
+        $('body').delegate('#btn_ajouter_panier_transfert', 'submit', function (e) {
+            e.preventDefault();
+            var transfert = $(this).serialize();
+            $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: transfert,
+            success: function (data) {
+            console.log(data);return;
+                
+                if (data) {
+                    changerMontant();
+                    $('.transfert-table').html(data);
+                    $('.row_montant').show();
+                    $('.panier_transfert_content').show();
+                } else {
+                    notify("Veuillez choisir au moins un article svp!", "", "", "warning")
+                }
+            }
+        });
+        });
+    }
+
+
+    totalRow()
+
+    function totalRow() {
+        $('.table_total').on('keyup', '.col', function () {
+
+            var currow = $(this).closest('tr');
+            total = 0
+            var pu = currow.find('.pu').text();
+            var qte = currow.find('.qte').text();
+
+
+            var page_transfert = $('#page_transfert').val();
+            if (page_transfert != undefined) {
+                var id_article = Number(currow.find('.d_none').text());
+
+                $.ajax({
+                    url: "../partials/rooter.php",
+                    method: "POST",
+                    data: {
+                        id: id_article,
+                        qte: qte,
+                        btn_verifQteArticleVente: 1
+                    },
+                    success: function (data) {
+
+                        // return;
+                        if (data != 'ok') {
+                            notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
+                            currow.find('.qte').text(data);
+                            qte = data;
+                        }
+                    }
+                });
+            }
+
+
+            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
+            // // 
+            currow.find('.total').text(total);
+
+            totalAll();
+
+        });
+    }
+
+
+    function totalAll() {
+        var somme = 0;
+        $('.table_total tbody tr').each(function () {
+            var val = $(this).find('.total').text();
+            somme += Number(val);
+        });
+        changerMontant(somme);
+    }
+
+    function pushData(selector) {
+        let dataselector = [];
+        $('.table_total tbody tr').each(function () {
+            var el = $(this).find('.' + selector).text();
+            dataselector.push(el);
+        });
+        return dataselector
     }
 
 
@@ -1532,7 +1624,6 @@ $(function () {
             method: "POST",
             data: achat,
             success: function (data) {
-                alert(data);
                 if (data) {
                     changerMontant();
                     $('.achat-table').html(data);
@@ -2008,14 +2099,20 @@ $(function () {
             },
             success: function (data) {
                 console.log(data);
-
                 var verif = data.split("&");
                 if (verif[0] == 1) {
-                    var code = verif[1].split("#");
 
-                    notify(code[1]);
-                    //window.open(ROOT_SIMPLE + "views/print.php?id=" + code[0]);
-                    window.history.go(0);
+                      swal({
+                        title: "Succès",
+                        text: verif[1],
+                        icon: "success",
+                        button: true,
+
+                    }).then(() =>
+                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
+
+                        window.history.go(0)
+                    );
 
                 } else {
                     notify(verif[1], "", "alert", "warning");
@@ -3763,6 +3860,8 @@ $(function () {
                     btn_filter_vente: type
                 },
                 success: function (data) {
+                    console.log(data);
+                    
                     let res = JSON.parse(data);
 
 
@@ -4183,10 +4282,10 @@ function updateELement(btn_action,code) {
                                 history.go(0);
                             });
                         }else{
-                            swal("Notification", data.msg, "error")
-                            .then(function () {
-                                history.go(0);
-                            });
+                            swal("Notification", data.msg, "error");
+                            // .then(function () {
+                            //     history.go(0);
+                            // });
                         }
 
                         

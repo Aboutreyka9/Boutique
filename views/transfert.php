@@ -19,6 +19,8 @@ if (notAdmin()) {
                 <div class="col-md-4">
                   <div style="position: relative;" class="form-group">
                     <label for="transfert_entrepot">Entrepôt source</label>
+                    <input type="hidden" name="id_entrepot_source" id="id_entrepot_source">
+                    <input type="hidden" name="id_entrepot_destination" id="id_entrepot_destination">
                     <select name="transfert_entrepot" class="form-control entrepot_search" id="transfert_entrepot_source">
                       <option value="--- CHOISIR ---"></option>
                       <?php
@@ -32,7 +34,6 @@ if (notAdmin()) {
                       echo $output;
                       ?>
                     </select>
-                   
                   </div>
                 </div>
 
@@ -46,7 +47,7 @@ if (notAdmin()) {
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Adresse</label>
-                    <input readonly type="text" id="adresse_entrepot_destination" class="form-control">
+                    <input readonly type="text" id="adresse_entrepot_source" class="form-control">
                   </div>
                 </div>
               </div>
@@ -75,14 +76,14 @@ if (notAdmin()) {
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Libellé</label>
-                    <input readonly type="text" id="libelle_entrepot" class="form-control">
+                    <input readonly type="text" id="libelle_entrepot_destination" class="form-control">
                   </div>
                 </div>
 
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Adresse</label>
-                    <input readonly type="text" id="adresse_entrepot" class="form-control">
+                    <input readonly type="text" id="adresse_entrepot_destination" class="form-control">
                   </div>
                 </div>
               </div>
@@ -98,14 +99,14 @@ if (notAdmin()) {
 <!-- .page-section -->
 <div class="card">
   <div class="card-header">
-    <form id="btn_ajouter_panier_achat" action="" method="post">
+    <form id="btn_ajouter_panier_transfert" action="" method="post">
       <div class="row">
         <div class="col-md-10">
           <div class="form-group">
             <label for="article">Article - Mark - Slug</label>
             <select name="article[]" class="form-control" id="select_article" multiple>
               <?php
-              $article = Soutra::getAllArticleFamilleMark();
+              $article = Soutra::getAllArticleFamilleMarkTransfert();
               $output = "";
               foreach ($article as $row) {
                 $output .= '
@@ -116,7 +117,7 @@ if (notAdmin()) {
               ?>
             </select>
           </div>
-          <input type="hidden" name="btn_ajouter_panier_achat">
+          <input type="hidden" name="btn_ajouter_panier_transfert">
         </div>
         <div class="col-md-2">
           <div class="form-group">
@@ -130,10 +131,10 @@ if (notAdmin()) {
   <div class="card-body">
     <div class="row row_montant">
       <div class="col-md-12 mb-3 ">
-        <span style="font-size: 35px;">Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
+        <span style="font-size: 35px;">Montant : </span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
       </div>
     </div>
-    <div class="table-responsive panier_achat_content ">
+    <div class="table-responsive panier_transfert_content">
       <!-- .table -->
       <table class="table table-striped table-hover table_total">
         <!-- thead -->
@@ -150,10 +151,9 @@ if (notAdmin()) {
           </tr>
         </thead><!-- /thead -->
         <!-- tbody -->
-        <tbody class="achat-table">
+        <tbody class="transfert-table">
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
     </div><!-- /.table-responsive -->
   </div>
 </div>
-<?= modalAchatFournisseur() ?>

@@ -240,8 +240,47 @@ class ControllerEntrepot extends Connexion
             echo json_encode($msg);
         }
     }
-}
 
-//fin de la class
+    
+
+  public static function ajouter_panier_transfert()
+  {
+    if (isset($_POST['btn_ajouter_panier_transfert'])) {
+      $output = '';
+      if (!empty($_POST['article'])) {
+        $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
+        var_dump($_POST);return;
+        if (!empty($transfert)) {
+          $i = 0;
+          foreach ($transfert as $row) {
+            $i++;
+
+            $output .= '
+              <tr class="row' . $row['ID_article'] . '">
+                 <td class="col id d_none">' . $row['ID_article'] . '</td>
+                 <td>' . $i . '</td>
+                 <td>' . $row['libelle_article'] . '</td>
+                 <td>' . $row['famille'] . '</td>
+                 <td>' . $row['mark'] . '</td>
+                <td class="label-price col pu" contenteditable="true">' . $row['prix_achat'] . '</td>
+                <td class="label-price col qte" contenteditable="true">0</td>
+                <td class="col total">0</td>
+                 ';
+
+            $output .= '
+                 <td> 
+                     <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
+                     <i class="fa fa-trash"></i> </button>
+                 
+               </td>
+                  </tr>
+                  ';
+          }
+        }
+        echo $output;
+      }
+    }
+  }
+}
 
 //fin de la class
