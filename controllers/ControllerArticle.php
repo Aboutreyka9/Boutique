@@ -6,65 +6,64 @@ class ControllerArticle extends Connexion
     // connexion utilisateur
 
 
-      public static function createAntrepotArticle()
+    public static function createAntrepotArticle()
     {
         if (isset($_POST['btn_attribuer_entrepot_article'])) {
 
-        extract($_POST);
-        $msg["code"] = 400;
-        $msg["message"] = "";
-        
-        if (empty($id_article) || empty($id_entrepot) || empty($prix_achat) || empty($prix_vente) || empty($stock_alert)) {
-            $msg["message"] = "Veuillez renseigner tous les champs !";
-        } elseif (Soutra::exist2("entrepot_article", "article_id",'entrepot_id', $id_entrepot,$id_article)) {
-            $msg["message"] = "Cet article existe déjà dans cet entrepôt !";
-        } elseif (!Soutra::verif_type($prix_achat) || $prix_achat < 0) {
-            $msg["message"] = "Le Prix d'achat invalide !";
+            extract($_POST);
+            $msg["code"] = 400;
+            $msg["message"] = "";
 
-        } elseif (!Soutra::verif_type($prix_vente) || $prix_vente < 0) {
-            $msg["message"] = "Le prix de vente invalide !";
-        } elseif (!Soutra::verif_type($stock_alert) || $stock_alert < 0) {
-            $msg["message"] = "La valeur du stock alert invalide!";
-        } else {
-            $date = date('Y-m-d');
-
-            $dataArticle = array(
-                'article_id' => strtoupper($id_article),
-                'entrepot_id' => $id_entrepot,
-                'prix_achat' => $prix_achat,
-                'prix_vente' => $prix_vente,
-                'stock_alert' => $stock_alert,
-                'garantie_article' => $garantie_article ?? 0,
-                'etat_article' => 1,
-                'created_at' => $date
-            );
-            $dataMouvement = [
-                'article_id' => $id_article,
-                'entrepot_id' => $id_entrepot,
-                'employe_id' => $_SESSION["id_employe"],
-                'quantite' => 0,
-                'prix_achat' => $prix_achat,
-                'prix_vente' => $prix_vente,
-                'type_mouvement' => 'INVENTAIRE',
-                'date_mouvement' => $date
-            ];
-            // var_dump($dataArticle);
-            // var_dump($dataMouvement);return
-            // utiliser la fonction transaction
-            $result = Soutra::transactionData(function () use ($dataArticle, $dataMouvement) {
-                $articleId = Soutra::inserted("entrepot_article", $dataArticle);
-                Soutra::insert("mouvement_stock", $dataMouvement);
-            });
-            // etape 1 : creation du article
-            //etape 2 : enregistrement dans la table mouvement_stock
-            if ($result) {
-                $msg['code'] = 200;
-                $msg["message"] = "Opération effectuée avec succès.";
+            if (empty($id_article) || empty($id_entrepot) || empty($prix_achat) || empty($prix_vente) || empty($stock_alert)) {
+                $msg["message"] = "Veuillez renseigner tous les champs !";
+            } elseif (!Soutra::verif_type($prix_achat) || $prix_achat < 0) {
+                $msg["message"] = "Le Prix d'achat invalide !";
+            } elseif (!Soutra::verif_type($prix_vente) || $prix_vente < 0) {
+                $msg["message"] = "Le prix de vente invalide !";
+            } elseif (!Soutra::verif_type($stock_alert) || $stock_alert < 0) {
+                $msg["message"] = "La valeur du stock alert invalide!";
+            } elseif (Soutra::exist2("entrepot_article", "entrepot_id", "article_id", $id_entrepot, $id_article)) {
+                $msg["message"] = "Cet article existe déjà dans cet entrepôt !";
             } else {
-                $msg["message"] = 'Une erreur est survenue !';
+                $date = date('Y-m-d');
+
+                $dataArticle = array(
+                    'article_id' => strtoupper($id_article),
+                    'entrepot_id' => $id_entrepot,
+                    'prix_achat' => $prix_achat,
+                    'prix_vente' => $prix_vente,
+                    'stock_alert' => $stock_alert,
+                    'garantie_article' => $garantie_article ?? 0,
+                    'etat_article' => 1,
+                    'created_at' => $date
+                );
+                $dataMouvement = [
+                    'article_id' => $id_article,
+                    'entrepot_id' => $id_entrepot,
+                    'employe_id' => $_SESSION["id_employe"],
+                    'quantite' => 0,
+                    'prix_achat' => $prix_achat,
+                    'prix_vente' => $prix_vente,
+                    'type_mouvement' => 'INVENTAIRE',
+                    'date_mouvement' => $date
+                ];
+                // var_dump($dataArticle);
+                // var_dump($dataMouvement);return
+                // utiliser la fonction transaction
+                $result = Soutra::transactionData(function () use ($dataArticle, $dataMouvement) {
+                    $articleId = Soutra::inserted("entrepot_article", $dataArticle);
+                    Soutra::insert("mouvement_stock", $dataMouvement);
+                });
+                // etape 1 : creation du article
+                //etape 2 : enregistrement dans la table mouvement_stock
+                if ($result) {
+                    $msg['code'] = 200;
+                    $msg["message"] = "Opération effectuée avec succès.";
+                } else {
+                    $msg["message"] = 'Une erreur est survenue !';
+                }
             }
-        }
-        echo json_encode($msg);
+            echo json_encode($msg);
         }
     }
 
@@ -75,7 +74,7 @@ class ControllerArticle extends Connexion
             $output = "";
             $output_article = "";
             $output_entrepot = "";
-            if($_POST["frm_attribution_action"] == "article"){
+            if ($_POST["frm_attribution_action"] == "article") {
 
                 $article = Soutra::getByItem('article', 'ID_article', $_POST["id_action"]);
                 $output_article .= '<label for="libelle_article">Libelle</label> <input type="text" readonly value="' . $article['libelle_article'] . '" class="form-control"> <input type="hidden" name="id_article" value="' . $article['ID_article'] . '">';
@@ -86,10 +85,9 @@ class ControllerArticle extends Connexion
                     $output_entrepot .= ' <option value="' . $row['ID_entrepot'] . '">' . $row['libelle_entrepot'] . '</option>';
                 }
                 $output_entrepot .= '</select>';
+            } elseif ($_POST["frm_attribution_action"] == "entrepot") {
 
-            }elseif($_POST["frm_attribution_action"] == "entrepot"){
-
-                $entrepot = Soutra::getByItem('entrepot','ID_entrepot', $_POST["id_action"]);
+                $entrepot = Soutra::getByItem('entrepot', 'ID_entrepot', $_POST["id_action"]);
 
                 $output_entrepot .= '<label for="libelle_entrepot">Entrepot </label> <input type="text" readonly value="' . $entrepot['libelle_entrepot'] . '" class="form-control"> <input type="hidden" name="id_entrepot" value="' . $entrepot['ID_entrepot'] . '">';
 
@@ -105,8 +103,7 @@ class ControllerArticle extends Connexion
                 }
 
                 $output_article .= '</select>';
-
-            }else{
+            } else {
                 $output_article = "";
             }
             // $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot', 1);
@@ -123,7 +120,7 @@ class ControllerArticle extends Connexion
         
              <div class="col-md-6">
             <div class="form-group">
-              '. $output_entrepot.'
+              ' . $output_entrepot . '
             </div>
             </div>
             
@@ -305,7 +302,7 @@ class ControllerArticle extends Connexion
             $msg =  '2&Veuillez renseigner les champs obligatoires (*) !';
         } elseif (Soutra::existe("article", "libelle_article", $libelle_article)) {
             $msg = '2&Ce libelle article existe déjà !';
-        }else {
+        } else {
             $date = date('Y-m-d');
 
             $dataArticle = array(

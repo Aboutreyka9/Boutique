@@ -87,7 +87,6 @@
      <!-- tbody -->
      <tbody class="vente-table">
        <?php
-        var_dump(Soutra::getAllListeBonCommandeFournisseur($start, $end));
         // Récupérer les achats du mois courant
         $achat = Soutra::getAllListeBonCommandeFournisseur($start, $end);
 
@@ -106,11 +105,10 @@
                <td>' . number_format($row['total'], 0, ",", " ") . '</td>
                <td>' . $row['employe'] . ' </td>
                <td>' . Soutra::date_format($row['created_at']) . '</td>
-               ';
-            $output .= '<td class="form-button-action"> 
+              
+               <td class="form-button-action"> 
           <a href="' . URL . 'detail_achat&id=' . $row['code_achat'] . '" data-toggle="tooltip" title="" data-original-title="Voir les détails de la commande" class="btn btn-link btn-primary btn-sm">
-            <i class="fa fa-eye text-icon-primary"></i> </a>
-            ';
+            <i class="fa fa-eye text-icon-primary"></i> </a> ';
 
             // btn validation la commande
             if ($row['statut_achat'] == STATUT_COMMANDE[0]):
@@ -121,37 +119,20 @@
             title="Valider la commande" 
             class="btn btn-link btn-success btn-sm">
             <i class="fa fa-save text-icon-success"></i>
-        </button>
-    ';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
+        </button> ';
             endif;
 
+            // encaisser
             if ($row['statut_achat'] == STATUT_COMMANDE[1]):
               $output .= '
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
-endif;
-// encaisser
-    if ($row['statut_achat'] == STATUT_COMMANDE[1]):
-    $output .= '
-<<<<<<< HEAD
->>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
+
         <button type="button" 
         id="btn_encaisser_achat"
             data-toggle="modal" data-target="#encaisser-modal"
             data-code="' . $row['code_achat'] . '"
             data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i>
-        </button>
-    ';
+        </button> ';
             endif;
-
             // btn Modifier la commande
             if ($row['statut_achat'] == STATUT_COMMANDE[0]):
               $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm" data-original-title="Modifier la commande"> <i class="fa fa-edit text-icon-primary"></i> </button>';
@@ -174,7 +155,9 @@ endif;
             endif;
 
             // btn Imprimer la facture
-            $output .= '<a href="' . RACINE . 'views/print_achat.php?id=' . $row['code_achat'] . '&statut=' . $row['statut_achat'] . '" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>
+            $output .= '<a href="' . RACINE . 'views/print_achat.php?id=' . $row['code_achat'] . '&statut=' . $row['statut_achat'] . '" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>';
+
+            $output .= '
             </td>
             </tr>';
           }
@@ -236,58 +219,12 @@ endif;
                       $output .= '
                         <option value="' . $row['ID_mark'] . '">' . $row['libelle_mark'] . '</option>
                         ';
-<<<<<<< HEAD
-<<<<<<< HEAD
                     }
                     echo $output;
                     ?>
-=======
-=======
-                    }
-                    echo $output;
-                    ?>
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
-                      }
-                      echo $output;
-                      ?>
-                      
-                    </select>
-                  </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="libelle_achat">Libelle</label>
-                       <input type="text" name="libelle_achat" id="libelle_achat" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="slug">Slug</label>
-                       <input type="text" name="slug" id="slug" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="prix_achat">Prix</label>
-                       <input type="number" name="prix_achat" min="0" id="prix_achat" class="form-control">
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="stock_alert">Stock Alert</label>
-                      <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
-                    </div>
-                  </div>
-                </div><!-- /.form-row -->
-              </div><!-- /.modal-body -->
-              <!-- .modal-footer -->
-              <div class="modal-footer">
-              <input type="hidden" name="btn_ajouter_achat" class="form-control">
-<<<<<<< HEAD
->>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
-
+                   }
+                   echo $output;
+                   ?>
                  </select>
                </div>
              </div>
@@ -321,17 +258,46 @@ endif;
          <div class="modal-footer">
            <input type="hidden" name="btn_ajouter_achat" class="form-control">
 
-           <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
-         </div><!-- /.modal-footer -->
-       </div><!-- /.modal-content -->
-     </div><!-- /.modal-dialog -->
+           </select>
+         </div>
+       </div>
+       <div class="col-md-12">
+         <div class="form-group">
+           <label for="libelle_achat">Libelle</label>
+           <input type="text" name="libelle_achat" id="libelle_achat" class="form-control">
+         </div>
+       </div>
+       <div class="col-md-12">
+         <div class="form-group">
+           <label for="slug">Slug</label>
+           <input type="text" name="slug" id="slug" class="form-control">
+         </div>
+       </div>
+       <div class="col-md-12">
+         <div class="form-group">
+           <label for="prix_achat">Prix</label>
+           <input type="number" name="prix_achat" min="0" id="prix_achat" class="form-control">
+         </div>
+       </div>
+       <div class="col-md-12">
+         <div class="form-group">
+           <label for="stock_alert">Stock Alert</label>
+           <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
+         </div>
+       </div>
+     </div><!-- /.form-row -->
+   </div><!-- /.modal-body -->
+   <!-- .modal-footer -->
+   <div class="modal-footer">
+     <input type="hidden" name="btn_ajouter_achat" class="form-control">
+
+     <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+   </div><!-- /.modal-footer -->
+   </div><!-- /.modal-content -->
+   </div><!-- /.modal-dialog -->
    </div><!-- /.m -->
  </form><!-- /.modal -->
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
  <!-- Modal fournisseur -->
  <div class="modal fade" id="fournisseurModal" tabindex="-1" aria-labelledby="fournisseurModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-lg">
@@ -347,47 +313,39 @@ endif;
    </div>
  </div>
  <!-- End Modal fournisseur -->
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
-            
-  <!-- .modal -->
-  
-        <div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
-          <!-- .modal-dialog -->
-          <div class="modal-dialog" role="document">
-            <!-- .modal-content -->
-            <div class="modal-content">
-              <!-- .modal-header -->
-              <div class="modal-header">
-                <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-                </h6>
-              </div><!-- /.modal-header -->
-              <!-- .modal-body -->
-              <form action="" id="form_encaisser_achat" method="POST">
-              <div class="modal-body">
-                <!-- .form-row -->
-                <div class="form-row menu-modal">
-                  <input type="hidden" name="code_achat" id="code_achat">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="montant_versement">Montant versement</label>
-                      <input type="text" name="montant_versement" id="montant_versement" class="form-control">
-                    </div>
-                  </div>
-                </div><!-- /.form-row -->
-              </div><!-- /.modal-body -->
-              <!-- .modal-footer -->
-              <div class="modal-footer">
-              <input type="hidden" name="btn_encaisser_achat" class="form-control">
 
-                <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal" >Close</button>
-              </div><!-- /.modal-footer -->
-            </form><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.m -->
-<<<<<<< HEAD
->>>>>>> 0fce42155269788884b0b2cd7765a26d167db4a0
-=======
->>>>>>> dc9613e9fd2a9d5ea68564b749116db91c1ec44a
+ <!-- .modal -->
+
+ <div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
+   <!-- .modal-dialog -->
+   <div class="modal-dialog" role="document">
+     <!-- .modal-content -->
+     <div class="modal-content">
+       <!-- .modal-header -->
+       <div class="modal-header">
+         <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
+         </h6>
+       </div><!-- /.modal-header -->
+       <!-- .modal-body -->
+       <form action="" id="form_encaisser_achat" method="POST">
+         <div class="modal-body">
+           <!-- .form-row -->
+           <div class="form-row menu-modal">
+             <input type="hidden" name="code_achat" id="code_achat">
+             <div class="col-md-12">
+               <div class="form-group">
+                 <label for="montant_versement">Montant versement</label>
+                 <input type="text" name="montant_versement" id="montant_versement" class="form-control">
+               </div>
+             </div>
+           </div><!-- /.form-row -->
+         </div><!-- /.modal-body -->
+         <!-- .modal-footer -->
+         <div class="modal-footer">
+           <input type="hidden" name="btn_encaisser_achat" class="form-control">
+
+           <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+         </div><!-- /.modal-footer -->
+       </form><!-- /.modal-content -->
+     </div><!-- /.modal-dialog -->
+   </div><!-- /.m -->

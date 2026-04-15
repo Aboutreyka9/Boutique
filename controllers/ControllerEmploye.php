@@ -21,7 +21,7 @@ class ControllerEmploye extends Connexion
                     $_SESSION["id_employe"] = $emp["ID_employe"];
                     $_SESSION["role"] = $emp["role"];
                     $_SESSION["nom"] = $emp["nom_employe"];
-                    $_SESSION["id_entrepot"] = $emp["ID_entrepot"] ?? null;
+                    $_SESSION["id_entrepot"] = $emp["entrepot"] ?? null;
                     Soutra::update("employe", ['login' => date("Y-m-d h:i:s"), "ID_employe" => $emp['ID_employe']]);
                     $msg['code'] = 200;
                     $msg['message'] = "Connexion réussie";
@@ -272,12 +272,9 @@ class ControllerEmploye extends Connexion
         } elseif (!Soutra::verif_type($telephone_employe) || mb_strlen($telephone_employe) != 10) {
             $msg = '2&Le numéro de téléphone invalide !';
             // $msg = mb_strlen($telephone_employe);
-        } 
-        elseif (!filter_var($email_employe, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!filter_var($email_employe, FILTER_VALIDATE_EMAIL)) {
             $msg = '2&L\'email invalide !';
-        } 
-        
-        elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe)) {
+        } elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe)) {
             $msg = '2&Le téléphone ' . $telephone_employe . ' existe déjà !';
         } else {
             $date = "NOW()";
@@ -295,17 +292,17 @@ class ControllerEmploye extends Connexion
             );
             //var_dump($data);die();
             if (Soutra::insert("employe", $data)) {
-                  $mail = new ControllerMailer();
-                  $nom = $nom_employe . ' ' . $prenom_employe;
-                  $email = $email_employe;
-                  $tel = $telephone_employe;
-                  $pass = '123@123';
-                  $sendMail = $mail->sendUserCredentials($email, $nom, $tel, $pass);
-                  if($sendMail){
+                $mail = new ControllerMailer();
+                $nom = $nom_employe . ' ' . $prenom_employe;
+                $email = $email_employe;
+                $tel = $telephone_employe;
+                $pass = '123@123';
+                $sendMail = $mail->sendUserCredentials($email, $nom, $tel, $pass);
+                if ($sendMail) {
                     $msg = "1&Employé enregistré avec succès";
-                  }else{
+                } else {
                     $msg = '2&Une erreur est survenue ! ';
-                  }
+                }
             } else {
                 $msg = '2&Une erreur est survenue ! ';
             }
