@@ -196,24 +196,27 @@ class ControllerAchat extends Connexion
       $ligneAchat = Soutra::getDetailAchat($code);
 
 
-
       $results = Soutra::transactionData(
         function () use ($data, $ligneAchat) {
           Soutra::update("achat", $data);
           $employe = $_SESSION['id_employe'];
-          $entrepot = $_SESSION['id_entrepot'];
-          foreach ($ligneAchat as $value) {
-            $dataMouvement = [
-              'article_id' => $value['article_id'],
-              'type_mouvement' => 'ENTREE',
-              'quantite' => $value['qte'],
-              'employe_id' => $employe,
-              'prix_achat' => $value['prix_achat'],
-              'entrepot_id' => $entrepot,
-              'date_mouvement' => $data['created_at']
+          $entrepot = $_SESSION['id_entrepot'] ?? 7;
+          $date = date('Y-m-d');
+
+          $rows = array_map(function ($value) use ($employe, $entrepot, $date) {
+            return [
+              'article_id'     => $value['article_id'],
+              'type_mouvement' => STATUT_MOUVEMENT[1],
+              'quantite'       => $value['qte'],
+              'employe_id'     => $employe,
+              'prix_vente'     => $value['prix_achat'],
+              'entrepot_id'    => $entrepot,
+              'date_mouvement' => $date
             ];
-            Soutra::inserted('mouvement_stock', $dataMouvement);
-          }
+          }, $ligneAchat);
+
+          // 4. Insert multiple (1 seule requête 🔥)
+          Soutra::insertMultiple('mouvement_stock', $rows);
         }
       );
 
@@ -260,16 +263,39 @@ class ControllerAchat extends Connexion
         'statut_achat' => STATUT_COMMANDE[3],
         'code_achat' => $code
       );
-      if (Soutra::update("achat", $data)) {
 
-        $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
-        $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
+      $ligneAchat = Soutra::getDetailAchat($code);
 
-        $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
+
+      $results = Soutra::transactionData(
+        function () use ($data, $ligneAchat) {
+          Soutra::update("achat", $data);
+          $employe = $_SESSION['id_employe'];
+          $date = date('Y-m-d');
+
+          $rows = array_map(function ($value) use ($employe, $date) {
+            return [
+              'article_id'     => $value['article_id'],
+              'type_mouvement' => STATUT_MOUVEMENT[5],
+              'quantite'       => $value['qte'],
+              'employe_id'     => $employe,
+              'prix_achat'     => $value['prix_achat'],
+              'entrepot_id'    => $value['entrepot_id'],
+              'date_mouvement' => $date
+            ];
+          }, $ligneAchat);
+
+          // 4. Insert multiple (1 seule requête 🔥)
+          Soutra::insertMultiple('mouvement_stock', $rows);
+        }
+      );
+
+      if ($results) {
         $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
+
       echo json_encode($msg);
     }
   }

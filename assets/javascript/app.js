@@ -1967,14 +1967,20 @@ $(function () {
             },
             success: function (data) {
                 console.log(data);
-
                 var verif = data.split("&");
                 if (verif[0] == 1) {
-                    var code = verif[1].split("#");
 
-                    notify(code[1]);
-                    //window.open(ROOT_SIMPLE + "views/print.php?id=" + code[0]);
-                    window.history.go(0);
+                      swal({
+                        title: "Succès",
+                        text: verif[1],
+                        icon: "success",
+                        button: true,
+
+                    }).then(() =>
+                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
+
+                        window.history.go(0)
+                    );
 
                 } else {
                     notify(verif[1], "", "alert", "warning");
@@ -3722,6 +3728,8 @@ $(function () {
                     btn_filter_vente: type
                 },
                 success: function (data) {
+                    console.log(data);
+                    
                     let res = JSON.parse(data);
 
 
@@ -4142,10 +4150,10 @@ function updateELement(btn_action,code) {
                                 history.go(0);
                             });
                         }else{
-                            swal("Notification", data.msg, "error")
-                            .then(function () {
-                                history.go(0);
-                            });
+                            swal("Notification", data.msg, "error");
+                            // .then(function () {
+                            //     history.go(0);
+                            // });
                         }
 
                         

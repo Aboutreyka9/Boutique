@@ -79,7 +79,6 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
     <!-- tbody -->
     <tbody class="vente-table">
       <?php
-
       // Récupérer les achats du mois courant
       $vente = Soutra::getAllListeBonCommandeClient($start, $end);
 
@@ -148,7 +147,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
           endif;
 
           // btn Imprimer la facture
-          $output .= '<a href="'.RACINE .'views/print.php?id='.$row['code_vente'].'&statut='.$row['statut_vente'].'" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>
+          $output .= '<a href="' . RACINE . 'views/print.php?id=' . $row['code_vente'] . '&statut=' . $row['statut_vente'] . '" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>
             </td>
             </tr>';
         }
@@ -255,38 +254,38 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
 </form><!-- /.modal -->
 
 
-  <!-- .modal -->
-  
-        <div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
-          <!-- .modal-dialog -->
-          <div class="modal-dialog" role="document">
-            <!-- .modal-content -->
-            <div class="modal-content">
-              <!-- .modal-header -->
-              <div class="modal-header">
-                <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-                </h6>
-              </div><!-- /.modal-header -->
-              <!-- .modal-body -->
-              <form action="" id="form_encaisser_vente" method="POST">
-              <div class="modal-body">
-                <!-- .form-row -->
-                <div class="form-row menu-modal">
-                  <input type="hidden" name="code_vente" id="code_vente">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="montant_versement">Montant versement</label>
-                      <input type="text" name="montant_versement" id="montant_versement" class="form-control">
-                    </div>
-                  </div>
-                </div><!-- /.form-row -->
-              </div><!-- /.modal-body -->
-              <!-- .modal-footer -->
-              <div class="modal-footer">
-              <input type="hidden" name="btn_encaisser_vente" class="form-control">
+<!-- .modal -->
 
-                <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal" >Close</button>
-              </div><!-- /.modal-footer -->
-            </form><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.m -->
+<div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
+  <!-- .modal-dialog -->
+  <div class="modal-dialog" role="document">
+    <!-- .modal-content -->
+    <div class="modal-content">
+      <!-- .modal-header -->
+      <div class="modal-header">
+        <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
+        </h6>
+      </div><!-- /.modal-header -->
+      <!-- .modal-body -->
+      <form action="" id="form_encaisser_vente" method="POST">
+        <div class="modal-body">
+          <!-- .form-row -->
+          <div class="form-row menu-modal">
+            <input type="hidden" name="code_vente" id="code_vente">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="montant_versement">Montant versement</label>
+                <input type="text" name="montant_versement" id="montant_versement" class="form-control">
+              </div>
+            </div>
+          </div><!-- /.form-row -->
+        </div><!-- /.modal-body -->
+        <!-- .modal-footer -->
+        <div class="modal-footer">
+          <input type="hidden" name="btn_encaisser_vente" class="form-control">
+
+          <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+        </div><!-- /.modal-footer -->
+      </form><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.m -->
