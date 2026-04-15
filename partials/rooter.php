@@ -72,10 +72,10 @@ ControllerFournisseur::getFournisseurForAchat();
 
 // ENTREPOT
 ControllerEntrepot::ajouter_entrepot();
-// ControllerEntrepot::liste_famille();
+ControllerEntrepot::ajouter_panier_transfert();
 ControllerEntrepot::getEntrepot();
 ControllerEntrepot::modifier_entrepot();
-// ControllerEntrepot::suppresion_famille();
+ControllerEntrepot::getEntrepotForTransfert();
 
 
 // CATEGORIE
