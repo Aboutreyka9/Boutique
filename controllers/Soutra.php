@@ -1332,13 +1332,12 @@ class Soutra extends Connexion
     public static function getPanierTransfert($id_article)
     {
         $data = [];
-        $sql = "SELECT ar.*, en.quantite quantite_entree, so.quantite quantite_sortie, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
+        $sql = "SELECT ar.*, ent.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id
         JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
-        JOIN entree en ON en.article_id = ar.ID_article
-        JOIN sortie so ON so.article_id = ar.ID_article
-        WHERE ar.ID_article IN(:id_article)";
+        WHERE ar.ID_article GROUP BY ar.ID_article IN($id_article)";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['id_article' => $id_article]);
+        $query->execute(['entrepot_id' => 7]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
