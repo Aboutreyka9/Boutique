@@ -62,7 +62,7 @@ if (notAdmin()) {
       <?php
       $output = '';
       if (!empty($_GET['id'])) {
-        $achat = Soutra::getPanierAchat($_GET['id']);
+        $achat = Soutra::getPanierAchat($_GET['id'], $_SESSION['id_entrepot']);
         if (!empty($achat)) {
           $i = 0;
           foreach ($achat as $row) {

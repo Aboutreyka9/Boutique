@@ -241,10 +241,10 @@ class Soutra extends Connexion
 
     public static function exist2($table, $lib1, $lib2, $v1, $v2)
     {
-        $query = "SELECT * FROM $table WHERE $lib1 = :val1 AND $lib2 = :val2 ";
-        $statement = self::getConnexion()->prepare($query);
-        $statement->execute(array('val1' => $v1, 'val2' => $v2));
-        if ($statement->rowCount() > 0)
+        $sql = "SELECT * FROM $table WHERE $lib1 = :val1 AND $lib2 = :val2 LIMIT 1";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(array('val1' => $v1, 'val2' => $v2));
+        if ($query->rowCount() > 0)
             return true;
         else
             return false;
@@ -1090,8 +1090,7 @@ class Soutra extends Connexion
         WHERE ar.etat_article = :etat  ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
-            // 'entrepot_id' => $_SESSION['entrepot_id'],
-            'entrepot_id' => 7,
+            'entrepot_id' => $_SESSION['entrepot_id'],
             'etat_entrepot_article' => STATUT[1],
             'etat' => STATUT[1]
         ]);
@@ -1287,7 +1286,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getPanierAchat($id_article)
+    public static function getPanierAchat($id_article, $entrepot)
     {
         $data = [];
         $sql = "SELECT ar.*, ent.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
@@ -1295,7 +1294,7 @@ class Soutra extends Connexion
         JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
         WHERE ar.ID_article IN($id_article)";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['entrepot_id' => 7]);
+        $query->execute(['entrepot_id' => $entrepot]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1346,13 +1345,16 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getPanierVente($id_article)
+  
+    public static function getPanierVente($id_article, $entrepot)
     {
         $data = [];
-        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
+        $sql = "SELECT ar.*, ent.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id
+        INNER JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
         WHERE ar.ID_article IN($id_article)";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([]);
+        $query->execute(['entrepot_id' => $entrepot]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1751,16 +1753,18 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getDetailVente($id_vente, $etat = 1)
+    public static function getDetailVente($id_vente, $entrepot, $etat = 1)
     {
         $data = [];
-        $sql = "SELECT so.*,ve.created_at AS date_vente,ar.libelle_article article,ar.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark FROM sortie so  INNER JOIN article ar ON ar.ID_article = so.article_id
-        INNER JOIN famille fa ON fa.ID_famille = ar.famille_id
-        INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
-        INNER JOIN vente ve ON ve.code_vente = so.vente_id
-        WHERE ve.code_vente = ? AND so.etat_sortie= ?";
+        $sql = "SELECT ent.*, so.*,ve.entrepot_id,ve.created_at AS date_vente,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark FROM sortie so  
+        INNER JOIN article ar ON ar.ID_article = so.article_id
+        JOIN famille fa ON fa.ID_famille = ar.famille_id
+        JOIN mark ma ON ma.ID_mark = ar.mark_id
+        JOIN vente ve ON ve.code_vente = so.vente_id
+        JOIN entrepot_article ent ON ve.entrepot_id = ent.entrepot_id
+        WHERE ve.entrepot_id = :entrepot_id AND ve.code_vente = :code_vente AND so.etat_sortie= :etat GROUP BY ve.code_vente, so.ID_sortie ORDER BY ar.libelle_article";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$id_vente, $etat]);
+        $query->execute(['entrepot_id' => $entrepot, 'code_vente' => $id_vente, 'etat' => $etat]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1769,25 +1773,28 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getDetailAchat($id_achat, $etat = 1)
+    public static function getDetailAchat($id_achat, $entrepot, $etat = 1)
     {
         $data = [];
-        $sql = "SELECT en.*,ac.created_at AS date_achat,ar.libelle_article article,ar.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark 
+        $sql = "SELECT en.*, ac.entrepot_id, ac.created_at AS date_achat,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark 
         FROM entree en  
-		INNER JOIN article ar ON ar.ID_article = en.article_id
-        INNER JOIN famille fa ON fa.ID_famille = ar.famille_id
-        INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
-        INNER JOIN achat ac ON ac.code_achat = en.achat_id
-        WHERE ac.code_achat = ? AND en.etat_entree= ?";
+		JOIN article ar ON ar.ID_article = en.article_id
+        JOIN famille fa ON fa.ID_famille = ar.famille_id
+        JOIN mark ma ON ma.ID_mark = ar.mark_id
+        JOIN achat ac ON ac.code_achat = en.achat_id
+        JOIN entrepot_article ent ON ac.entrepot_id = ent.entrepot_id
+        WHERE ac.entrepot_id = :entrepot_id AND  ac.code_achat = :code_achat AND en.etat_entree= :etat GROUP BY ac.code_achat, en.ID_entree ORDER BY ar.libelle_article";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$id_achat, $etat]);
+        $query->execute(['entrepot_id' => $entrepot, 'code_achat' => $id_achat, 'etat' => $etat]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
     }
+
+
 
 
 
@@ -2420,24 +2427,24 @@ class Soutra extends Connexion
     }
 
 
-    public static function getAllListeBonCommandeClient($dateStart, $dateEnd)
+    public static function getAllListeBonCommandeClient($dateStart, $dateEnd, $entrepot)
     {
         $data = [];
         $sql = 'SELECT ve.*, 
-                SUM(so.qte) AS article,
-                   SUM(so.prix_vente * so.qte) AS total,
+                COALESCE(SUM(so.qte),0) AS article,
+                   COALESCE(SUM(so.prix_vente * so.qte),0) AS total,
                 --    ve._vente,ve.created_at,
-                CONCAT(cl.nom_client, " ", cl.prenom_client) AS client, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
+            COALESCE(CONCAT(cl.nom_client, " ", cl.prenom_client),"inconnu") AS client, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
             FROM vente ve 
             JOIN sortie so ON so.vente_id = ve.code_vente
             JOIN client cl ON cl.ID_client = ve.client_id
             JOIN employe emp ON emp.ID_employe = ve.employe_id
-            WHERE DATE(ve.created_at) BETWEEN :dateStart AND :dateEnd
+            WHERE ve.entrepot_id = :entrepot_id AND DATE(ve.created_at) BETWEEN :dateStart AND :dateEnd
             GROUP BY ve.ID_vente 
             ORDER BY ve.ID_vente DESC';
 
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
+        $query->execute(['entrepot_id' => $entrepot, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
