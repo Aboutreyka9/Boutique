@@ -32,6 +32,7 @@
   <!-- DATE RANGER-->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <link rel="stylesheet" href="<?= ASSETS ?>stylesheets/app.css">
+  <link rel="stylesheet" href="<?= ASSETS ?>stylesheets/responsive-style.css">
 
   <script>
     var skin = localStorage.getItem('skin') || 'default';

@@ -14,6 +14,7 @@
 
   // Récupérer les achats du mois courant
   $totaux = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
+  $totalAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
   ?>
 
  <header class="page-title-bar">
@@ -32,23 +33,55 @@
      </div>
    </div>
    <!-- Résumé des ventes -->
-   <div class="row mt-5">
-     <div class="col-md-6 col-lg-6">
-       <div class="card text-center shadow-sm border-primary">
+
+   <!-- STATS -->
+   <div class="row g-3 mb-1">
+
+     <div class="col-md-4">
+       <div class="card custom-card-detail">
          <div class="card-body">
-           <h6 class="text-muted">Quantité Achat</h6>
-           <h3 class="text-primary" id="nb_achats"><?= $totaux['article'] ?? 0 ?></h3>
+           <div class="d-flex align-items-center">
+             <div class="icon bg-warning mr-2">
+               <i class="bi bi-alarm"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Achat en attente</span> (<?= $totalAttente['article'] ?? 0 ?>)</h6>
+           </div>
+           <h5><span id=""><?= number_format($totalAttente['total'] ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
          </div>
        </div>
      </div>
-     <div class="col-md-6 col-lg-6">
-       <div class="card text-center shadow-sm border-success">
+
+     <div class="col-md-4">
+       <div class="card custom-card-detail">
          <div class="card-body">
-           <h6 class="text-muted">Montant Achat</h6>
-           <h3 class="text-success" id="total_montant"><?= number_format($totaux['total'] ?? 0, 0, ',', ' ') ?> FCFA</h3>
+           <div class="d-flex align-items-center">
+             <div class="icon bg-success mr-2">
+               <i class="bi bi-check2-circle"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Quantité Achat</span> </h6>
+           </div>
+           <h5><span id="nb_achats"><?= $totaux['article'] ?? 0 ?>
+             </span></h5>
          </div>
        </div>
      </div>
+
+     <div class="col-md-4">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-success mr-2">
+               <i class="bi bi-cash-stack"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Montant Achat</span> </h6>
+           </div>
+           <h5><span class="tester" id="total_montant"><?= number_format($totaux['total'] ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
+     </div>
+
    </div>
 
    <!-- floating action -->
@@ -59,9 +92,6 @@
    <!-- title and toolbar -->
    <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
 
-     <div class="form-group">
-       <a href="<?= URL ?>view_achat_by_article" id="clearFilterBtn" class="btn btn-info"><i class="fa fa-eye"></i> Voir par Article</a>
-     </div>
    </div>
  </header>
 
@@ -85,7 +115,7 @@
        </tr>
      </thead><!-- /thead -->
      <!-- tbody -->
-     <tbody class="vente-table">
+     <tbody class="achat-table">
        <?php
         // Récupérer les achats du mois courant
         $achat = Soutra::getAllListeBonCommandeFournisseur($start, $end);
@@ -173,130 +203,6 @@
 
 
 
- <!-- .modal -->
- <form action="" id="btn_ajouter_achat" method="POST">
-
-   <div class="modal fade" data-backdrop="static" id="achat-modal" tabindex="-1" role="dialog" aria-labelledby="achat-modal" aria-hidden="true">
-     <!-- .modal-dialog -->
-     <div class="modal-dialog" role="document">
-       <!-- .modal-content -->
-       <div class="modal-content">
-         <!-- .modal-header -->
-         <div class="modal-header">
-           <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-           </h6>
-         </div><!-- /.modal-header -->
-         <!-- .modal-body -->
-         <div class="modal-body">
-           <!-- .form-row -->
-           <div class="form-row menu-modal">
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="famille_id">Famille</label>
-                 <select name="famille_id" id="famille_id" class="form-control" id="">
-                   <?php
-                    $famille = Soutra::getAllTable('famille', 'etat_famille', 1);
-                    $output = '';
-                    foreach ($famille as $row) {
-                      $output .= '
-                          <option value="' . $row['ID_famille'] . '">' . $row['libelle_famille'] . '</option>
-                          ';
-                    }
-                    echo $output;
-                    ?>
-
-                 </select>
-               </div>
-             </div>
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="mark_id">Mark</label>
-                 <select name="mark_id" id="mark_id" class="form-control" id="">
-                   <?php
-                    $mark = Soutra::getAllTable('mark', 'etat_mark', 1);
-                    $output = '';
-                    foreach ($mark as $row) {
-                      $output .= '
-                        <option value="' . $row['ID_mark'] . '">' . $row['libelle_mark'] . '</option>
-                        ';
-                    }
-                    echo $output;
-                    ?>
-                   }
-                   echo $output;
-                   ?>
-                 </select>
-               </div>
-             </div>
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="libelle_achat">Libelle</label>
-                 <input type="text" name="libelle_achat" id="libelle_achat" class="form-control">
-               </div>
-             </div>
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="slug">Slug</label>
-                 <input type="text" name="slug" id="slug" class="form-control">
-               </div>
-             </div>
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="prix_achat">Prix</label>
-                 <input type="number" name="prix_achat" min="0" id="prix_achat" class="form-control">
-               </div>
-             </div>
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="stock_alert">Stock Alert</label>
-                 <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
-               </div>
-             </div>
-           </div><!-- /.form-row -->
-         </div><!-- /.modal-body -->
-         <!-- .modal-footer -->
-         <div class="modal-footer">
-           <input type="hidden" name="btn_ajouter_achat" class="form-control">
-
-           </select>
-         </div>
-       </div>
-       <div class="col-md-12">
-         <div class="form-group">
-           <label for="libelle_achat">Libelle</label>
-           <input type="text" name="libelle_achat" id="libelle_achat" class="form-control">
-         </div>
-       </div>
-       <div class="col-md-12">
-         <div class="form-group">
-           <label for="slug">Slug</label>
-           <input type="text" name="slug" id="slug" class="form-control">
-         </div>
-       </div>
-       <div class="col-md-12">
-         <div class="form-group">
-           <label for="prix_achat">Prix</label>
-           <input type="number" name="prix_achat" min="0" id="prix_achat" class="form-control">
-         </div>
-       </div>
-       <div class="col-md-12">
-         <div class="form-group">
-           <label for="stock_alert">Stock Alert</label>
-           <input type="number" name="stock_alert" min="0" id="stock_alert" class="form-control">
-         </div>
-       </div>
-     </div><!-- /.form-row -->
-   </div><!-- /.modal-body -->
-   <!-- .modal-footer -->
-   <div class="modal-footer">
-     <input type="hidden" name="btn_ajouter_achat" class="form-control">
-
-     <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
-   </div><!-- /.modal-footer -->
-   </div><!-- /.modal-content -->
-   </div><!-- /.modal-dialog -->
-   </div><!-- /.m -->
- </form><!-- /.modal -->
 
  <!-- Modal fournisseur -->
  <div class="modal fade" id="fournisseurModal" tabindex="-1" aria-labelledby="fournisseurModalLabel" aria-hidden="true">

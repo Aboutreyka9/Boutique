@@ -1,0 +1,59 @@
+/* dashbord */
+.stats-header {
+    gap: 10px;
+}
+
+.filter-box {
+    max-width: 100%;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .filter-box {
+        max-width: 350px;
+    }
+}
+
+/* employe liste */
+
+/* Actions */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Colonne action */
+.action-col {
+    width: 180px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    /* réduire taille texte */
+    .my-table {
+        font-size: 12px;
+    }
+
+    /* cacher texte boutons */
+    .btn-text {
+        display: none;
+    }
+
+    /* centrer contenu */
+    .my-table td,
+    .my-table th {
+        white-space: nowrap;
+    }
+
+    .w-th tr th{
+        width: 69.9062px;
+        text-align: center;
+    }
+    /* Mobile hide text*/
+    .phone-btn-text {
+        display: none;
+    }
+}

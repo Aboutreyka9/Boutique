@@ -374,9 +374,10 @@ $(function () {
                     id_client: id,
                     frm_upclient: 1
                 },
-                dataType: 'JSON',
+                // dataType: 'JSON',
                 success: function (data) {
-                    // // 
+                    console.log(data);
+                    
                     $(".menu-modal").html(data);
                     $("#client-modal").modal('show');
                 }
@@ -384,7 +385,7 @@ $(function () {
         });
     }
 
-    btn_suprimer_client();
+    // btn_suprimer_client();
 
     function btn_suprimer_client() {
         $('body').delegate('.btn_remove_client', 'click', function (e) {
@@ -663,6 +664,20 @@ $(function () {
 
     // FAMILLE
 
+    function liste_famille() {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                btn_liste_famille: 1
+            },
+            success: function (data) {
+                // // 
+                $('.famille-table').html(data);
+            }
+        });
+    }
+
     btn_ajouter_Famille();
 
     function btn_ajouter_Famille() {
@@ -701,19 +716,6 @@ $(function () {
         });
     }
 
-    // function liste_famille() {
-    //     $.ajax({
-    //         url: "../partials/rooter.php",
-    //         method: "POST",
-    //         data: {
-    //             btn_liste_famille: 1
-    //         },
-    //         success: function (data) {
-    //             // // 
-    //             $('.famille-table').html(data);
-    //         }
-    //     });
-    // }
 
     btn_update_famille();
 
@@ -1175,7 +1177,49 @@ $(function () {
     // SEXION ENTREPOS
 
     $('#responsable_entrepot').select2();
+    changeStatutEntrepot();
 
+    function changeStatutEntrepot() {  
+        $('body').on('click', '.btnChangeStatutEntrepot', function (e) {
+            const code = $(this).data('code');
+            const statut = $(this).data('statut');
+        
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    statut: statut,
+                    btnChangeStatutEntrepot: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    if (data.code == 200) {
+                        $.notify(data.message, "success");
+                        liste_entrepot();
+                    } else {
+                        $.notify(data.message, "");
+                        
+                    }
+                }
+            });
+        });
+    }
+    
+     function liste_entrepot() {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                btn_liste_entrepot: 1
+            },
+            success: function (data) {
+                // // 
+                $('.entrepot-table').html(data);
+            }
+        });
+    }
 
     btn_ajouter_entrepot();
 
@@ -1197,7 +1241,7 @@ $(function () {
                     if (data.code == 200) {
                         notify(data.message);
                         $('#entrepot-modal').modal('hide');
-                        // liste_entrepot();
+                        liste_entrepot();
 
                     } else {
                         // // 
@@ -1212,51 +1256,14 @@ $(function () {
         });
     }
 
-    function ajouter_entrepot(entrepot) {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data: entrepot,
-            success: function (data) {
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-                    notify(verif[1]);
-                    resetForm();
-                    $('#famille-modal').modal('hide');
-                    $('#id_famille').remove();
-                    liste_famille();
-
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
-                } else {
-                    // // 
-                    notify(verif[1], "", "alert", "warning");
 
 
-                }
-
-            }
-        });
-    }
-
-    function liste_famille() {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data: {
-                btn_liste_famille: 1
-            },
-            success: function (data) {
-                // // 
-                $('.famille-table').html(data);
-            }
-        });
-    }
 
     btn_update_entrepot();
 
     function btn_update_entrepot() {
 
-        $('body').delegate('.btn_update_entrepot', 'click', function (e) {
+        $('body').on('click','.btn_update_entrepot', function (e) {
             e.preventDefault();
             var id = $(this).data('id');
 
@@ -1281,7 +1288,7 @@ $(function () {
     btn_modifier_entrepot();
 
     function btn_modifier_entrepot() {
-        $('body').delegate('#btn_modifier_entrepot', 'submit', function (e) {
+        $('body').on('submit','#btn_modifier_entrepot', function (e) {
             e.preventDefault();
 
             var entrepotData = $(this).serialize();
@@ -1296,9 +1303,9 @@ $(function () {
                     console.log(data);
 
                     if (data.code == 200) {
-                        notify(data.message);
+                        $.notify(data.message,'success');
                         $('#entrepot-modal').modal('hide');
-                        // liste_entrepot();
+                        liste_entrepot();
 
                     } else {
                         // // 
@@ -1444,7 +1451,7 @@ $(function () {
             e.preventDefault();
             let id = $(this).val();
             let action = $(this).find(':selected').data('action');
-            console.log(action);
+            // console.log(id);
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
@@ -1454,14 +1461,14 @@ $(function () {
                 },
                 dataType: 'json',
                 success: function (response) {
-                    // alert(action);return
-                    // console.log(response.entrepot);return
 
                     if (response.code === 200) {
 
                         const f = response.entrepot;
-                        $("#libelle_entrepot").val(f.libelle_entrepot);
-                        $("#adresse_entrepot").val(f.adresse_entrepot);
+                        $("#libelle_entrepot_" + action).val(f.libelle_entrepot);
+                        $("#adresse_entrepot_" + action).val(f.adresse_entrepot);
+                        $("#id_entrepot_" + action).val(id);
+                        
 
                     } else {
                         console.log("Entrepot non trouvé");
@@ -1472,6 +1479,96 @@ $(function () {
                 }
             });
         });
+    }
+
+    ajax_ajouter_panier_transfert();
+    function ajax_ajouter_panier_transfert() {
+        $('body').delegate('#btn_ajouter_panier_transfert', 'submit', function (e) {
+            e.preventDefault();
+            var transfert = $(this).serialize();
+            $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: transfert,
+            success: function (data) {
+            // console.log(data);return;
+                
+                if (data) {
+                    changerMontant();
+                    $('.transfert-table').html(data);
+                    $('.row_montant').show();
+                    $('.panier_transfert_content').show();
+                } else {
+                    notify("Veuillez choisir au moins un article svp!", "", "", "warning")
+                }
+            }
+        });
+        });
+    }
+
+
+    totalRow()
+
+    function totalRow() {
+        $('.table_total').on('keyup', '.col', function () {
+
+            var currow = $(this).closest('tr');
+            total = 0
+            var pu = currow.find('.pu').text();
+            var qte = currow.find('.qte').text();
+
+
+            var page_transfert = $('#page_transfert').val();
+            if (page_transfert != undefined) {
+                var id_article = Number(currow.find('.d_none').text());
+
+                $.ajax({
+                    url: "../partials/rooter.php",
+                    method: "POST",
+                    data: {
+                        id: id_article,
+                        qte: qte,
+                        btn_verifQteArticleVente: 1
+                    },
+                    success: function (data) {
+
+                        // return;
+                        if (data != 'ok') {
+                            notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
+                            currow.find('.qte').text(data);
+                            qte = data;
+                        }
+                    }
+                });
+            }
+
+
+            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
+            // // 
+            currow.find('.total').text(total);
+
+            totalAll();
+
+        });
+    }
+
+
+    function totalAll() {
+        var somme = 0;
+        $('.table_total tbody tr').each(function () {
+            var val = $(this).find('.total').text();
+            somme += Number(val);
+        });
+        changerMontant(somme);
+    }
+
+    function pushData(selector) {
+        let dataselector = [];
+        $('.table_total tbody tr').each(function () {
+            var el = $(this).find('.' + selector).text();
+            dataselector.push(el);
+        });
+        return dataselector
     }
 
 
@@ -3723,13 +3820,13 @@ $(function () {
                     btn_filter_achat: type
                 },
                 success: function (data) {
-                    // ;return;
-
+                    // console.log(data);return
+                    
                     let res = JSON.parse(data);
 
 
-                    $('#nb_achats').text(res.total_achat);
-                    $('#total_montant').text(res.mont_achat + " FCFA");
+                    $('#nb_achats').text(res.total_article);
+                    $('#total_montant').text(money(res.montant_total_achat));
                     $(".achat-table").html(res.output);
 
                 }
@@ -3866,7 +3963,19 @@ $(function () {
 
     $('.search_depense').select2();
 
-
+   function liste_depense() {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                btn_liste_depense: 1
+            },
+            success: function (data) {
+                // 
+                $('.depense-table').html(data);
+            }
+        });
+    }
 
     btn_ajouter_depense();
 
@@ -3880,67 +3989,25 @@ $(function () {
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: depense,
-                // dataType:"JSON",
+                dataType:"JSON",
                 success: function (data) {
                     console.log(data);
-                    return;
-
-                    var verif = data.split("&");
-                    if (verif[0] == 1) {
-                        swal("Notification", verif[1], "success")
-                            .then(function () {
-                                history.go(0);
-                            });
+                    
+                    if (data.code == 200) {
+                        $.notify(data.message, 'success');
+                        liste_depense();
 
                         //  $("#btn_ajouter_depense")[0].reset()
                         // resetForm();
-                        // $('#depense-modal').modal('hide');
-                        // liste_depense();
-
-                        // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
+                        $('#depense-modal').modal('hide');
+                        
                     } else {
-                        swal("Notification", verif[1], "warning");
-                        // // 
-
-
+                        $.notify(data.message);
                     }
 
                 }
             });
 
-        });
-    }
-
-    // no probleme 1
-    function ajouter_depense(depense) {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data: depense,
-            success: function (data) {
-
-
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-                    swal("Notification", verif[1], "success")
-                        .then(function () {
-                            history.go(0);
-                        });
-
-                    //  $("#btn_ajouter_depense")[0].reset()
-                    // resetForm();
-                    // $('#depense-modal').modal('hide');
-                    // liste_depense();
-
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
-                } else {
-                    swal("Notification", verif[1], "warning");
-                    // // 
-
-
-                }
-
-            }
         });
     }
 
@@ -4265,7 +4332,8 @@ form_encaisser_achat();
         });
     }
     modal_encaisser("#btn_encaisser_achat","#code_achat")
-    modal_encaisser("#btn_encaisser_vente","#code_vente")
+modal_encaisser("#btn_encaisser_vente", "#code_vente")
+    
 function modal_encaisser(selector,code_select) {    
     $(document).on('click', selector, function () {
         let code = $(this).data('code');
@@ -4274,6 +4342,29 @@ function modal_encaisser(selector,code_select) {
         $(code_select).val(code);
 
         console.log(code); // pour vérifier
+    });
+}
+
+modalEncaissement(".btn_encaisser_vente")
+
+function modalEncaissement(selector) {    
+    $(document).on('click', selector, function () {
+        let code = $(this).data('code');
+         $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    frm_encaissement: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    
+                    $(".menu-modal-encaissement").html(data);
+                    $("#encaisser-modal").modal('show');
+                }
+            });
     });
 }
 

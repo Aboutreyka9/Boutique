@@ -1090,7 +1090,7 @@ class Soutra extends Connexion
         WHERE ar.etat_article = :etat  ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
-            'entrepot_id' => $_SESSION['entrepot_id'],
+            'entrepot_id' => $_SESSION['id_entrepot'],
             'etat_entrepot_article' => STATUT[1],
             'etat' => STATUT[1]
         ]);
@@ -1302,6 +1302,48 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data;
     }
+
+
+    public static function getAllArticleFamilleMarkTransfert($etat = 1)
+    {
+        $data = [];
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark 
+        FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id AND ent.etat_article = :etat_entrepot_article
+        JOIN famille fa ON fa.ID_famille = ar.famille_id 
+        JOIN mark ma ON ma.ID_mark = ar.mark_id  
+        WHERE ar.etat_article = :etat GROUP BY ar.ID_article  ORDER BY ID_article DESC";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'etat_entrepot_article' => STATUT[1],
+            'etat' => STATUT[1]
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getPanierTransfert($id_article)
+    {
+        $data = [];
+        $sql = "SELECT ar.*, ent.*, fa.libelle_famille famille, ma.libelle_mark mark FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id
+        JOIN famille fa ON fa.ID_famille = ar.famille_id INNER JOIN mark ma ON ma.ID_mark = ar.mark_id
+        WHERE ar.ID_article GROUP BY ar.ID_article IN($id_article)";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['entrepot_id' => 7]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
 
     public static function getPanierVente($id_article, $entrepot)
     {
@@ -1730,7 +1772,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getDetailAchat($id_achat, $entrepot, $etat = 1)
+    public static function getDetailAchat($id_achat, $etat = 1)
     {
         $data = [];
         $sql = "SELECT en.*, ac.entrepot_id, ac.created_at AS date_achat,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark 
@@ -1740,9 +1782,9 @@ class Soutra extends Connexion
         JOIN mark ma ON ma.ID_mark = ar.mark_id
         JOIN achat ac ON ac.code_achat = en.achat_id
         JOIN entrepot_article ent ON ac.entrepot_id = ent.entrepot_id
-        WHERE ac.entrepot_id = :entrepot_id AND  ac.code_achat = :code_achat AND en.etat_entree= :etat GROUP BY ac.code_achat, en.ID_entree ORDER BY ar.libelle_article";
+        WHERE ac.code_achat = :code_achat AND en.etat_entree= :etat GROUP BY ac.code_achat, en.ID_entree ORDER BY ar.libelle_article";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['entrepot_id' => $entrepot, 'code_achat' => $id_achat, 'etat' => $etat]);
+        $query->execute(['code_achat' => $id_achat, 'etat' => $etat]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -2697,21 +2739,55 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_achat = 1, $etat_entree = 1)
+    public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_achat * en.qte),0) total
+            FROM achat ac
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse )
+              AND en.etat_entree = :etat_entree 
+              AND DATE(ac.created_at) BETWEEN :start AND :end
+           ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_valide' => STATUT_COMMANDE[1],
+            'statut_encaisse' => STATUT_COMMANDE[2],
+            'etat_entree' => $etat_entree,
+            'start' => $startDate,
+            'end' => $endDate
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getTotauxAchatEnAttente($etat_entree = 1)
     {
         $data = [];
 
         $sql = 'SELECT SUM(en.qte) article, SUM(en.prix_achat * en.qte) total
             FROM achat ac
-            INNER JOIN entree en ON en.achat_id = ac.code_achat
-            INNER JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
-            WHERE ac.etat_achat = ? 
-              AND en.etat_entree = ? 
-              AND DATE(ac.created_at) BETWEEN ? AND ?
-           ';
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_en_attente
+              AND en.etat_entree = :etat_entree ';
 
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$etat_achat, $etat_entree, $startDate, $endDate]);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_en_attente' => STATUT_COMMANDE[0],
+            'etat_entree' => $etat_entree,
+        ]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetch();
@@ -2987,11 +3063,11 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getEntrepotWithService($entrepot)
+    public static function getSingleEntrepot($entrepot)
     {
         $data = [];
         $sql = "SELECT en.*, se.* FROM entrepot en
-        LEFT JOIN service se ON se.entrepot_id = en.ID_entrepot 
+         LEFT JOIN service se ON se.entrepot_id = en.ID_entrepot
         WHERE en.ID_entrepot = :entrepot_id LIMIT 1";
         $query = self::getConnexion()->prepare($sql);
         $query->execute(['entrepot_id' => $entrepot]);
@@ -3006,7 +3082,8 @@ class Soutra extends Connexion
     public static function getEmployeForResponsableEntrepot()
     {
         $data = [];
-        $sql = "SELECT * FROM employe em JOIN role r ON r.ID_role = em.role_id WHERE r.libelle_role IN('admin','gestionnaire') AND em.etat_employe =1";
+        $sql = "SELECT * FROM employe em JOIN role r ON r.ID_role = em.role_id 
+        LEFT JOIN service se ON se.employe_id = em.ID_employe  WHERE (r.libelle_role = 'admin' OR libelle_role = 'gestionnaire' ) AND em.etat_employe =1";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([]);
         if ($query->rowCount() > 0) {
@@ -3016,14 +3093,27 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getServiceEntrepot($entrepot, $employe)
+    public static function getSingleEmployeServiceEntrepot($entrepot, $employe)
     {
         $data = [];
-        $sql = "SELECT * FROM service se WHERE (se.entrepot_id = :entrepot_id AND se.employe_id = :employe_id) OR (se.entrepot_id = :entrepot_id AND se.responsable = 1)";
+        $sql = "SELECT * FROM service se WHERE se.entrepot_id = :entrepot_id AND se.employe_id = :employe_id";
         $query = self::getConnexion()->prepare($sql);
         $query->execute(['entrepot_id' => $entrepot, 'employe_id' => $employe]);
         if ($query->rowCount() > 0) {
-            $data = $query->fetch();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getResponsableServiceEntrepot($entrepot)
+    {
+        $data = [];
+        $sql = "SELECT * FROM service se WHERE se.entrepot_id = :entrepot_id AND se.responsable = 1";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['entrepot_id' => $entrepot]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;

@@ -17,10 +17,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
 
   <div class="d-flex gap-5">
-    <button class="btn btn-success ml-2" title=""
-      id="btn_encaisser_vente"
-      data-toggle="modal" data-target="#encaisser-modal"
-      data-code-vente="<?= $code ?>"
+    <button class="btn btn-success ml-2 btn_encaisser_vente" title="" data-code="<?= $code ?>"
       data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
 
     <a href="<?= RACINE ?>views/print.php?id=<?= $code ?>&statut=<?= $vente['statut_vente'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
@@ -63,7 +60,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <div class="icon bg-success mr-2">
             <i class="bi bi-cart4"></i>
           </div>
-          <h6><span class="text-muted">TOTAL TTC</span></h6>
+          <h6><span class="text-muted">Montant TTC</span></h6>
         </div>
         <h5><?= number_format($vente['total_ttc'], 0, ',', ' ') ?> CFA</h5>
       </div>
@@ -171,11 +168,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <tr>
             <th> # </th>
             <th> Article </th>
-            <th> MARK </th>
-            <th> FAMILLE </th>
-            <th class="text-right"> PRIX vente </th>
-            <th class="text-right"> QUANTITE </th>
-            <th class="text-right"> TOTAL </th>
+            <th> Marque </th>
+            <th> S/categorie </th>
+            <th> Prix vente </th>
+            <th> Quatité </th>
+            <th> Total </th>
             <?php
             //$emp = Soutra::getEmployeVente($_GET['id']);
 
@@ -216,10 +213,12 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
               $output .= '
            <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
            <button data-id="' . $row['ID_sortie'] . '" class="btn btn-primary btn-sm btn_update_vente">
-            <i class="fa fa-edit"></i> modiier </button>
+            <i class="fa fa-edit"></i> 
+    <span class="phone-btn-text">Modifier</span>
+</button>
            <div class="d-inline">
                <button data-id="' . $row['ID_sortie'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_vente_detail">
-               <i class="fa fa-trash"></i> Supprimer</button>
+               <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
            </div>';
             } else {
 
@@ -259,10 +258,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <thead class="thead-dark">
           <tr>
             <th> # </th>
-            <th>REFERENCE</th>
-            <th>DATE </th>
-            <th>MONTANT </th>
-            <th style="width: 20%;text-align: center;"> STATUT </th>
+            <th>Statut</th>
+            <th>Montant </th>
+            <th>Mode de paiement </th>
+            <th>Commentaire </th>
+            <th>Fait par </th>
+            <th>Fait le </th>
+            <th>Actions </th>
 
           </tr>
         </thead><!-- /thead -->
@@ -358,37 +360,4 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 <!-- .modal -->
 
-<div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
-  <!-- .modal-dialog -->
-  <div class="modal-dialog" role="document">
-    <!-- .modal-content -->
-    <div class="modal-content">
-      <!-- .modal-header -->
-      <div class="modal-header">
-        <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-        </h6>
-      </div><!-- /.modal-header -->
-      <!-- .modal-body -->
-      <form action="" id="form_encaisser_vente" method="POST">
-        <div class="modal-body">
-          <!-- .form-row -->
-          <div class="form-row menu-modal">
-            <input type="hidden" name="code_vente" id="code_vente">
-            <div class="col-md-12">
-              <div class="form-group">
-                <label for="montant_versement">Montant versement</label>
-                <input type="text" name="montant_versement" id="montant_versement" class="form-control">
-              </div>
-            </div>
-          </div><!-- /.form-row -->
-        </div><!-- /.modal-body -->
-        <!-- .modal-footer -->
-        <div class="modal-footer">
-          <input type="hidden" name="btn_encaisser_vente" class="form-control">
-
-          <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
-        </div><!-- /.modal-footer -->
-      </form><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.m -->
-</div>
+<?= modalEncaissement() ?>

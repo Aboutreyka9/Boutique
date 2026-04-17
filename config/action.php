@@ -1,7 +1,7 @@
 <?php
 function modalVenteClient()
 {
-    return '
+  return '
     
   <!-- .modal -->
   <form action="" id="btn_ajouter_client" method="POST" >
@@ -66,7 +66,7 @@ function modalVenteClient()
 
 function modalAchatFournisseur()
 {
-    return '
+  return '
   
   <!-- .modal -->
   <form action="" id="btn_ajouter_fournisseur" method="POST" >
@@ -130,8 +130,9 @@ function modalAchatFournisseur()
 
 
 
-function modalAttribution(){
-    return '
+function modalAttribution()
+{
+  return '
      <!-- .modal attribuer-->
    <div class="modal fade" data-backdrop="static" id="attribuer-modal" tabindex="-1" role="dialog" aria-labelledby="attribuer-modal" aria-hidden="true">
      <!-- .modal-dialog -->
@@ -158,4 +159,43 @@ function modalAttribution(){
  <!-- /.modal -->
     ';
 }
-  
+
+function modalEncaissement()
+{
+  return '
+  <div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
+    <!-- .modal-dialog -->
+    <div class="modal-dialog" role="document">
+      <!-- .modal-content -->
+      <div class="modal-content">
+        <!-- .modal-header -->
+        <div class="modal-header">
+          <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
+          </h6>
+        </div> <!-- /.modal-header -->
+        <!-- .modal-body -->
+        <div class="modal-body">
+            <!-- .form-row -->
+            <div class="form-row menu-modal-encaissement">
+            </div><!-- /.form-row -->
+          </div><!-- /.modal-body -->
+          <!-- .modal-footer -->
+          <div class="modal-footer">
+          </div><!-- /.modal-footer -->
+      <!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.m -->
+  </div>
+  ';
+}
+
+function payement($p = "")
+{
+  $output = '';
+  if (empty($p)) {
+    for ($i = 0; $i < count(MODE_PAIEMENT); $i++) {
+      $output .= '<option value ="' . MODE_PAIEMENT[$i] . '" >' . ucwords(MODE_PAIEMENT[$i]) . '</option>';
+    }
+  }
+  return $output;
+}
