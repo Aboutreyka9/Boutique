@@ -48,7 +48,7 @@
             <i class="fa fa-eye"></i> Detail </a>
             <div class="d-inline">
                 <button data-id="'. $row['ID_achat'].'" title="Supprimer achat" class="btn btn-warning btn-sm btn_remove_achat">
-                <i class="fa fa-trash"></i> Supprimer</button>
+                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
             </div>
           </td>
              </tr>

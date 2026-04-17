@@ -51,12 +51,18 @@
                ';
 
 
-            $output .= '<td class="form-button-action"> 
-            <a href="' . URL . 'client_profile&id=' . $row['ID_client'] . '" data-toggle="tooltip" title="" data-original-title="Voir detatils client" class="btn link btn-success btn-sm">
-            <i class="fa fa-eye"></i> </a> 
-
-            <button data-toggle="tooltip" title="" data-original-title="Modifier info client" data-id="' . $row['ID_client'] . '" class="btn link btn-primary btn-sm btn_update_client">
-            <i class="fa fa-edit"></i> </button> 
+            $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+            <button data-id="' . $row['ID_client'] . '" class="btn btn-primary btn-sm btn_update_client">
+            <i class="fa fa-edit"></i> 
+    <span class="phone-btn-text">Modifier</span>
+</button> ';
+            if (strtolower($_SESSION['role']) == ADMIN) {
+              $output .= '<div class="d-inline">
+                <button data-id="' . $row['ID_client'] . '" class="btn btn-warning btn-sm btn_remove_client">
+                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+            </div>';
+            }
+            $output .= '
           </td>
              </tr>
              ';

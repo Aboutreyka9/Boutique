@@ -48,7 +48,12 @@
         white-space: nowrap;
     }
 
-    .w-td {
+    .w-th tr th{
         width: 69.9062px;
+        text-align: center;
+    }
+    /* Mobile hide text*/
+    .phone-btn-text {
+        display: none;
     }
 }

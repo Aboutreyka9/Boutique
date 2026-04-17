@@ -15,7 +15,7 @@
 <!-- .table -->
 <table class="table table-striped table-hover my-table ">
   <!-- thead -->
-  <thead class="thead-dark">
+  <thead class="thead-dark w-th">
     <tr>
       <th> # </th>
       <th> CODE-EMP </th>
@@ -23,7 +23,7 @@
       <th> PRENOMS </th>
       <th> TELEPHONE </th>
       <th> ROLE </th>
-      <th style="width: 19%; text-align: center; "> ACTION </th>
+      <th> ACTION </th>
     </tr>
   </thead><!-- /thead -->
   <!-- tbody -->
@@ -50,10 +50,12 @@
            
             $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="'. $row['ID_employe'].'" class="btn btn-primary btn-sm btn_update_employe">
-            <i class="fa fa-edit"></i> modiier </button>
+            <i class="fa fa-edit"></i> 
+    <span class="phone-btn-text">Modifier</span>
+</button>
             <div class="d-inline">
                 <button data-id="'. $row['ID_employe'].'" class="btn btn-warning btn-sm btn_remove_employe">
-                <i class="fa fa-trash"></i> Supprimer</button>
+                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
             </div>
           </td>
              </tr>
