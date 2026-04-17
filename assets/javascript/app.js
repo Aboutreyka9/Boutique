@@ -374,9 +374,10 @@ $(function () {
                     id_client: id,
                     frm_upclient: 1
                 },
-                dataType: 'JSON',
+                // dataType: 'JSON',
                 success: function (data) {
-                    // // 
+                    console.log(data);
+                    
                     $(".menu-modal").html(data);
                     $("#client-modal").modal('show');
                 }
@@ -384,7 +385,7 @@ $(function () {
         });
     }
 
-    btn_suprimer_client();
+    // btn_suprimer_client();
 
     function btn_suprimer_client() {
         $('body').delegate('.btn_remove_client', 'click', function (e) {
@@ -663,6 +664,20 @@ $(function () {
 
     // FAMILLE
 
+    function liste_famille() {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                btn_liste_famille: 1
+            },
+            success: function (data) {
+                // // 
+                $('.famille-table').html(data);
+            }
+        });
+    }
+
     btn_ajouter_Famille();
 
     function btn_ajouter_Famille() {
@@ -701,19 +716,6 @@ $(function () {
         });
     }
 
-    // function liste_famille() {
-    //     $.ajax({
-    //         url: "../partials/rooter.php",
-    //         method: "POST",
-    //         data: {
-    //             btn_liste_famille: 1
-    //         },
-    //         success: function (data) {
-    //             // // 
-    //             $('.famille-table').html(data);
-    //         }
-    //     });
-    // }
 
     btn_update_famille();
 
@@ -1175,7 +1177,49 @@ $(function () {
     // SEXION ENTREPOS
 
     $('#responsable_entrepot').select2();
+    changeStatutEntrepot();
 
+    function changeStatutEntrepot() {  
+        $('body').on('click', '.btnChangeStatutEntrepot', function (e) {
+            const code = $(this).data('code');
+            const statut = $(this).data('statut');
+        
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    statut: statut,
+                    btnChangeStatutEntrepot: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    if (data.code == 200) {
+                        $.notify(data.message, "success");
+                        liste_entrepot();
+                    } else {
+                        $.notify(data.message, "");
+                        
+                    }
+                }
+            });
+        });
+    }
+    
+     function liste_entrepot() {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                btn_liste_entrepot: 1
+            },
+            success: function (data) {
+                // // 
+                $('.entrepot-table').html(data);
+            }
+        });
+    }
 
     btn_ajouter_entrepot();
 
@@ -1197,7 +1241,7 @@ $(function () {
                     if (data.code == 200) {
                         notify(data.message);
                         $('#entrepot-modal').modal('hide');
-                        // liste_entrepot();
+                        liste_entrepot();
 
                     } else {
                         // // 
@@ -1212,51 +1256,14 @@ $(function () {
         });
     }
 
-    function ajouter_entrepot(entrepot) {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data: entrepot,
-            success: function (data) {
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-                    notify(verif[1]);
-                    resetForm();
-                    $('#famille-modal').modal('hide');
-                    $('#id_famille').remove();
-                    liste_famille();
-
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
-                } else {
-                    // // 
-                    notify(verif[1], "", "alert", "warning");
 
 
-                }
-
-            }
-        });
-    }
-
-    function liste_famille() {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data: {
-                btn_liste_famille: 1
-            },
-            success: function (data) {
-                // // 
-                $('.famille-table').html(data);
-            }
-        });
-    }
 
     btn_update_entrepot();
 
     function btn_update_entrepot() {
 
-        $('body').delegate('.btn_update_entrepot', 'click', function (e) {
+        $('body').on('click','.btn_update_entrepot', function (e) {
             e.preventDefault();
             var id = $(this).data('id');
 
@@ -1281,7 +1288,7 @@ $(function () {
     btn_modifier_entrepot();
 
     function btn_modifier_entrepot() {
-        $('body').delegate('#btn_modifier_entrepot', 'submit', function (e) {
+        $('body').on('submit','#btn_modifier_entrepot', function (e) {
             e.preventDefault();
 
             var entrepotData = $(this).serialize();
@@ -1296,9 +1303,9 @@ $(function () {
                     console.log(data);
 
                     if (data.code == 200) {
-                        notify(data.message);
+                        $.notify(data.message,'success');
                         $('#entrepot-modal').modal('hide');
-                        // liste_entrepot();
+                        liste_entrepot();
 
                     } else {
                         // // 
@@ -3815,13 +3822,13 @@ $(function () {
                     btn_filter_achat: type
                 },
                 success: function (data) {
-                    // ;return;
-
+                    // console.log(data);return
+                    
                     let res = JSON.parse(data);
 
 
-                    $('#nb_achats').text(res.total_achat);
-                    $('#total_montant').text(res.mont_achat + " FCFA");
+                    $('#nb_achats').text(res.total_article);
+                    $('#total_montant').text(money(res.montant_total_achat));
                     $(".achat-table").html(res.output);
 
                 }
@@ -3958,7 +3965,19 @@ $(function () {
 
     $('.search_depense').select2();
 
-
+   function liste_depense() {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                btn_liste_depense: 1
+            },
+            success: function (data) {
+                // 
+                $('.depense-table').html(data);
+            }
+        });
+    }
 
     btn_ajouter_depense();
 
@@ -3972,67 +3991,25 @@ $(function () {
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: depense,
-                // dataType:"JSON",
+                dataType:"JSON",
                 success: function (data) {
                     console.log(data);
-                    return;
-
-                    var verif = data.split("&");
-                    if (verif[0] == 1) {
-                        swal("Notification", verif[1], "success")
-                            .then(function () {
-                                history.go(0);
-                            });
+                    
+                    if (data.code == 200) {
+                        $.notify(data.message, 'success');
+                        liste_depense();
 
                         //  $("#btn_ajouter_depense")[0].reset()
                         // resetForm();
-                        // $('#depense-modal').modal('hide');
-                        // liste_depense();
-
-                        // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
+                        $('#depense-modal').modal('hide');
+                        
                     } else {
-                        swal("Notification", verif[1], "warning");
-                        // // 
-
-
+                        $.notify(data.message);
                     }
 
                 }
             });
 
-        });
-    }
-
-    // no probleme 1
-    function ajouter_depense(depense) {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data: depense,
-            success: function (data) {
-
-
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-                    swal("Notification", verif[1], "success")
-                        .then(function () {
-                            history.go(0);
-                        });
-
-                    //  $("#btn_ajouter_depense")[0].reset()
-                    // resetForm();
-                    // $('#depense-modal').modal('hide');
-                    // liste_depense();
-
-                    // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
-                } else {
-                    swal("Notification", verif[1], "warning");
-                    // // 
-
-
-                }
-
-            }
         });
     }
 

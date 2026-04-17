@@ -604,7 +604,7 @@ class ControllerVente extends Connexion
           'code_vente' => $code,
           'client_id' => $client,
           'employe_id' => $employe_id,
-          'entrepot_id' => 7,
+          'entrepot_id' => $entrepot_id,
           'etat_vente' => 1,
           'pay_mode' => PAYMENT_MODE[0],
           'statut_vente' => STATUT_COMMANDE[0],

@@ -16,7 +16,7 @@ if (notAdmin()) {
       </div>
       <div class="col-md-8 d-flex justify-content-end">
 
-        <a href="<?= URL ?>transfert" class="btn btn-primary w-25" title="Transfert produits" aria-label="Close"> <i class="bi bi-arrow-right-circle"></i> &nbsp; Transfert Produits</a>
+        <a href="<?= URL ?>transfert" class="btn btn-success w-25" title="Transfert produits" aria-label="Close"> <i class="bi bi-arrow-right-circle"></i> &nbsp; Transfert Produits</a>
         &nbsp;
         <button type="button" data-toggle="modal" data-target="#entrepot-modal" class="btn btn-primary w-25" title="Créer entrepot" aria-label="Close"> <i class="fa fa-plus"></i> &nbsp; Créer</button>
       </div>
@@ -52,15 +52,16 @@ if (notAdmin()) {
 
             foreach ($entrepot as $row) {
               $i++;
-              $btn = '<button title="Désactiver entrepot" data-id="' . $row['ID_entrepot'] . '" class="btn btn-danger btn-sm btn_desactive_entrepot">
+              $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
                 <i class="bi bi-x-circle"></i> </button>';
               $etat = '<span class="badge badge-success">Actif</span>';
 
               if ($row['etat_entrepot'] !== 1) {
                 $etat = '<span class="badge badge-danger">Inactif</span>';
-                $btn = '<button title="activer entrepot" data-id="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm btn_active_entrepot">
+                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
                 <i class="bi bi-check-circle"></i> </button>';
               }
+
               $output .= '
             <tr class="row' . $row['ID_entrepot'] . '">
                <td>' . $i . '</td>
@@ -74,7 +75,7 @@ if (notAdmin()) {
 
 
               $output .= '<td style="display: flex; flex-direction: row; align-items: center;"> 
-               <a href="'.URL.'detail_entrepot&id='. $row['ID_entrepot'].'"  title="Voir details entrepot" class="btn btn-info btn-sm ">
+               <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm ">
             <i class="fa fa-eye"></i></a>
              <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article" data-action="entrepot">
             <i class="fa fa-link"></i></button>
@@ -174,4 +175,3 @@ if (notAdmin()) {
 </div><!-- /.m -->
 
 <?= modalAttribution() ?>
-
