@@ -81,7 +81,7 @@ class ControllerAchat extends Connexion
   public static function liste_achat_detail($code_achat)
   {
     $output = '';
-    $detail = Soutra::getDetailAchat($code_achat, $_SESSION['id_entrepot']);
+    $detail = Soutra::getDetailAchat($code_achat);
 
     if (!empty($detail)) {
       $i = 0;
@@ -122,7 +122,7 @@ class ControllerAchat extends Connexion
     if (isset($_POST["btn_achat_fournisseur"])) {
       $id = $_POST["codeachat"];
 
-      $detail = Soutra::getDetailAchat($id, $_SESSION['id_entrepot']);
+      $detail = Soutra::getDetailAchat($id);
 
       $output = "";
       foreach ($detail as $row) {
@@ -193,7 +193,7 @@ class ControllerAchat extends Connexion
       );
 
 
-      $ligneAchat = Soutra::getDetailAchat($code, $_SESSION['id_entrepot']);
+      $ligneAchat = Soutra::getDetailAchat($code);
 
 
       $results = Soutra::transactionData(
@@ -206,10 +206,10 @@ class ControllerAchat extends Connexion
           $rows = array_map(function ($value) use ($employe, $entrepot, $date) {
             return [
               'article_id'     => $value['article_id'],
-              'type_mouvement' => STATUT_MOUVEMENT[1],
+              'type_mouvement' => STATUT_MOUVEMENT[0],
               'quantite'       => $value['qte'],
               'employe_id'     => $employe,
-              'prix_vente'     => $value['prix_achat'],
+              'prix_achat'     => $value['prix_achat'],
               'entrepot_id'    => $entrepot,
               'date_mouvement' => $date
             ];
@@ -264,7 +264,7 @@ class ControllerAchat extends Connexion
         'code_achat' => $code
       );
 
-      $ligneAchat = Soutra::getDetailAchat($code, $_SESSION['id_entrepot']);
+      $ligneAchat = Soutra::getDetailAchat($code);
 
 
       $results = Soutra::transactionData(
@@ -352,7 +352,7 @@ class ControllerAchat extends Connexion
         'employe_id' => $employe_id,
         'fournisseur_id' => $fournisseur,
         'created_at' => $date,
-        'entrepot_id' => 7
+        'entrepot_id' => $entrepot_id
       );
 
       $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
@@ -782,19 +782,18 @@ class ControllerAchat extends Connexion
       $dateFin = $_POST['dateFin'] ?? null;
       $total_achat = 0;
       $mont_achat = 0;
+      $totaux = Soutra::getTotauxAchatByDateRange($dateDebut, $dateFin); // méthode adaptée que l'on a créée
+
       // si le btn = 1 on get par achat
       if ($btn_filter_achat == 1) {
 
-        $data = Soutra::getAllListeachatByDateRange($dateDebut, $dateFin);
+        $data = Soutra::getAllListeBonCommandeFournisseur($dateDebut, $dateFin);
       }
       // si le btn = 2 on get par article
       if ($btn_filter_achat == 2) {
         $data = Soutra::getAllListeAchatByDateRangeByArticle($dateDebut, $dateFin);
       }
-      foreach ($data as $value) {
-        $total_achat += $value['article'];
-        $mont_achat += $value['total'];
-      }
+
       $output = '';
       // si le btn = 2 on affiche par article
       if ($btn_filter_achat == 2) {
@@ -807,8 +806,8 @@ class ControllerAchat extends Connexion
 
       $data = [
         'output' => $output,
-        'total_achat' => $total_achat,
-        'mont_achat' => $mont_achat,
+        'total_article' => $totaux['article'],
+        'montant_total_achat' => number_format($totaux['total'] ?? 0, 0, ',', ' ')
       ];
 
       echo json_encode($data);
@@ -871,8 +870,6 @@ class ControllerAchat extends Connexion
                     </td>
                 </tr>';
       }
-    } else {
-      $output = '<tr><td colspan="7" class="text-center">Aucun achat trouvé pour la plage de dates sélectionnée.</td></tr>';
     }
 
     return $output;
