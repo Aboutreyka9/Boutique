@@ -68,11 +68,13 @@ class ControllerFournisseur extends Connexion
 
                     $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-primary btn-sm btn_update_fournisseur">
-            <i class="fa fa-edit"></i> modiier </button> ';
+            <i class="fa fa-edit"></i> 
+    <span class="phone-btn-text">Modifier</span>
+</button> ';
                     if (strtolower($_SESSION['role']) == ADMIN) {
                         $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-warning btn-sm btn_remove_fournisseur">
-                <i class="fa fa-trash"></i> Supprimer</button>
+                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
             </div>';
                     }
                     $output .= '
