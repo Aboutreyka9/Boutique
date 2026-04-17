@@ -1826,6 +1826,68 @@ $(function () {
         });
     }
 
+
+     btn_modifier_achat();
+
+    function btn_modifier_achat() {
+        $('body').on('click','#btn_modifier_achat', function (e) {
+            e.preventDefault();
+
+            var fournisseur = $('#fournisseur').val();
+            if (!fournisseur) {
+                $.notify("Veuillez choisir un fournisseur");
+                return;
+            }
+
+            var data = {
+                id: pushData("id"),
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code: $(this).data('code'),
+                fournisseur: fournisseur,
+                btn_modifier_achat: 1
+            };
+            
+            modifier_achat(data);
+
+        });
+    }
+
+    function modifier_achat(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
+            success: function (data) {
+                console.log(data);
+
+                // return
+                var verif = data.split("&");
+                if (verif[0] == 1) {
+
+                    swal({
+                        title: "Succès",
+                        text: verif[1],
+                        icon: "success",
+                        button: true,
+
+                    }).then(() =>
+                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
+
+                        window.history.go(0)
+                    );
+
+                } else {
+                    notify(verif[1], "", "alert", "warning");
+
+
+                }
+
+            }
+        });
+    }
+
     function liste_achat() {
         $.ajax({
             url: "../partials/rooter.php",

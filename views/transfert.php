@@ -48,6 +48,7 @@ if (notAdmin()) {
                   <div class="form-group">
                     <label>Adresse</label>
                     <input readonly type="text" id="adresse_entrepot_source" class="form-control">
+                    <input readonly type="text" id="adresse_entrepot_destination" class="form-control">
                   </div>
                 </div>
               </div>
