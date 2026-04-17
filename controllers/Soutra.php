@@ -2278,7 +2278,7 @@ class Soutra extends Connexion
         $query = self::getConnexion()->prepare($sql);
         $query->execute([$val]);
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -3052,7 +3052,9 @@ class Soutra extends Connexion
         $sql = "SELECT en.*, COALESCE(CONCAT(emp.nom_employe, ' ', emp.prenom_employe), 'Aucun') AS responsable FROM entrepot en
         LEFT JOIN service se ON se.entrepot_id = en.ID_entrepot AND se.responsable = 1
         LEFT JOIN employe emp ON emp.ID_employe = se.employe_id
-        ORDER BY en.ID_entrepot DESC";
+        GROUP BY en.ID_entrepot
+        ORDER BY en.ID_entrepot DESC
+        ";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([]);
 

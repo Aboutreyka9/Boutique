@@ -55,6 +55,8 @@ ControllerEmploye::modifier_login_employe();
 ControllerEmploye::liste_employe();
 ControllerEmploye::getEmploye();
 ControllerEmploye::suppresion_employe();
+ControllerEmploye::modalAttributionEmployeEntrepot();
+ControllerEmploye::attribuer_employe_entrepot();
 
 // CLIENT
 ControllerClient::ajouter_client();

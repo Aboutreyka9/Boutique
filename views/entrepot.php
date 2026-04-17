@@ -75,10 +75,15 @@ if (notAdmin()) {
 
 
               $output .= '<td style="display: flex; flex-direction: row; align-items: center;"> 
-               <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm ">
+               <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm mr-2">
             <i class="fa fa-eye"></i></a>
-             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article" data-action="entrepot">
+
+             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article mr-2" data-action="entrepot">
             <i class="fa fa-link"></i></button>
+
+             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer employé" class="btn btn-success btn-sm btn_attribuer_employe mr-2" data-action="attribuer_employe_a_entrepot">
+            <i class="fa fa-users"></i></button>
+
             <button title="Modifier entrepot" data-id="' . $row['ID_entrepot'] . '" class="btn btn-primary mr-2 btn-sm btn_update_entrepot">
             <i class="fa fa-edit"></i>  </button>
                 ' . $btn . '

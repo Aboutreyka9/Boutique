@@ -1027,7 +1027,7 @@ class ControllerVente extends Connexion
 
         // 2. Variables (une seule fois)
         $employe  = $_SESSION['id_employe'];
-        $entrepot = $_SESSION['id_entrepot'] ?? 7;
+        $entrepot = $_SESSION['id_entrepot'] ?? null;
         $date     = date('Y-m-d');
 
         // 3. Préparer insertion multiple

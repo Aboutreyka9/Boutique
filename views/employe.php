@@ -2,6 +2,7 @@
  if(notAdmin()){
    return;
  }
+
   ?>
  <header class="page-title-bar">
 <h1 class="page-title"> Espace Employés</h1>
@@ -116,7 +117,7 @@
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="role_employe">Role</label>
-                      <select name="role_employe" id="role_employe" class="form-control" id="">
+                      <select name="role_employe" id="role_employe" class="form-control select2" id="">
                         <?php 
                          $roles = Soutra::getAllTable('role','etat_role',1);
                          $output = "";
@@ -132,6 +133,33 @@
                       </select>
                     </div>
                   </div>
+
+             
+                  <div class="col-md-12">
+                <div class="form-group">
+                <label for="entrepot_id">entrepot</label>
+                <select name="id_entrepot" id="id_entrepot" class="form-control entrepot_search select2"> 
+                    <option value="default"> --- Choisir un entrepot ---</option>';
+                    <?php
+                    $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot', STATUT[1]);
+                    var_dump($entrepot);
+                      foreach ($entrepot as $row) {
+                          echo ' <option value="' . $row['ID_entrepot'] . '">' . $row['libelle_entrepot'] . '</option>';
+                      }
+                      echo '</select>';
+                    ?>
+                  </div>
+                </div>
+
+                        <div class="col-md-12">
+            <div class="form-group">
+              <label for="responsable">Responsable</label>
+              <select name="responsable" id="responsable" class="form-control">
+                <option value="0">Non</option>
+                <option value="1">Oui</option>
+              </select>
+            </div>
+            </div>
                 </div><!-- /.form-row -->
               </div><!-- /.modal-body -->
               <!-- .modal-footer -->
