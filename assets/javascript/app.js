@@ -1474,8 +1474,6 @@ $(function () {
         });
     }
 
-
-    
     ajax_ajouter_panier_transfert();
     function ajax_ajouter_panier_transfert() {
         $('body').delegate('#btn_ajouter_panier_transfert', 'submit', function (e) {
@@ -1486,7 +1484,7 @@ $(function () {
             method: "POST",
             data: transfert,
             success: function (data) {
-            console.log(data);return;
+            // console.log(data);return;
                 
                 if (data) {
                     changerMontant();

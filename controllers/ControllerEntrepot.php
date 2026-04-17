@@ -249,7 +249,7 @@ class ControllerEntrepot extends Connexion
       $output = '';
       if (!empty($_POST['article'])) {
         $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
-        var_dump($_POST);return;
+        // var_dump($_POST);return;
         if (!empty($transfert)) {
           $i = 0;
           foreach ($transfert as $row) {
