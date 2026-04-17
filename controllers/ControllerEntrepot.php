@@ -10,7 +10,7 @@ class ControllerEntrepot extends Connexion
     {
         if (isset($_POST["frm_update_entrepot"])) {
 
-            $entrepot = Soutra::getEntrepotWithService($_POST['id_entrepot']);
+            $entrepot = Soutra::getSingleEntrepot($_POST['id_entrepot']);
             $employes = Soutra::getEmployeForResponsableEntrepot();
             $output = '
              <form action="" id="btn_modifier_entrepot" method="POST">
@@ -30,7 +30,7 @@ class ControllerEntrepot extends Connexion
               <select name="responsable_entrepot" id="responsable_entrepot" class="form-control">
               ';
             foreach ($employes as $row) {
-                $selected = $entrepot["employe_id"] == $row["ID_employe"] ? " selected" : "";
+                $selected = ($row["responsable"] == 1) ? "selected" : "";
                 $output .= '
                 <option ' . $selected . '  value="' . $row['ID_employe'] . '">' . $row['nom_employe'] . ' ' . $row['prenom_employe'] . '</option>
                 ';
@@ -70,37 +70,67 @@ class ControllerEntrepot extends Connexion
     {
         if (isset($_POST['btn_liste_entrepot'])) {
             $output = '';
-            $entrepot = Soutra::getAllentrepot();
+            $entrepot = Soutra::getAllEntrepot();
             if (!empty($entrepot)) {
                 $i = 0;
                 foreach ($entrepot as $row) {
                     $i++;
-                    $etat = $row['etat_entrepot'] == 1 ? "Disponible" : "Non disponible";
+                    $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
+                <i class="bi bi-x-circle"></i> </button>';
+                    $etat = '<span class="badge badge-success">Actif</span>';
 
+                    if ($row['etat_entrepot'] !== 1) {
+                        $etat = '<span class="badge badge-danger">Inactif</span>';
+                        $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
+                <i class="bi bi-check-circle"></i> </button>';
+                    }
                     $output .= '
-                <tr class="row' . $row['ID_entrepot'] . '">
-                   <td>' . $i . '</td>
-                   <td>' . $row['libelle_entrepot'] . '</td>
-                   <td>' . $row['categorie'] . '</td>
-                   <td>' . $etat . '</td>
-                   <td>' . Soutra::date_format($row['created_at']) . '</td>
-                   ';
+            <tr class="row' . $row['ID_entrepot'] . '">
+               <td>' . $i . '</td>
+               <td>' . $row['libelle_entrepot'] . '</td>
+               <td>' . $row['ville_entrepot'] . '</td>
+               <td>' . $row['adresse_entrepot'] . '</td>
+               <td>' . $row['responsable'] . '</td>
+               <td>' . checkEtatData($row['etat_entrepot']) . '</td>
+               <td>' . Soutra::date_format($row['created_at_entrepot']) . '</td>
+               ';
 
-                    $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="' . $row['ID_famille'] . '" class="btn btn-primary btn-sm btn_update_famille">
-                   <i class="fa fa-edit"></i> modiier </button>
-                   <div class="d-inline">
-                       <button data-id="' . $row['ID_famille'] . '" class="btn btn-warning btn-sm btn_remove_famille">
-                       <i class="fa fa-trash"></i> Supprimer</button>
-                   </div>
-                 </td>
-                    </tr>
-                    ';
+
+                    $output .= '<td style="display: flex; flex-direction: row; align-items: center;"> 
+               <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm ">
+            <i class="fa fa-eye"></i></a>
+             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article" data-action="entrepot">
+            <i class="fa fa-link"></i></button>
+            <button title="Modifier entrepot" data-id="' . $row['ID_entrepot'] . '" class="btn btn-primary mr-2 btn-sm btn_update_entrepot">
+            <i class="fa fa-edit"></i>  </button>
+                ' . $btn . '
+          </td>
+             </tr>
+             ';
                 }
             }
             echo $output;
         }
     }
+
+    public static function changeStatutEntrepot()
+    {
+        if (isset($_POST['btnChangeStatutEntrepot'])) {
+            extract($_POST);
+            $msg['code'] = 400;
+            $data['etat_entrepot'] = $statut == 1 ? 0 : 1;
+            $data['ID_entrepot'] = $code;
+
+            if (Soutra::update('entrepot', $data)) {
+                $msg['code'] = 200;
+                $msg['message'] = "Statut entrepot changé avec succès.";
+            } else {
+                $msg['message'] = 'Une erreur est survenue ! ';
+            }
+            echo json_encode($msg);
+        }
+    }
+
 
     public static function ajouter_entrepot()
     {
@@ -129,7 +159,7 @@ class ControllerEntrepot extends Connexion
                     'responsable' => 1,
                     'created_at_service' => $date
                 );
-                $result = Soutra::transactionEntrepotService(function () use ($data, $dataService) {
+                $result = Soutra::transactionData(function () use ($data, $dataService) {
                     Soutra::insert("entrepot", $data);
                     $lastId = Soutra::lastInsertId();
                     $dataService['entrepot_id'] = $lastId;
@@ -163,17 +193,21 @@ class ControllerEntrepot extends Connexion
             } else {
                 $result = true;
 
-                $service = Soutra::getServiceEntrepot($id_entrepot, $responsable_entrepot);
+                $employe = Soutra::getSingleEmployeServiceEntrepot($id_entrepot, $responsable_entrepot);
 
-                if ((!empty($service) && $service['employe_id'] != $responsable_entrepot)) {
 
-                    $result = Soutra::transactionData(function () use ($id_entrepot, $responsable_entrepot) {
-                        Soutra::updated("service", ['responsable' => '0'], ['entrepot_id' => $id_entrepot]);
-                        Soutra::updated("service", ['responsable' => '1'], ['entrepot_id' => $id_entrepot, 'employe_id' => $responsable_entrepot]);
-                    });
+
+                if (!empty($employe)) {
+                    if ($employe['responsable'] == 0) {
+                        // existe et modif
+                        $result = Soutra::transactionData(function () use ($id_entrepot, $responsable_entrepot) {
+                            Soutra::updated("service", ['responsable' => '0'], ['entrepot_id' => $id_entrepot]);
+                            Soutra::updated("service", ['responsable' => '1'], ['entrepot_id' => $id_entrepot, 'employe_id' => $responsable_entrepot]);
+                        });
+                    }
                 } else {
+                    // pas encore creer
                     $date = date('Y-m-d');
-
                     $dataService = [
                         'entrepot_id' => $id_entrepot,
                         'employe_id' => $responsable_entrepot,
@@ -231,9 +265,9 @@ class ControllerEntrepot extends Connexion
 
                 $entrepot = Soutra::getAllByItemsa('entrepot', 'ID_entrepot', $_POST['id_entrepot']);
                 $msg["code"] = 200;
-                if(!empty($entrepot)){
+                if (!empty($entrepot)) {
                     $msg["entrepot"] = $entrepot;
-                }else {
+                } else {
                     $msg['entrepot'] = 'Erreur de récupération';
                 }
             }
@@ -241,21 +275,22 @@ class ControllerEntrepot extends Connexion
         }
     }
 
-    
 
-  public static function ajouter_panier_transfert()
-  {
-    if (isset($_POST['btn_ajouter_panier_transfert'])) {
-      $output = '';
-      if (!empty($_POST['article'])) {
-        $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
-        // var_dump($_POST);return;
-        if (!empty($transfert)) {
-          $i = 0;
-          foreach ($transfert as $row) {
-            $i++;
 
-            $output .= '
+    public static function ajouter_panier_transfert()
+    {
+        if (isset($_POST['btn_ajouter_panier_transfert'])) {
+            $output = '';
+            if (!empty($_POST['article'])) {
+                $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
+                var_dump($_POST);
+                return;
+                if (!empty($transfert)) {
+                    $i = 0;
+                    foreach ($transfert as $row) {
+                        $i++;
+
+                        $output .= '
               <tr class="row' . $row['ID_article'] . '">
                  <td class="col id d_none">' . $row['ID_article'] . '</td>
                  <td>' . $i . '</td>
@@ -267,7 +302,7 @@ class ControllerEntrepot extends Connexion
                 <td class="col total">0</td>
                  ';
 
-            $output .= '
+                        $output .= '
                  <td> 
                      <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
                      <i class="fa fa-trash"></i> </button>
@@ -275,12 +310,12 @@ class ControllerEntrepot extends Connexion
                </td>
                   </tr>
                   ';
-          }
+                    }
+                }
+                echo $output;
+            }
         }
-        echo $output;
-      }
     }
-  }
 }
 
 //fin de la class

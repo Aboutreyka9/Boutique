@@ -7,9 +7,9 @@ if (notAdmin()) {
   <h1 class="page-title mb-3"> Espace réapprovisionement</h1>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->
   <!-- floating action -->
-  <button type="button"  id="btn_ajouter_achat" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button> 
+  <button type="button" id="btn_ajouter_achat" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button>
 
- <!-- floating action -->
+  <!-- floating action -->
   <?php if (Soutra::getState('fournisseur') == 1): ?>
 
     <div class="row">

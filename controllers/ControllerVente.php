@@ -50,6 +50,55 @@ class ControllerVente extends Connexion
     }
   }
 
+  public static function getEncaissementvente()
+  {
+    if (isset($_POST["frm_encaissement"])) {
+      $code = $_POST["code"];
+      // $article = Soutra::getSingleVenteArticle($id_sortie);
+      // $vente = Soutra::getAllTable('sortie', 'ID_sortie', $id_sortie);
+
+      $output = '
+            <form action="" id="form_encaisser_vente" method="POST">
+            <div class="row">
+            <input type="hidden" name="btn_encaisser_vente" class="form-control">
+                <div class="col-md-12">
+                <div class="form-group">
+                  <label for="article_id">Mode de paiement</label>
+                  <select name="mode_paiement" class="form-control">
+                  ' . payement() . '
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="montant_total">Montant à regler</label>
+                  <input readOnly type="text" class="form-control" id="montant_total">
+                </div>
+
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="qte">Montant reçu</label>
+                  <input type="number" min="0" name="qte" class="form-control qte_vente_detail">
+                </div>
+              </div>
+                <div class="col-md-12">
+                <div class="form-group">
+                  <label for="qte">Reste à payer</label>
+                  <input type="number" min="0" name="qte" class="form-control qte_vente_detail">
+                </div>
+              </div>
+              <div class="col-md-12 modal_footer">
+               <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+              </div>
+              </div>
+          </form>';
+
+
+      echo json_encode($output);
+    }
+  }
+
 
   // public static function etat_vente() {
   //     if (isset($_POST["etat_utilisateur"])) {
@@ -555,7 +604,7 @@ class ControllerVente extends Connexion
           'code_vente' => $code,
           'client_id' => $client,
           'employe_id' => $employe_id,
-          'entrepot_id' => 7,
+          'entrepot_id' => $entrepot_id,
           'etat_vente' => 1,
           'pay_mode' => PAYMENT_MODE[0],
           'statut_vente' => STATUT_COMMANDE[0],
