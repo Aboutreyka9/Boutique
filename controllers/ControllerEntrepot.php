@@ -85,28 +85,26 @@ class ControllerEntrepot extends Connexion
                 <i class="bi bi-check-circle"></i> </button>';
                     }
                     $output .= '
-            <tr class="row' . $row['ID_entrepot'] . '">
-               <td>' . $i . '</td>
-               <td>' . $row['libelle_entrepot'] . '</td>
-               <td>' . $row['ville_entrepot'] . '</td>
-               <td>' . $row['adresse_entrepot'] . '</td>
-               <td>' . $row['responsable'] . '</td>
-               <td>' . checkEtatData($row['etat_entrepot']) . '</td>
-               <td>' . Soutra::date_format($row['created_at_entrepot']) . '</td>
-               ';
+                <tr class="row' . $row['ID_entrepot'] . '">
+                   <td>' . $i . '</td>
+                   <td>' . $row['libelle_entrepot'] . '</td>
+                   <td>' . $row['categorie'] . '</td>
+                   <td>' . $etat . '</td>
+                   <td>' . Soutra::date_format($row['created_at']) . '</td>
+                   ';
 
-
-                    $output .= '<td style="display: flex; flex-direction: row; align-items: center;"> 
-               <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm ">
-            <i class="fa fa-eye"></i></a>
-             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article" data-action="entrepot">
-            <i class="fa fa-link"></i></button>
-            <button title="Modifier entrepot" data-id="' . $row['ID_entrepot'] . '" class="btn btn-primary mr-2 btn-sm btn_update_entrepot">
-            <i class="fa fa-edit"></i>  </button>
-                ' . $btn . '
-          </td>
-             </tr>
-             ';
+                    $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+                   <button data-id="' . $row['ID_famille'] . '" class="btn btn-primary btn-sm btn_update_famille">
+                   <i class="fa fa-edit"></i> 
+    <span class="phone-btn-text">Modifier</span>
+</button>
+                   <div class="d-inline">
+                       <button data-id="' . $row['ID_famille'] . '" class="btn btn-warning btn-sm btn_remove_famille">
+                       <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                   </div>
+                 </td>
+                    </tr>
+                    ';
                 }
             }
             echo $output;
