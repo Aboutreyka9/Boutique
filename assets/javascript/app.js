@@ -144,7 +144,6 @@ $(function () {
         });
     }
 
-
     function ajouter_employe(employe) {
         $.ajax({
             url: "../partials/rooter.php",
@@ -1111,6 +1110,35 @@ $(function () {
         });
     }
 
+    form_add_attribuer_employe_entrepot();
+
+    function form_add_attribuer_employe_entrepot() {
+        $('body').delegate('#form_add_attribuer_employe_entrepot', 'submit', function (e) {
+            e.preventDefault();
+
+            var data = $(this).serialize();
+            $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: data,
+            dataType:"JSON",
+            success: function (data) {
+                console.log(data);
+                
+                if (data.success) {
+                    $.notify(data.msg, "success");
+                    $('#attribuer-modal').modal('hide');
+
+                } else {
+                    // 
+                    $.notify(data.msg, "error");
+                }
+            }
+        });
+
+        });
+    }
+
 
     btn_attribuer_article();
 
@@ -1134,6 +1162,32 @@ $(function () {
 
                     // 
                     $(".menu-modal-attribuer").html(data.data);
+                    $("#attribuer-modal").modal('show');
+                }
+            });
+        });
+    }
+
+    btn_attribuer_employe();
+
+    function btn_attribuer_employe() {
+        $('body').delegate('.btn_attribuer_employe', 'click', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let action = $(this).data('action');
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_action: id,
+                    attribuer_employe_a_entrepot: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data.html);
+                    
+                    $(".menu-modal-attribuer").html(data.html);
                     $("#attribuer-modal").modal('show');
                 }
             });
@@ -1175,6 +1229,7 @@ $(function () {
 
     // SEXION ENTREPOS
 
+    $('.select2').select2();
     $('#responsable_entrepot').select2();
     changeStatutEntrepot();
 
@@ -1742,6 +1797,68 @@ $(function () {
                 total: total,
                 btn_ajouter_achat: 1
             },
+            success: function (data) {
+                console.log(data);
+
+                // return
+                var verif = data.split("&");
+                if (verif[0] == 1) {
+
+                    swal({
+                        title: "Succès",
+                        text: verif[1],
+                        icon: "success",
+                        button: true,
+
+                    }).then(() =>
+                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
+
+                        window.history.go(0)
+                    );
+
+                } else {
+                    notify(verif[1], "", "alert", "warning");
+
+
+                }
+
+            }
+        });
+    }
+
+
+     btn_modifier_achat();
+
+    function btn_modifier_achat() {
+        $('body').on('click','#btn_modifier_achat', function (e) {
+            e.preventDefault();
+
+            var fournisseur = $('#fournisseur').val();
+            if (!fournisseur) {
+                $.notify("Veuillez choisir un fournisseur");
+                return;
+            }
+
+            var data = {
+                id: pushData("id"),
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code: $(this).data('code'),
+                fournisseur: fournisseur,
+                btn_modifier_achat: 1
+            };
+            
+            modifier_achat(data);
+
+        });
+    }
+
+    function modifier_achat(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
             success: function (data) {
                 console.log(data);
 

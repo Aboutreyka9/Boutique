@@ -1,15 +1,21 @@
 <?php
-if (notAdmin()) {
-  return;
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+  $code = $_GET['id'] ?? '';
+  // TODO: Get command data from database
+  $achat = Soutra::getSingleAchatByCode($code);
+  $detail = Soutra::getPanierModifierAchat($code);
+  var_dump($detail);
+} else {
+  // error 404
+  http_response_code(404);
+  exit();
 }
-$_SESSION['id_entrepot']= 1;
-
 ?>
 <header class="page-title-bar">
   <h1 class="page-title mb-3"> Espace réapprovisionement</h1>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->
   <!-- floating action -->
-  <button type="button" id="btn_ajouter_achat" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button>
+  <button type="button" data-code="<?= $achat['reference'] ?>" id="btn_modifier_achat" class="btn btn-success btn-floated" title="Modifier la commande"><span style="line-height: 45px" class="fa fa-plus"></span></button>
 
   <!-- floating action -->
   <?php if (Soutra::getState('fournisseur') == 1): ?>
@@ -29,8 +35,9 @@ $_SESSION['id_entrepot']= 1;
                       $fournisseur = Soutra::getAllFournisseur();
                       $output = "";
                       foreach ($fournisseur as $row) {
+                        $select = $row['ID_fournisseur'] == $achat['ID_fournisseur'] ? 'selected' : '';
                         $output .= '
-                  <option value="' . $row['ID_fournisseur'] . '">' . $row['nom_fournisseur'] . ' ' . $row['telephone_fournisseur'] . '</option>
+                  <option ' . $select . ' value="' . $row['ID_fournisseur'] . '">' . $row['nom_fournisseur'] . ' ' . $row['telephone_fournisseur'] . '</option>
                   ';
                       }
                       echo $output;
@@ -46,14 +53,16 @@ $_SESSION['id_entrepot']= 1;
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Nom</label>
-                    <input readonly type="text" id="nom_fournisseur" class="form-control">
+                    <input readonly type="text" value="<?= $achat['nom_fournisseur'] ?>
+                    " id="nom_fournisseur" class="form-control">
                   </div>
                 </div>
 
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>telephone</label>
-                    <input readonly type="text" id="telephone_fournisseur"
+                    <input readonly type="text" value="<?= $achat['telephone_fournisseur'] ?>
+                    " id="telephone_fournisseur"
                       class="form-control">
                   </div>
                 </div>
@@ -62,20 +71,24 @@ $_SESSION['id_entrepot']= 1;
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Email</label>
-                    <input readonly type="email" id="email_fournisseur" class="form-control">
+                    <input readonly type="email" value="<?= $achat['email_fournisseur'] ?>
+                    " id="email_fournisseur" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Date d'emission</label>
-                    <input type="date" name="date_emission" value="<?= date('Y-m-d') ?>" id="date_emission"
+                    <input type="date"
+                      name="date_emission"
+                      value="<?= date('Y-m-d', strtotime($achat['date_emission'])) ?>"
+                      id="date_emission"
                       class="form-control">
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Date d'échéance</label>
-                    <input type="date" name="date_echeance" value="<?= date('Y-m-d') ?>" id="date_echeance" class="form-control">
+                    <input type="date" name="date_echeance" id="date_echeance" class="form-control">
                   </div>
                 </div>
               </div>
@@ -147,6 +160,36 @@ $_SESSION['id_entrepot']= 1;
         </thead><!-- /thead -->
         <!-- tbody -->
         <tbody class="achat-table">
+          <?php
+          $i = 0;
+          $output = '';
+          foreach ($detail as $row) {
+            $i++;
+
+            $output .= '
+              <tr class="row' . $row['ID_article'] . '">
+                 <td class="col id d_none">' . $row['ID_article'] . '</td>
+                 <td>' . $i . '</td>
+                 <td>' . $row['libelle_article'] . '</td>
+                 <td>' . $row['famille'] . '</td>
+                 <td>' . $row['mark'] . '</td>
+                <td class="label-price col pu" contenteditable="true">' . $row['prix_achat'] . '</td>
+                <td class="label-price col qte" contenteditable="true">' . $row['qte'] . '</td>
+                <td class="col total">' . $row['total_ttc'] . '</td>
+                 ';
+
+            $output .= '
+                 <td> 
+                     <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
+                     <i class="fa fa-trash"></i> </button>
+                 
+               </td>
+                  </tr>
+                  ';
+          }
+          echo $output;
+          ?>
+
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
     </div><!-- /.table-responsive -->

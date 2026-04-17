@@ -165,7 +165,7 @@
             endif;
             // btn Modifier la commande
             if ($row['statut_achat'] == STATUT_COMMANDE[0]):
-              $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm" data-original-title="Modifier la commande"> <i class="fa fa-edit text-icon-primary"></i> </button>';
+              $output .= '<a href="' . URL . 'modifier_achat&id=' . $row['code_achat'] . '"  data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm" data-original-title="Modifier la commande"> <i class="fa fa-edit text-icon-primary"></i> </a>';
             endif;
 
             // btn Annuler la commande

@@ -279,7 +279,13 @@ class ControllerEmploye extends Connexion
         } elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe)) {
             $msg = '2&Le téléphone ' . $telephone_employe . ' existe déjà !';
         } else {
-            $date = "NOW()";
+            $role = Soutra::getByItem("role","ID_role",$role_employe);
+            if($role['libelle_role'] == 'Commercial' && $responsable == 1){
+                $msg = '2&Un commercial ne peut pas être responsable !';
+                echo $msg;return;
+            }
+
+            $date = date('Y-m-d H:i:s');
             $code = self::checkCode();
             $data = array(
                 'nom_employe' => strtoupper($nom_employe),
@@ -290,10 +296,22 @@ class ControllerEmploye extends Connexion
                 'etat_employe' => 1,
                 'code_employe' => $code,
                 'password_employe' => md5("123@123"),
-                //'date_con'=> $date
+                
+                
             );
-            //var_dump($data);die();
-            if (Soutra::insert("employe", $data)) {
+            $data_service = [
+                'responsable' => $responsable,
+                'entrepot_id' => $id_entrepot,
+                'created_at_service' => $date,
+            ];
+            $result = Soutra::transactionData(function () use ($data,$data_service) {
+                            Soutra::insert("employe", $data);
+                            $employe_id = Soutra::lastInsertId();
+                            $data_service['employe_id'] = $employe_id;
+                            Soutra::insert("service", $data_service);
+                        });
+
+            if ($result) {
                 $mail = new ControllerMailer();
                 $nom = $nom_employe . ' ' . $prenom_employe;
                 $email = $email_employe;
@@ -367,6 +385,41 @@ class ControllerEmploye extends Connexion
                 }
             }
             echo $msg;
+        }
+    }
+
+    public static function attribuer_employe_entrepot()
+    {
+        if (isset($_POST['btn_attribuer_employe_entrepot'])) {
+            extract($_POST);
+            $msg = [];
+            if(isset($id_employe) && isset($id_entrepot) && is_numeric($id_employe) && is_numeric($id_entrepot) && $id_employe > 0 && $id_entrepot  > 0){
+                if (empty($id_employe) || empty($id_entrepot)) {
+                    $msg = ['msg' => 'Veuillez remplir tous les champs !'];
+                } else {
+                    
+
+                    if (Soutra::exist2("service","entrepot_id",'employe_id',$id_entrepot,$id_employe)) {
+                        $msg = ['msg' => 'Employé déjà attribué à un entrepôt !'];
+                    } else {
+                        $data = array(
+                            'employe_id' => $id_employe,
+                            'entrepot_id' => $id_entrepot,
+                            'etat_service' => STATUT[1],
+                            'created_at_service' => date('Y-m-d'),
+                            'responsable' => 1
+                        );
+                        if (Soutra::insert("service", $data)) {
+                            $msg = ['success' => true, 'msg' => 'Employé attribué à l\'entrepôt avec succès'];
+                        } else {
+                            $msg = ['msg' => 'Une erreur est survenue !'];
+                        }
+                    }
+                }
+            }else{
+                $msg = ['msg' => 'Données invalide !'];
+            }
+            echo json_encode($msg);
         }
     }
 
@@ -514,6 +567,60 @@ class ControllerEmploye extends Connexion
     //         echo $output;
     //     }
     // }
+
+    
+    public static function modalAttributionEmployeEntrepot()
+    {
+        if (isset($_POST["attribuer_employe_a_entrepot"])) {
+            $output = "";
+            $entrepot = Soutra::getByItem('entrepot', 'ID_entrepot', $_POST["id_action"]);
+            $employes = Soutra::getAllTable('employe', 'etat_employe', 1);
+            $output .= '
+            <form action="" id="form_add_attribuer_employe_entrepot" method="POST">
+            <div class="row">
+             <div class="col-md-12">
+            <div class="form-group">
+           <label for="employe_id">employe</label> <select name="id_employe" id="id_employe" class="form-control employe_search select2"> <option value="default"> --- Choisir un employe ---</option>';
+                foreach ($employes as $row) {
+                    $output .= ' <option value="' . $row['ID_employe'] . '">' . $row['nom_employe'] . '</option>';
+                }
+                $output .= '</select>';
+            $output .= '
+            </div>
+            </div>
+        
+            <div class="col-md-12">
+            <div class="form-group">
+              <label for="entrepot">Entrepot</label>
+               <input type="text" name="entrepot" min="0" id="entrepot" class="form-control" value="'. $entrepot["libelle_entrepot"] .'" readonly>
+            </div>
+            </div>
+            <div class="col-md-12">
+            <div class="form-group">
+              <label for="responsable">Responsable</label>
+              <select name="responsable" id="responsable" class="form-control">
+                <option value="1">Oui</option>
+                <option value="0">Non</option>
+              </select>
+            </div>
+            </div>
+            <div class="col-md-12 modal_footer">
+              <input type="hidden" name="btn_attribuer_employe_entrepot">
+              <input type="hidden" name="id_entrepot" value="'. $entrepot["ID_entrepot"] .'">
+
+           <button type="submit" class="btn btn-primary w-25"> <i class="fa fa-save"></i> Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+            </div>
+            </div>
+            </form>
+            
+
+            ';
+
+
+            echo json_encode(['html' => $output]);
+        }
+    }
+
 
 }
 

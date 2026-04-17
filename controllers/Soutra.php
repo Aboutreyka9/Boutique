@@ -464,14 +464,18 @@ class Soutra extends Connexion
         return $nb;
     }
 
-    public static function getStockDisponibleEntrepot($entrepot_id, $etat = 1)
+    public static function getStockDisponibleEntrepot($entrepot_id)
     {
-        $sql = "SELECT SUM(qte) AS nb FROM entrepot_article WHERE entrepot_id = ? AND etat_article = ?";
+        $data = [];
+        $sql = "SELECT * FROM view_stock_produit WHERE entrepot_id = :entepot_id ";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$entrepot_id, $etat]);
-        $data = $query->fetch();
+        $query->execute(['entrepot_id' => $entrepot_id]);
+        if ($query->rowCount() > 0) {
+
+            $data = $query->fetch();
+        }
         $query->closeCursor();
-        return $data['nb'];
+        return $data;
     }
 
     public static function getCompterVenteToDay($date, $etat)
@@ -1303,6 +1307,31 @@ class Soutra extends Connexion
         return $data;
     }
 
+    public static function getPanierModifierAchat($code_achat)
+    {
+        $data = [];
+        $sql = 'SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark , 
+            a.code_achat,
+            en.prix_achat,
+            en.qte,
+            SUM(en.prix_achat * en.qte) AS total_ttc
+        FROM achat a
+        JOIN entree en ON en.achat_id = a.code_achat
+        JOIN article ar ON ar.ID_article = en.article_id
+        JOIN famille fa ON fa.ID_famille = ar.famille_id 
+        JOIN mark ma ON ma.ID_mark = ar.mark_id
+        WHERE a.code_achat = :codeAchat GROUP BY ar.ID_article
+        ';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['codeAchat' => $code_achat]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
 
     public static function getAllArticleFamilleMarkTransfert($etat = 1)
     {
@@ -1775,7 +1804,7 @@ class Soutra extends Connexion
     public static function getDetailAchat($id_achat, $etat = 1)
     {
         $data = [];
-        $sql = "SELECT en.*, ac.entrepot_id, ac.created_at AS date_achat,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark 
+        $sql = "SELECT en.*,ar.ID_article, ac.entrepot_id, ac.created_at AS date_achat,ar.libelle_article article,ent.garantie_article garantie, fa.libelle_famille famille, ma.libelle_mark mark 
         FROM entree en  
 		JOIN article ar ON ar.ID_article = en.article_id
         JOIN famille fa ON fa.ID_famille = ar.famille_id
@@ -2103,6 +2132,27 @@ class Soutra extends Connexion
         return $query->execute($values);
     }
 
+    public static function upsert($table, $data, $uniqueKeys)
+    {
+        $columns = array_keys($data);
+
+        $placeholders = ':' . implode(', :', $columns);
+
+        $updates = [];
+        foreach ($columns as $col) {
+            if (!in_array($col, $uniqueKeys)) {
+                $updates[] = "$col = VALUES($col)";
+            }
+        }
+
+        $sql = "INSERT INTO $table (" . implode(',', $columns) . ")
+            VALUES ($placeholders)
+            ON DUPLICATE KEY UPDATE " . implode(', ', $updates);
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($data);
+    }
+
     public static function updated($table, array $data, array $where)
     {
         // SET part
@@ -2278,7 +2328,7 @@ class Soutra extends Connexion
         $query = self::getConnexion()->prepare($sql);
         $query->execute([$val]);
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -2494,6 +2544,8 @@ class Soutra extends Connexion
             a.statut_achat,
             a.pay_mode AS mode_paiement,
             a.created_at AS date_emission,
+            a.date_echeance,
+            fn.ID_fournisseur,
             fn.nom_fournisseur,
             fn.telephone_fournisseur AS telephone_fournisseur,
             fn.email_fournisseur AS email_fournisseur,
@@ -3052,7 +3104,9 @@ class Soutra extends Connexion
         $sql = "SELECT en.*, COALESCE(CONCAT(emp.nom_employe, ' ', emp.prenom_employe), 'Aucun') AS responsable FROM entrepot en
         LEFT JOIN service se ON se.entrepot_id = en.ID_entrepot AND se.responsable = 1
         LEFT JOIN employe emp ON emp.ID_employe = se.employe_id
-        ORDER BY en.ID_entrepot DESC";
+        GROUP BY en.ID_entrepot
+        ORDER BY en.ID_entrepot DESC
+        ";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([]);
 
