@@ -193,7 +193,6 @@ $(function () {
         $('body').delegate('.btn_update_employe', 'click', function (e) {
             e.preventDefault();
             var id = $(this).data('id');
-
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
@@ -203,7 +202,7 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // // 
+                    
                     $(".menu-modal").html(data);
                     $("#employe-modal").modal('show');
                 }
@@ -4368,3 +4367,25 @@ function modalEncaissement(selector) {
     });
 }
 
+
+    btn_update_taxe();
+
+    function btn_update_taxe() {
+        $('body').delegate('.form_taxe', 'submit', function (e) {
+            e.preventDefault();
+            let data = $(this).serialize();
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: data,
+                dataType: 'JSON',
+                success: function (data) {
+                    if(data.success) {
+                        $.notify(data.message, "success");
+                    }else{
+                        $.notify(data.message, "error");
+                    }
+                }
+            });
+        });
+    }
