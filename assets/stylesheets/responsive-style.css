@@ -1,3 +1,4 @@
+
 /* dashbord */
 .stats-header {
     gap: 10px;
@@ -13,47 +14,68 @@
         max-width: 350px;
     }
 }
+/* Rendre le tableau responsive sans chevauchement */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: hidden;
+}
 
-/* employe liste */
+.my-table {
+    table-layout: auto;
+    width: 100%;
+    min-width: 750px;
+}
 
-/* Actions */
-.action-buttons {
-    display: flex;
+.my-table th,
+.my-table td {
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 12px 8px;
+    /* min-width: 100px; */
+}
+/* .cell-i {
+    width: 2%;
+} */
+
+.my-table th.action-cell,
+.my-table td.action-cell {
+    /* min-width: 100px; */
+    max-width: 150px;
+    text-align: center;
+}
+
+/* Buttons toujours visibles */
+.btn_update_employe,
+.btn_remove_employe {
+    display: inline-flex !important;
+    align-items: center;
     justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: visible !important;
 }
 
-/* Colonne action */
-.action-col {
-    width: 180px;
+.btn_remove_employe {
+    margin-left: 5px;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
-
-    /* réduire taille texte */
-    .my-table {
-        font-size: 12px;
+    .table {
+        font-size: 13px;
     }
-
-    /* cacher texte boutons */
-    .btn-text {
-        display: none;
+    
+    .table th,
+    .table td {
+        padding: 10px 6px;
     }
-
-    /* centrer contenu */
-    .my-table td,
-    .my-table th {
-        white-space: nowrap;
-    }
-
-    .w-th tr th{
-        width: 69.9062px;
-        text-align: center;
-    }
-    /* Mobile hide text*/
-    .phone-btn-text {
-        display: none;
+    
+    .btn-sm {
+        min-width: 32px;
+        height: 32px;
+        padding: 0 8px;
     }
 }

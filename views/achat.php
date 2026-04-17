@@ -18,14 +18,14 @@
   ?>
 
  <header class="page-title-bar">
-   <div class="mb-3" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+   <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
      <div class="title">
        <h1 class="page-title">Espace Achats</h1>
      </div>
      <div class="activity">
        <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF ?> </b>
      </div>
-     <div class="input-group" style="max-width: 40%;">
+     <div class="input-group w-100 w-md-auto filter-box" >
        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
        <input type="text" name="datefilterAchat" class="form-control" placeholder="Sélectionner la période">
        <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>

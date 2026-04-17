@@ -2,6 +2,7 @@
  if(notAdmin()){
    return;
  }
+
   ?>
  <header class="page-title-bar">
 <h1 class="page-title"> Espace Employés</h1>
@@ -15,7 +16,7 @@
 <!-- .table -->
 <table class="table table-striped table-hover my-table ">
   <!-- thead -->
-  <thead class="thead-dark w-th">
+  <thead class="thead-dark">
     <tr>
       <th> # </th>
       <th> CODE-EMP </th>
@@ -37,25 +38,25 @@
             $i++;
             $output .= '
             <tr class="row'.$row['ID_employe'].'">
-               <td>' . $i . '</td>
-               <td>
+               <td class="action-cell">' . $i . '</td>
+               <td class="action-cell">
                <a href="'.URL.'profile_employe&id='. $row['ID_employe'].'" title="Detail Employé"> <i class="fa fa-eye fa-lg"></i>  ' 
                . $row['code_employe'] . 
                '</a> </td>
-               <td>' . $row['nom_employe'] . '</td>
-               <td>' . $row['prenom_employe'] . '</td>
-               <td>' . $row['telephone_employe'] . '</td>
-               <td>' . $row['role']. '</td>';
+               <td class="action-cell">' . $row['nom_employe'] . '</td>
+               <td class="action-cell">' . $row['prenom_employe'] . '</td>
+               <td class="action-cell">' . $row['telephone_employe'] . '</td>
+               <td class="action-cell">' . $row['role']. '</td>';
                
            
             $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="'. $row['ID_employe'].'" class="btn btn-primary btn-sm btn_update_employe">
             <i class="fa fa-edit"></i> 
-    <span class="phone-btn-text">Modifier</span>
+    
 </button>
             <div class="d-inline">
                 <button data-id="'. $row['ID_employe'].'" class="btn btn-warning btn-sm btn_remove_employe">
-                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                <i class="fa fa-trash"></i> </button>
             </div>
           </td>
              </tr>
@@ -116,7 +117,7 @@
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="role_employe">Role</label>
-                      <select name="role_employe" id="role_employe" class="form-control" id="">
+                      <select name="role_employe" id="role_employe" class="form-control select2" id="">
                         <?php 
                          $roles = Soutra::getAllTable('role','etat_role',1);
                          $output = "";
@@ -132,6 +133,33 @@
                       </select>
                     </div>
                   </div>
+
+             
+                  <div class="col-md-12">
+                <div class="form-group">
+                <label for="entrepot_id">entrepot</label>
+                <select name="id_entrepot" id="id_entrepot" class="form-control entrepot_search select2"> 
+                    <option value="default"> --- Choisir un entrepot ---</option>';
+                    <?php
+                    $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot', STATUT[1]);
+                    var_dump($entrepot);
+                      foreach ($entrepot as $row) {
+                          echo ' <option value="' . $row['ID_entrepot'] . '">' . $row['libelle_entrepot'] . '</option>';
+                      }
+                      echo '</select>';
+                    ?>
+                  </div>
+                </div>
+
+                        <div class="col-md-12">
+            <div class="form-group">
+              <label for="responsable">Responsable</label>
+              <select name="responsable" id="responsable" class="form-control">
+                <option value="0">Non</option>
+                <option value="1">Oui</option>
+              </select>
+            </div>
+            </div>
                 </div><!-- /.form-row -->
               </div><!-- /.modal-body -->
               <!-- .modal-footer -->

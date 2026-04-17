@@ -45,6 +45,7 @@ ControllerConfig::switchClient();
 ControllerConfig::switchFournisseur();
 ControllerConfig::switchDelete();
 ControllerConfig::switchUnite();
+ControllerConfig::updateTaxe();
 
 // Emplyer
 ControllerEmploye::authentification();
@@ -54,6 +55,8 @@ ControllerEmploye::modifier_login_employe();
 ControllerEmploye::liste_employe();
 ControllerEmploye::getEmploye();
 ControllerEmploye::suppresion_employe();
+ControllerEmploye::modalAttributionEmployeEntrepot();
+ControllerEmploye::attribuer_employe_entrepot();
 
 // CLIENT
 ControllerClient::ajouter_client();

@@ -127,6 +127,20 @@ class ControllerConfig extends Connexion {
         
     }
   
+    public static function updateTaxe() {
+        if (isset($_POST['btn_update_taxe'])) {
+            $taxe = $_POST['taxe'];
+
+            $data = array(
+                'taxe' => $taxe,
+                'ID_config' => 1,
+            );
+
+            Soutra::update('config',$data);
+            echo json_encode(['success' => true, 'message' => 'Taxe modifiée avec succès']);
+            exit;
+        }
+    }
     public static function switchClient() {
         if (isset($_POST['switch_client'])) {
             $state = $_POST['state'];

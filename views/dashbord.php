@@ -1,5 +1,6 @@
 <?php 
 // session_destroy();
+var_dump($_SESSION);
 
 if (strtolower($_SESSION['role']) == ADMIN):
 
@@ -221,7 +222,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
                   <select style="width: 15em;" class="form-control select_year" name="" id="select_year_dashboard">
 
                   </select> &nbsp; &nbsp;
-                  <button class="btn btn-primary">Search</button>
+                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
                   <button class="btn btn-sm btn-info toggle-btn ml-2" type="button" data-toggle="collapse" data-target="#month_chart" aria-expanded="true">+</button>
 
                 </div>
@@ -254,7 +255,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
                   <select style="width: 15em;" class="form-control select_year" name="" id="select_year_dashboard_achat">
 
                   </select> &nbsp; &nbsp;
-                  <button class="btn btn-primary">Search</button>
+                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
                   <button class="btn btn-sm btn-info toggle-btn ml-2" type="button" data-toggle="collapse" data-target="#month_achat_chart" aria-expanded="true">+</button>
                 </div>
 

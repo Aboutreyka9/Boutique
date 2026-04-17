@@ -19,11 +19,11 @@
      <!-- thead -->
      <thead class="thead-dark">
        <tr>
-         <th style="width: 2%;">#</th>
-         <th style="width: 10%;">STATUT</th>
-         <th style="width: 10%;">REF-CL</th>
-         <th style="width: 25%;">NOM</th>
-         <th style="width: 10%;">TELEPHONE</th>
+         <th style="width: 10%;">#</th>
+         <th style="width: 25%;">STATUT</th>
+         <th style="width: 35%;">REF-CL</th>
+         <th style="width: 60%;">NOM</th>
+         <th style="width: 19%;">TELEPHONE</th>
          <th style="width: 20%;">EMAIL</th>
          <th style="width: 10%;">DATE-ENR</th>
          <th style="width: 8%;">ACTIONS</th>
@@ -54,12 +54,12 @@
             $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="' . $row['ID_client'] . '" class="btn btn-primary btn-sm btn_update_client">
             <i class="fa fa-edit"></i> 
-    <span class="phone-btn-text">Modifier</span>
+    
 </button> ';
             if (strtolower($_SESSION['role']) == ADMIN) {
               $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_client'] . '" class="btn btn-warning btn-sm btn_remove_client">
-                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                <i class="fa fa-trash"></i> </button>
             </div>';
             }
             $output .= '

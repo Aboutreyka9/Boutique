@@ -136,7 +136,7 @@ function modalAttribution()
      <!-- .modal attribuer-->
    <div class="modal fade" data-backdrop="static" id="attribuer-modal" tabindex="-1" role="dialog" aria-labelledby="attribuer-modal" aria-hidden="true">
      <!-- .modal-dialog -->
-     <div class="modal-dialog modal-lg" role="document">
+     <div class="modal-dialog" role="document">
        <!-- .modal-content -->
        <div class="modal-content">
          <!-- .modal-header -->

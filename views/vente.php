@@ -6,14 +6,14 @@ $end   = (new DateTime('today'))->format('Y-m-d');
 $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée que l'on a créée
 ?>
 <header class="page-title-bar">
-  <div class="mb-3" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+  <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2" >
     <div class="title">
       <h1 class="page-title">Point de Vente</h1>
     </div>
     <div class="activity">
       <b id="activityDateRange">Activité du <?= date("d-m-Y") ?> </b>
     </div>
-    <div class="input-group" style="max-width: 40%;">
+    <div class="input-group w-100 w-md-auto filter-box" >
 
       <span class="input-group-text"><i class="fa fa-calendar"></i></span>
       <input type="text" name="datefilterVente" class="form-control" placeholder="Sélectionner la période">

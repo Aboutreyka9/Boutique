@@ -204,11 +204,11 @@ class ControllerVente extends Connexion
            <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
            <button data-id="' . $row['ID_sortie'] . '" class="btn btn-primary btn-sm btn_update_vente">
             <i class="fa fa-edit"></i> 
-    <span class="phone-btn-text">Modifier</span>
+    
 </button>
            <div class="d-inline">
                <button data-id="' . $row['ID_sortie'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_data_panier">
-               <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+               <i class="fa fa-trash"></i> </button>
            </div>';
       } else {
 
@@ -1027,7 +1027,7 @@ class ControllerVente extends Connexion
 
         // 2. Variables (une seule fois)
         $employe  = $_SESSION['id_employe'];
-        $entrepot = $_SESSION['id_entrepot'] ?? 7;
+        $entrepot = $_SESSION['id_entrepot'] ?? null;
         $date     = date('Y-m-d');
 
         // 3. Préparer insertion multiple
