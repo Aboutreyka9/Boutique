@@ -351,7 +351,8 @@ class ControllerAchat extends Connexion
         'code_achat' => $code,
         'employe_id' => $employe_id,
         'fournisseur_id' => $fournisseur,
-        'created_at' => $date,
+        'created_at' => $date_emission ?? $date,
+        'date_echeance' => $date_echeance ?? $date,
         'entrepot_id' => $entrepot_id
       );
 
@@ -393,27 +394,56 @@ class ControllerAchat extends Connexion
   public static function modifier_achat()
   {
     extract($_POST);
-    $msg = "";
+    $verifEmpty = false;
+    $verifType = false;
 
-    if (empty($qte)) {
-      $msg = '2&Veuillez remplir le champ Quantité !';
-    } elseif (!ctype_digit($qte) || $qte <= 0) {
-      $msg = '2&La quantité est invalide !';
-    } else {
-
-      $data = array(
-        'qte' => $qte,
-        'ID_entree' => $id_approvision
-      );
-
-      if (Soutra::update("entree", $data)) {
-        $code_achat = Soutra::libelle('entree', 'achat_id', 'ID_entree', $id_approvision);
-        $retour = self::liste_achat_detail($code_achat);
-        $msg = "1&$retour&Element modifié avec succès.";
-      } else {
-        $msg = '2&Une erreur est survenue !';
+    for ($i = 0; $i < count($pu); $i++) {
+      if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
+        $verifEmpty = true;
+      } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
+        $verifType = true;
       }
     }
+
+    $msg = "";
+
+    if ($verifEmpty) {
+      $msg =  '2&Veuillez Entrer toutes les valeurs !';
+    } elseif ($verifType) {
+      $msg = '2&Verifier les valeurs renseignées';
+    } else {
+
+      $date = date('Y-m-d');
+      $entrepot_id = $_SESSION['id_entrepot'];
+
+      $data = array(
+        'fournisseur_id' => $fournisseur,
+        'code_achat' => $code,
+      );
+
+      $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
+        Soutra::update("achat", $data);
+
+        for ($i = 0; $i < count($pu); $i++) {
+          $achat = array(
+            'prix_achat' => $pu[$i],
+            'qte' => $qte[$i],
+            'article_id' => $id[$i],
+            'achat_id' => $code,
+          );
+
+          Soutra::upsert("entree", $achat, ['article_id', 'achat_id']);
+        }
+
+        // return false;
+      });
+      if ($results) {
+        $msg = "1&Approvisionement effectué avec succès.";
+      } else {
+        $msg = '2&Une erreur est survenue! ';
+      }
+    }
+
     echo $msg;
   }
 
