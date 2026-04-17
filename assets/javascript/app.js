@@ -4357,7 +4357,8 @@ form_encaisser_achat();
         });
     }
     modal_encaisser("#btn_encaisser_achat","#code_achat")
-    modal_encaisser("#btn_encaisser_vente","#code_vente")
+modal_encaisser("#btn_encaisser_vente", "#code_vente")
+    
 function modal_encaisser(selector,code_select) {    
     $(document).on('click', selector, function () {
         let code = $(this).data('code');
@@ -4366,6 +4367,29 @@ function modal_encaisser(selector,code_select) {
         $(code_select).val(code);
 
         console.log(code); // pour vérifier
+    });
+}
+
+modalEncaissement(".btn_encaisser_vente")
+
+function modalEncaissement(selector) {    
+    $(document).on('click', selector, function () {
+        let code = $(this).data('code');
+         $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    frm_encaissement: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    
+                    $(".menu-modal-encaissement").html(data);
+                    $("#encaisser-modal").modal('show');
+                }
+            });
     });
 }
 
