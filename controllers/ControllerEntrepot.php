@@ -85,15 +85,13 @@ class ControllerEntrepot extends Connexion
                 <i class="bi bi-check-circle"></i> </button>';
                     }
                     $output .= '
-            <tr class="row' . $row['ID_entrepot'] . '">
-               <td>' . $i . '</td>
-               <td>' . $row['libelle_entrepot'] . '</td>
-               <td>' . $row['ville_entrepot'] . '</td>
-               <td>' . $row['adresse_entrepot'] . '</td>
-               <td>' . $row['responsable'] . '</td>
-               <td>' . checkEtatData($row['etat_entrepot']) . '</td>
-               <td>' . Soutra::date_format($row['created_at_entrepot']) . '</td>
-               ';
+                <tr class="row' . $row['ID_entrepot'] . '">
+                   <td>' . $i . '</td>
+                   <td>' . $row['libelle_entrepot'] . '</td>
+                   <td>' . $row['categorie'] . '</td>
+                   <td>' . $etat . '</td>
+                   <td>' . Soutra::date_format($row['created_at']) . '</td>
+                   ';
 
                     $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
                    <button data-id="' . $row['ID_famille'] . '" class="btn btn-primary btn-sm btn_update_famille">
