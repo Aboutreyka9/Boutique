@@ -6,3 +6,6 @@ ajout de :
 change type de statut_vente en enum() => default en attente
 
 - ALTER TABLE `employe` ADD `email_employe` VARCHAR(100) NULL DEFAULT NULL AFTER `telephone_employe`;
+
+
+
