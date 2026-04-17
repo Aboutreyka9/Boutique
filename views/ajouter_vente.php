@@ -184,9 +184,9 @@
            <div class="mb-3">
              <label class="form-label">Mode de paiement :</label>
              <select class="form-control">
-               <option>Espèces</option>
-               <option>Carte</option>
-               <option>Mobile Money</option>
+               <option value=""></option>
+               <?= payement() ?>
+
              </select>
            </div>
 

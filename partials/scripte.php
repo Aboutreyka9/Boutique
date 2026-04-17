@@ -11,8 +11,9 @@
     <script src="<?= ASSETS ?>vendor/chart.js/Chart.min.js"></script> <!-- END PLUGINS JS -->
     <script src="<?= ASSETS ?>vendor/select2/js/select2.min.js"></script> <!-- END PLUGINS JS -->
     <!-- BEGIN THEME JS -->
-    <script src="<?= ASSETS ?>javascript/theme.min.js"></script> <!-- END THEME JS -->
-    <script src="<?= ASSETS ?>swal/sweetalert.min.js"></script> <!-- END THEME JS -->
+    <script src="<?= ASSETS ?>javascript/theme.min.js"></script>
+    <script src="<?= ASSETS ?>swal/sweetalert.min.js"></script>
+    <script src="<?= ASSETS ?>javascript/notify.js"></script> <!-- END THEME JS -->
     <!-- DATE RANGER -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -23,11 +24,9 @@
     <script>
       window.dataLayer = window.dataLayer || [];
 
-      function gtag()
-      {
+      function gtag() {
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
       gtag('config', 'UA-116692175-1');
     </script>
-    

@@ -7,6 +7,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 require_once "../config/const.php";
 require_once "../config/helpers.php";
+require_once "../config/action.php";
 require_once "../models/Connexion.php";
 require_once "../models/Employe.php";
 require_once '../controllers/Soutra.php';
@@ -74,8 +75,10 @@ ControllerFournisseur::getFournisseurForAchat();
 ControllerEntrepot::ajouter_entrepot();
 ControllerEntrepot::ajouter_panier_transfert();
 ControllerEntrepot::getEntrepot();
+ControllerEntrepot::liste_entrepot();
 ControllerEntrepot::modifier_entrepot();
 ControllerEntrepot::getEntrepotForTransfert();
+ControllerEntrepot::changeStatutEntrepot();
 
 
 // CATEGORIE
@@ -127,14 +130,15 @@ ControllerAchat::encaissement_achat();
 ControllerAchat::annulation_achat();
 ControllerAchat::retourner_achat();
 
-ControllerAchat::ajouter_depense();
+// ControllerAchat::ajouter_depense();
 // DEPENSES
+ControllerDepense::ajouter_depense();
 ControllerDepense::ajouter_depense();
 ControllerDepense::getDataDateRangeFilterDepense();
 // 
 // ControllerAchat::ajouter_depense();
-ControllerAchat::getDepense();
-ControllerAchat::suppresion_depense();
+// ControllerAchat::getDepense();
+// ControllerAchat::suppresion_depense();
 // ControllerAchat::getDataDateRangeFilterDepense();
 
 // VERSEMENT
@@ -146,6 +150,7 @@ ControllerVente::ajouter_vente();
 ControllerVente::liste_vente();
 ControllerVente::liste_detail_vente_client();
 ControllerVente::getVente();
+ControllerVente::getEncaissementvente();
 ControllerVente::verifQteArticleVente();
 ControllerVente::verifDetail();
 ControllerVente::suppresion_vente();
