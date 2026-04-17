@@ -21,7 +21,7 @@ class ControllerEmploye extends Connexion
                     $_SESSION["id_employe"] = $emp["ID_employe"];
                     $_SESSION["role"] = $emp["role"];
                     $_SESSION["nom"] = $emp["nom_employe"];
-                    $_SESSION["id_entrepot"] = $emp["entrepot_last_session"] ?? null;
+                    $_SESSION["id_entrepot"] = $emp["entrepot"] ?? null;
                     Soutra::update("employe", ['login' => date("Y-m-d h:i:s"), "ID_employe" => $emp['ID_employe']]);
                     $msg['code'] = 200;
                     $msg['message'] = "Connexion réussie";
@@ -280,7 +280,11 @@ class ControllerEmploye extends Connexion
             $msg = '2&Le téléphone ' . $telephone_employe . ' existe déjà !';
         } else {
             $role = Soutra::getByItem("role","ID_role",$role_employe);
-            
+            if($role['libelle_role'] == 'Commercial' && $responsable == 1){
+                $msg = '2&Un commercial ne peut pas être responsable !';
+                echo $msg;return;
+            }
+
             $date = date('Y-m-d H:i:s');
             $code = self::checkCode();
             $data = array(
