@@ -86,7 +86,7 @@ class ControllerEmploye extends Connexion
             ';
 
 
-            echo $output;
+            echo json_encode($output);
         }
     }
 
@@ -140,11 +140,11 @@ class ControllerEmploye extends Connexion
                     $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
                    <button data-id="' . $row['ID_employe'] . '" class="btn btn-primary btn-sm btn_update_employe">
                    <i class="fa fa-edit"></i> 
-    <span class="phone-btn-text">Modifier</span>
+    
 </button>
                    <div class="d-inline">
                        <button data-id="' . $row['ID_employe'] . '" class="btn btn-warning btn-sm btn_remove_employe">
-                       <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                       <i class="fa fa-trash"></i> </button>
                    </div>
                  </td>
                     </tr>

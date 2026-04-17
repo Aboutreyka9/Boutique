@@ -15,7 +15,7 @@
 <!-- .table -->
 <table class="table table-striped table-hover my-table ">
   <!-- thead -->
-  <thead class="thead-dark w-th">
+  <thead class="thead-dark">
     <tr>
       <th> # </th>
       <th> CODE-EMP </th>
@@ -37,25 +37,25 @@
             $i++;
             $output .= '
             <tr class="row'.$row['ID_employe'].'">
-               <td>' . $i . '</td>
-               <td>
+               <td class="action-cell">' . $i . '</td>
+               <td class="action-cell">
                <a href="'.URL.'profile_employe&id='. $row['ID_employe'].'" title="Detail Employé"> <i class="fa fa-eye fa-lg"></i>  ' 
                . $row['code_employe'] . 
                '</a> </td>
-               <td>' . $row['nom_employe'] . '</td>
-               <td>' . $row['prenom_employe'] . '</td>
-               <td>' . $row['telephone_employe'] . '</td>
-               <td>' . $row['role']. '</td>';
+               <td class="action-cell">' . $row['nom_employe'] . '</td>
+               <td class="action-cell">' . $row['prenom_employe'] . '</td>
+               <td class="action-cell">' . $row['telephone_employe'] . '</td>
+               <td class="action-cell">' . $row['role']. '</td>';
                
            
             $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="'. $row['ID_employe'].'" class="btn btn-primary btn-sm btn_update_employe">
             <i class="fa fa-edit"></i> 
-    <span class="phone-btn-text">Modifier</span>
+    
 </button>
             <div class="d-inline">
                 <button data-id="'. $row['ID_employe'].'" class="btn btn-warning btn-sm btn_remove_employe">
-                <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                <i class="fa fa-trash"></i> </button>
             </div>
           </td>
              </tr>

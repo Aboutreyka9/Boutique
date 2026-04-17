@@ -45,6 +45,7 @@ ControllerConfig::switchClient();
 ControllerConfig::switchFournisseur();
 ControllerConfig::switchDelete();
 ControllerConfig::switchUnite();
+ControllerConfig::updateTaxe();
 
 // Emplyer
 ControllerEmploye::authentification();

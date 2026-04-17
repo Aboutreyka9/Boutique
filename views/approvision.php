@@ -85,7 +85,7 @@ if (notAdmin()) {
                <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
                <div class="d-inline">
                    <button data-id="' . $row['ID_article'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_data_panier">
-                   <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                   <i class="fa fa-trash"></i> </button>
                </div>
              </td>
                 </tr>

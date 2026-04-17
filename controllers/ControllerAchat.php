@@ -105,7 +105,7 @@ class ControllerAchat extends Connexion
                   <i class="fa fa-edit"></i> modifier</button>
                  <div class="d-inline">
                      <button data-id="' . $row['ID_entree'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_achat_detail">
-                     <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                     <i class="fa fa-trash"></i> </button>
                  </div>';
 
         $output .= '   
@@ -646,7 +646,7 @@ class ControllerAchat extends Connexion
   //                         <i class="fa fa-eye"></i> Detail </a>
   //                         <div class="d-inline ">
   //                             <button data-id="'.$row['ID_achat'].'" title="Supprimer achat" class="btn btn-warning btn-sm btn_remove_achat d_none">
-  //                             <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+  //                             <i class="fa fa-trash"></i> </button>
   //                         </div>
   //                     </td>
   //                 </tr>';
@@ -865,7 +865,7 @@ class ControllerAchat extends Connexion
                         <i class="fa fa-eye"></i> Detail </a>
                         <div class="d-inline ">
                             <button data-id="' . $row['ID_achat'] . '" title="Supprimer achat" class="btn btn-warning btn-sm btn_remove_achat d_none">
-                            <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+                            <i class="fa fa-trash"></i> </button>
                         </div>
                     </td>
                 </tr>';
@@ -1118,7 +1118,7 @@ class ControllerAchat extends Connexion
               <button data-id="' . $row['id_depense'] . '" title="Modifier depense" class="btn btn-primary btn-sm btn_update_depense">
               <i class="fa fa-edit"></i> Modifier</button>
               <button data-id="' . $row['id_depense'] . '" title="Supprimer depense" class="btn btn-danger btn-sm btn_remove_depense">
-              <i class="fa fa-trash"></i> <span class="phone-btn-text">Supprimer</span></button>
+              <i class="fa fa-trash"></i> </button>
           </div>
      </td>
    </tr>
