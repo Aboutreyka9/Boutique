@@ -46,7 +46,7 @@ if (Soutra::getState('fournisseur') != 1) {
             <tr class="row' . $row['ID_fournisseur'] . '">
                <td>' . $i . '</td>
                <td>
-               <a href="' . URL . 'fournisseur_profile&id=' . $row['ID_fournisseur'] . '" title="Detail client"> <i class="fa fa-eye fa-lg"></i>  '
+               <a href="' . URL . 'fournisseur_profile&id=' . $row['ID_fournisseur'] . '" title="Detail client"> <i class="fa fa-eye"></i>  '
             . $row['code_fournisseur'] .
             '</a> </td>
                <td>' . $row['nom_fournisseur'] . '</td>
@@ -58,11 +58,13 @@ if (Soutra::getState('fournisseur') != 1) {
 
           $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-primary btn-sm btn_update_fournisseur">
-            <i class="fa fa-edit"></i> modiier </button> ';
+            <i class="fa fa-edit"></i> 
+    
+</button> ';
           if (strtolower($_SESSION['role']) == ADMIN) {
             $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-warning btn-sm btn_remove_fournisseur">
-                <i class="fa fa-trash"></i> Supprimer</button>
+                <i class="fa fa-trash"></i> </button>
             </div>';
           }
           $output .= '

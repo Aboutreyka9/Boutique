@@ -71,7 +71,7 @@
                     <div class="d-flex mb-4">
                       <select class="form-control select_year" name="" id="select_year_employe"> 
                       </select>  &nbsp; &nbsp; 
-                  <button class="btn btn-primary">Search</button>
+                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
                 </div>
                       <div class="chartjs" style="height: 300px">
                         <canvas id="canvas_employe"></canvas>

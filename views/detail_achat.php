@@ -323,10 +323,12 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             $output .= '
            <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
            <button data-id="' . $row['ID_entree'] . '" class="btn btn-primary btn-sm btn_update_achat">
-            <i class="fa fa-edit"></i> modiier </button>
+            <i class="fa fa-edit"></i> 
+    
+</button>
            <div class="d-inline">
                <button data-id="' . $row['ID_entree'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_achat_detail">
-               <i class="fa fa-trash"></i> Supprimer</button>
+               <i class="fa fa-trash"></i> </button>
            </div>';
 
             $output .= '   

@@ -32,22 +32,36 @@ if (strtolower($_SESSION['role']) == ADMIN):
   <!-- CARDS -->
   <div class="row g-3 dashboard_admin">
 
-    <div class="col-md-12 mb-4 mt-2">
-      <div class="mb-3" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-        <div class="title">
-          <h1 class="page-title">Statistiques</h1>
-        </div>
-        <div class="activity">
-          <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF; ?> </b>
-        </div>
-        <div class="input-group" style="max-width: 40%;">
-          <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-          <input type="text" id="filterDashboardAdmin" class="form-control" placeholder="Sélectionner la période">
-          <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
+<div class="col-md-12 mb-4 mt-2">
 
-        </div>
-      </div>
+  <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+
+    <!-- Titre -->
+    <div class="title">
+      <h1 class="page-title mb-1 mb-md-0">Statistiques</h1>
     </div>
+
+    <!-- Activité -->
+    <div class="activity text-md-center">
+      <b id="activityDateRange">
+        Activité du <?= $dateD . ' au ' . $dateF; ?>
+      </b>
+    </div>
+
+    <!-- Filtre -->
+    <div class="input-group w-100 w-md-auto filter-box">
+      <span class="input-group-text">
+        <i class="fa fa-calendar"></i>
+      </span>
+      <input type="text" id="filterDashboardAdmin" class="form-control" placeholder="Sélectionner la période">
+      <button id="filterBtn" class="btn btn-primary">
+        <i class="fa fa-filter"></i>
+      </button>
+    </div>
+
+  </div>
+
+</div>
     <!-- STATS -->
     <div class="row g-3 mb-1">
 
@@ -207,7 +221,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
                   <select style="width: 15em;" class="form-control select_year" name="" id="select_year_dashboard">
 
                   </select> &nbsp; &nbsp;
-                  <button class="btn btn-primary">Search</button>
+                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
                   <button class="btn btn-sm btn-info toggle-btn ml-2" type="button" data-toggle="collapse" data-target="#month_chart" aria-expanded="true">+</button>
 
                 </div>
@@ -240,7 +254,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
                   <select style="width: 15em;" class="form-control select_year" name="" id="select_year_dashboard_achat">
 
                   </select> &nbsp; &nbsp;
-                  <button class="btn btn-primary">Search</button>
+                  <button class="btn btn-primary"><i class="fa fa-search"></i></button>
                   <button class="btn btn-sm btn-info toggle-btn ml-2" type="button" data-toggle="collapse" data-target="#month_achat_chart" aria-expanded="true">+</button>
                 </div>
 

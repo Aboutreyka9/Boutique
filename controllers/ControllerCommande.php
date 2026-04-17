@@ -133,10 +133,12 @@ class ControllerCommande extends Connexion
         $output .= '
            <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
            <button data-id="' . $row['ID_sortie'] . '" class="btn btn-primary btn-sm btn_update_commande">
-            <i class="fa fa-edit"></i> modiier </button>
+            <i class="fa fa-edit"></i> 
+    
+</button>
            <div class="d-inline">
                <button data-id="' . $row['ID_sortie'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_data_panier">
-               <i class="fa fa-trash"></i> Supprimer</button>
+               <i class="fa fa-trash"></i> </button>
            </div>';
       } else {
 
@@ -183,7 +185,7 @@ class ControllerCommande extends Connexion
                  <td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
                  <div class="d-inline">
                      <button data-id="' . $row['ID_article'] . '" title="Supprimer" class="btn btn-warning btn-sm btn_remove_commande_panier">
-                     <i class="fa fa-trash"></i> Supprimer</button>
+                     <i class="fa fa-trash"></i> </button>
                  </div>
                </td>
                   </tr>

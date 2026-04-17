@@ -1,0 +1,81 @@
+
+/* dashbord */
+.stats-header {
+    gap: 10px;
+}
+
+.filter-box {
+    max-width: 100%;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .filter-box {
+        max-width: 350px;
+    }
+}
+/* Rendre le tableau responsive sans chevauchement */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: hidden;
+}
+
+.my-table {
+    table-layout: auto;
+    width: 100%;
+    min-width: 750px;
+}
+
+.my-table th,
+.my-table td {
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 12px 8px;
+    /* min-width: 100px; */
+}
+/* .cell-i {
+    width: 2%;
+} */
+
+.my-table th.action-cell,
+.my-table td.action-cell {
+    /* min-width: 100px; */
+    max-width: 150px;
+    text-align: center;
+}
+
+/* Buttons toujours visibles */
+.btn_update_employe,
+.btn_remove_employe {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: visible !important;
+}
+
+.btn_remove_employe {
+    margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+    .table {
+        font-size: 13px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 10px 6px;
+    }
+    
+    .btn-sm {
+        min-width: 32px;
+        height: 32px;
+        padding: 0 8px;
+    }
+}

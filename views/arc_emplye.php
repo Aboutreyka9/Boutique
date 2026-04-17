@@ -47,7 +47,7 @@
             $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
             <div class="d-inline">
                 <button data-id="'. $row['ID_employe'].'" class="btn btn-warning btn-sm btn_remove_employe">
-                <i class="fa fa-trash"></i> Supprimer</button>
+                <i class="fa fa-trash"></i> </button>
             </div>
           </td>
              </tr>

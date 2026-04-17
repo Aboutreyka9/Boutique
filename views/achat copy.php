@@ -113,7 +113,7 @@ $achat = Soutra::getAllListeAchatByDateRange($start, $end);
             <i class="fa fa-eye"></i> Detail </a>
             <div class="d-inline ">
                 <button data-id="'.$row['ID_achat'].'" title="Supprimer achat" class="btn btn-warning btn-sm btn_remove_achat d_none">
-                <i class="fa fa-trash"></i> Supprimer</button>
+                <i class="fa fa-trash"></i> </button>
             </div>
        </td>
      </tr>

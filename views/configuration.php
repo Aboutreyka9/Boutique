@@ -67,6 +67,29 @@ $image = $info['image'];
                 </div><!-- /.form-row -->
                 </div><!-- /.card-body -->
                 </section><!-- /.card -->
+
+            <section id="taxe" class="card">
+                  <!-- .card-body -->
+                  <div class="card-body">
+                    <h3 class="card-title"> Configuration Taxe(%) </h3>
+                  <form class="form_taxe" method="post">
+                  <div class="form-row ">
+                  <div class="col-md-6 ">
+                    <div class="form-group">
+                      <input type="text"  id="change_taxe" value="<?= $info['taxe'] ?>" name="taxe" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input type="hidden" name="btn_update_taxe" >
+                      <button type="submit" id="modifier_taxe" class="btn btn-info w-50 pull-right">  Modifier taxe</button>
+                    </div>
+                  </div>
+                  
+                </div><!-- /.form-row -->
+                </form>
+                </div><!-- /.card-body -->
+                </section><!-- /.card -->
            
         
            </div><!-- /grid column -->
