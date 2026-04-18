@@ -135,8 +135,10 @@ ControllerAchat::retourner_achat();
 
 // ControllerAchat::ajouter_depense();
 // DEPENSES
+ControllerDepense::getDepense();
 ControllerDepense::ajouter_depense();
-ControllerDepense::ajouter_depense();
+ControllerDepense::validation_depense();
+ControllerDepense::annulation_depense();
 ControllerDepense::getDataDateRangeFilterDepense();
 // 
 // ControllerAchat::ajouter_depense();

@@ -1175,6 +1175,23 @@ class Soutra extends Connexion
     }
 
 
+    public static function getSingleDepenseById($id)
+    {
+        $data = [];
+        $sql = "SELECT dp.*,em.code_employe,em.email_employe, em.telephone_employe, CONCAT(em.nom_employe, ' ', em.prenom_employe) as employe, td.libelle_type FROM depense dp 
+        INNER JOIN employe em ON em.ID_employe = dp.employe_id 
+        INNER JOIN type_depense td ON td.ID_type = dp.type_id 
+        WHERE dp.ID_depense = :id";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['id' => $id]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
     public static function getSingleVenteArticle($id_sortie)
     {
         $data = [];
@@ -1187,7 +1204,7 @@ class Soutra extends Connexion
         $query->execute([$id_sortie]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetch();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -1206,7 +1223,7 @@ class Soutra extends Connexion
         $query->execute([$id_entree]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetch();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
