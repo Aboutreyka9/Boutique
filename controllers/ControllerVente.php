@@ -712,7 +712,6 @@ class ControllerVente extends Connexion
       }
 
 
-
       if ($verifEmpty) {
         $msg['message'] = 'Veuillez renseigner toutes les valeurs !';
       } elseif ($verifType) {
@@ -722,7 +721,7 @@ class ControllerVente extends Connexion
         $entrepot_id = $_SESSION['id_entrepot'];
 
         $data = array(
-          'fournisseur_id' => $fournisseur,
+          'client_id' => $client,
           'entrepot_id' => $entrepot_id,
           'code_vente' => $code_vente
         );

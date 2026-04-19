@@ -1452,52 +1452,7 @@ $(function () {
         });
     }
 
-         btn_modifier_vente();
-
-    function btn_modifier_vente() {
-        $('body').on('click','#btn_modifier_vente', function (e) {
-            e.preventDefault();
-
-            var client = $('#client').val();
-            if (!client) {
-                $.notify("Veuillez choisir un client");
-                return;
-            }
-
-            var data = {
-                id: articleSelected,
-                qte: pushData("qte"),
-                pu: pushData("pu"),
-                total:pushData("total"),
-                code_ventet: $(this).data('code'),
-                client: client,
-                btn_modifier_vente: 1
-            };
-            console.log(data);
-            
-            modifier_vente(data);
-
-        });
-    }
-
-    function modifier_vente(data) {
-        $.ajax({
-            url: "../partials/rooter.php",
-            method: "POST",
-            data,
-            dataType: 'JSON',
-            success: function (data) {
-                console.log(data);
-
-                if (data.code == 200){
-                    articleSelected = null;
-                    $.notify(data.message, 'success');
-                } else {
-                    $.notify(data.message);
-                }
-            }
-        });
-    }
+ 
     
     // SEXION VENTE
     $('#select_code_achat').select2(); // Select2 pour la recherche de code d'achat
@@ -1718,9 +1673,6 @@ $(function () {
     }
 
 
-
-
-
     function modifier_panier_vente(vente) {
         $.ajax({
             url: "../partials/rooter.php",
@@ -1732,6 +1684,51 @@ $(function () {
                 // return;
                 AddNewRowTableVente(data);
                 $.notify("Produit ajouté dans la liste",'success')
+            }
+        });
+    }
+
+       btn_modifier_vente();
+
+    function btn_modifier_vente() {
+        $('body').on('click','#btn_modifier_vente', function (e) {
+            e.preventDefault();
+
+            var client = $('#client').val();
+            if (!client) {
+                $.notify("Veuillez choisir un client");
+                return;
+            }
+
+            var data = {
+                id: articleSelected,
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code_vente: $(this).data('code'),
+                client: client,
+                btn_modifier_vente: 1
+            };
+            console.log(data);
+            
+            modifier_vente(data);
+
+        });
+    }
+
+    function modifier_vente(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data.code == 200){
+                    articleSelected = null;
+                    $.notify(data.message, 'success');
+                } else {
+                    $.notify(data.message);
+                }
             }
         });
     }
