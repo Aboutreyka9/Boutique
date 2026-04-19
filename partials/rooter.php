@@ -118,6 +118,7 @@ ControllerArticle::createAntrepotArticle();
 
 // ACHAT
 ControllerAchat::ajouter_panier_achat();
+ControllerAchat::modifier_panier_achat();
 ControllerAchat::ajouter_achat();
 ControllerAchat::liste_detail_achat_fournisseur();
 ControllerAchat::getCanvasMonthAchat();

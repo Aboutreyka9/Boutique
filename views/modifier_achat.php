@@ -1,10 +1,25 @@
 <?php
 if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
+  // $_SESSION['panier'] = [];
+  // return;
+
   // TODO: Get command data from database
   $achat = Soutra::getSingleAchatByCode($code);
   $detail = Soutra::getPanierModifierAchat($code);
-  var_dump($detail);
+  if (!isset($_SESSION['achat']) || $_SESSION['achat'] != $code) {
+    $_SESSION['achat'] = $code;
+    $_SESSION['panier'] = [];
+    foreach ($detail as  $value) {
+      $_SESSION['panier'][] = $value['ID_article'];
+    }
+  } else {
+    $detail = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+  }
+  $data2 = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+
+
+  var_dump($data2);
 } else {
   // error 404
   http_response_code(404);
@@ -107,12 +122,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <!-- .page-section -->
 <div class="card">
   <div class="card-header">
-    <form id="btn_ajouter_panier_achat" action="" method="post">
+    <form id="btn_modifier_panier_achat" action="" method="post">
       <div class="row">
         <div class="col-md-10">
           <div class="form-group">
             <label for="article">Article - Mark - Slug</label>
-            <select name="article[]" class="form-control" id="select_article" multiple>
+            <select name="article[]" class="form-control" id="select_article" required multiple>
+
               <?php
               $article = Soutra::getAllArticleFamilleMark();
               $output = "";
@@ -125,7 +141,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
               ?>
             </select>
           </div>
-          <input type="hidden" name="btn_ajouter_panier_achat">
+          <input type="hidden" name="btn_modifier_panier_achat">
         </div>
         <div class="col-md-2">
           <div class="form-group">
@@ -144,7 +160,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     </div>
     <div class="table-responsive panier_achat_content ">
       <!-- .table -->
-      <table class="table table-striped table-hover table_total">
+      <table class="table table-striped table-hover table_total table_commande">
         <!-- thead -->
         <thead class="thead-dark">
           <tr>
@@ -167,10 +183,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             $i++;
 
             $output .= '
-              <tr class="row' . $row['ID_article'] . '">
-                 <td class="col id d_none">' . $row['ID_article'] . '</td>
+              <tr data-code="' . $row['ID_article'] . '">
                  <td>' . $i . '</td>
-                 <td>' . $row['libelle_article'] . '</td>
+                 <td>' . $row['libelle_article'] . '</td> 
                  <td>' . $row['famille'] . '</td>
                  <td>' . $row['mark'] . '</td>
                 <td class="label-price col pu" contenteditable="true">' . $row['prix_achat'] . '</td>
@@ -179,11 +194,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                  ';
 
             $output .= '
-                 <td> 
-                     <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
-                     <i class="fa fa-trash"></i> </button>
-                 
-               </td>
+                  <td> 
+                      <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
+                      <i class="fa fa-trash"></i> </button>
+                  
+                </td>
                   </tr>
                   ';
           }
