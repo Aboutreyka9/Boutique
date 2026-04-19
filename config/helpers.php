@@ -51,6 +51,94 @@ function notAccessPage($val)
   }
 }
 
+function mergeArticlesCommande($articleSaved, $addedArticle)
+{
+  $result = [];
+
+  // Injecter les  avec qte par défaut
+  foreach ($articleSaved as $a) {
+    $result[$a['ID_article']] = [
+      "ID_article" => $a['ID_article'],
+      "libelle_article" => $a['libelle_article'],
+      "famille" => $a['famille'],
+      "mark" => $a['mark'],
+      "prix_achat" => $a['prix_achat'],
+      "qte" => $a['qte'],
+      "total_ttc" => $a['total_ttc']
+      // "prix_achat" => $a['prix_achat'],
+      // "qte" => 0
+    ];
+  }
+
+  // Fusion avec le addedArticle
+  foreach ($addedArticle as $s) {
+    if (!isset($result[$s['ID_article']])) {
+      // $result[$s['ID_article']]['qte'] = $s['qte'];
+      // } else {
+      // Cas où l'article existe seulement dans stock
+      $result[$s['ID_article']] = [
+        "ID_article" => $s['ID_article'],
+        "libelle_article" => $s['libelle_article'],
+        "famille" => $s['famille'],
+        "mark" => $s['mark'],
+        "prix_achat" => $s['prix_achat'],
+        "qte" => 0,
+        "total_ttc" => 0
+        // "prix_achat" => $s['prix_achat'],
+        // "qte" => $s['qte']
+      ];
+    }
+  }
+
+  // Optionnel : réindexer proprement (0,1,2…)
+  return array_values($result);
+}
+
+function mergeByKeyArticlesCommande($arrayFull, $arrayPartial, $fieldsMap = [])
+{
+  $result = [];
+
+  // champs configurables
+  $priceField = $fieldsMap[0];
+  $qtyField = $fieldsMap[1];
+  // $priceField = $fieldsMap['price'] ?? 'prix_achat';
+  // $qtyField  = $fieldsMap['qte'] ?? 'qte';
+
+  // 1. Injecter arrayFull
+  foreach ($arrayFull as $item) {
+    $key = $item['ID_article'];
+
+    $result[$key] = [
+      "ID_article" => $item['ID_article'],
+      "libelle_article" => $item['libelle_article'],
+      "famille" => $item['famille'],
+      "mark" => $item['mark'],
+      $priceField => $item[$priceField] ?? null,
+      $qtyField => 0
+    ];
+  }
+
+  // 2. Fusion avec arrayPartial
+  foreach ($arrayPartial as $item) {
+    $key = $item['ID_article'];
+
+    if (isset($result[$key])) {
+      $result[$key][$qtyField] = $item[$qtyField] ?? 0;
+    } else {
+      $result[$key] = [
+        "ID_article" => $item['ID_article'],
+        "libelle_article" => $item['libelle_article'],
+        "famille" => $item['famille'],
+        "mark" => $item['mark'],
+        $priceField => $item[$priceField] ?? null,
+        $qtyField => $item[$qtyField] ?? 0
+      ];
+    }
+  }
+
+  return array_values($result);
+}
+
 function checkStatusCommande(string $etat, array $data = STATUT_COMMANDE)
 {
   $result = "";

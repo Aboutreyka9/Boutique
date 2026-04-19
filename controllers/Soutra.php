@@ -1301,7 +1301,7 @@ class Soutra extends Connexion
         $query->execute([$id]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -1318,7 +1318,7 @@ class Soutra extends Connexion
         $query->execute(['entrepot_id' => $entrepot]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;

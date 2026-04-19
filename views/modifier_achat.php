@@ -3,23 +3,29 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
   // $_SESSION['panier'] = [];
   // return;
+  $merge = [];
 
   // TODO: Get command data from database
   $achat = Soutra::getSingleAchatByCode($code);
-  $detail = Soutra::getPanierModifierAchat($code);
+  $merge = Soutra::getPanierModifierAchat($code);
   if (!isset($_SESSION['achat']) || $_SESSION['achat'] != $code) {
     $_SESSION['achat'] = $code;
     $_SESSION['panier'] = [];
-    foreach ($detail as  $value) {
+    foreach ($merge as  $value) {
       $_SESSION['panier'][] = $value['ID_article'];
     }
   } else {
-    $detail = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+    // $detail = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
   }
   $data2 = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
 
+  // $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
 
-  var_dump($data2);
+  if (count($merge) < count($data2))
+    $merge = mergeArticlesCommande($merge, $data2);
+
+  var_dump($merge);
+  // return;
 } else {
   // error 404
   http_response_code(404);
@@ -179,7 +185,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <?php
           $i = 0;
           $output = '';
-          foreach ($detail as $row) {
+          foreach ($merge as $row) {
             $i++;
 
             $output .= '
