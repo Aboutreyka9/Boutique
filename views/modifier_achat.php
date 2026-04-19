@@ -22,7 +22,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   // $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
 
   if (count($merge) < count($data2))
-    $merge = mergeArticlesCommande($merge, $data2);
+    $merge = mergeByKeyArticlesCommande($merge, $data2, ['prix_achat', 'qte', 'total_ttc']);
 
   var_dump($merge);
   // return;

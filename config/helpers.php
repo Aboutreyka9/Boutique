@@ -51,7 +51,14 @@ function notAccessPage($val)
   }
 }
 
-function mergeArticlesCommande($articleSaved, $addedArticle)
+/**
+ * Fusionne deux tableaux d'articles par clé ID_article
+ * 
+ * @param array $articleSaved Articles déjà enregistrés
+ * @param array $addedArticle Articles ajoutés
+ * @return array Tableau fusionné
+ */
+function mergeArticlesCommande(array $articleSaved, array $addedArticle)
 {
   $result = [];
 
@@ -94,44 +101,56 @@ function mergeArticlesCommande($articleSaved, $addedArticle)
   return array_values($result);
 }
 
-function mergeByKeyArticlesCommande($arrayFull, $arrayPartial, $fieldsMap = [])
+/**
+ * Fusionne deux tableaux d'articles par clé ID_article
+ * 
+ * @param array $articleSaved Articles déjà enregistrés
+ * @param array $addedArticle Articles ajoutés
+ * @param array $fieldsMap Mapping des champs (prix, quantité, total)
+ * @return array Tableau fusionné
+ */
+function mergeByKeyArticlesCommande(array $articleSaved, array $addedArticle, array $fieldsMap)
 {
   $result = [];
 
   // champs configurables
   $priceField = $fieldsMap[0];
   $qtyField = $fieldsMap[1];
+  $totalField = $fieldsMap[2];
   // $priceField = $fieldsMap['price'] ?? 'prix_achat';
   // $qtyField  = $fieldsMap['qte'] ?? 'qte';
 
-  // 1. Injecter arrayFull
-  foreach ($arrayFull as $item) {
+  // 1. Injecter articleSaved
+  foreach ($articleSaved as $item) {
     $key = $item['ID_article'];
 
     $result[$key] = [
+
       "ID_article" => $item['ID_article'],
       "libelle_article" => $item['libelle_article'],
       "famille" => $item['famille'],
       "mark" => $item['mark'],
-      $priceField => $item[$priceField] ?? null,
-      $qtyField => 0
+      $priceField => $item[$priceField],
+      $qtyField => $item[$qtyField],
+      $totalField => $item[$totalField]
     ];
   }
 
-  // 2. Fusion avec arrayPartial
-  foreach ($arrayPartial as $item) {
+  // 2. Fusion avec addedArticle
+  foreach ($addedArticle as $item) {
     $key = $item['ID_article'];
 
-    if (isset($result[$key])) {
-      $result[$key][$qtyField] = $item[$qtyField] ?? 0;
-    } else {
+    if (!isset($result[$key])) {
+      //   $result[$key][$qtyField] = $item[$qtyField] ?? 0;
+      // } else {
       $result[$key] = [
         "ID_article" => $item['ID_article'],
         "libelle_article" => $item['libelle_article'],
         "famille" => $item['famille'],
         "mark" => $item['mark'],
-        $priceField => $item[$priceField] ?? null,
-        $qtyField => $item[$qtyField] ?? 0
+        $priceField => $item[$priceField],
+        $qtyField => 0,
+        $totalField => 0
       ];
     }
   }
