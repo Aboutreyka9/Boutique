@@ -1608,6 +1608,21 @@ $(function () {
         });
     }
 
+     function loadTotalRow() {
+
+            var currow = $(".table_commande").closest('tr');
+            total = 0
+            var pu = currow.find('.pu').text();
+            var qte = currow.find('.qte').text();
+
+            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
+            // // 
+            currow.find('.total').text(total);
+
+            totalAll();
+
+    }
+
 
     function totalAll() {
         var somme = 0;
@@ -1681,7 +1696,8 @@ $(function () {
             $('.table_commande tbody tr').each(function () {
                 articleSelected.push($(this).data('code'));
             });
-           console.log(articleSelected);
+           loadTotalRow();
+        //    console.log(articleSelected);
            
         }
     }
@@ -1712,7 +1728,7 @@ $(function () {
             <td class="label-price col qte" contenteditable="true">0</td>
             <td class="col total">0</td>
             
-            <td> <button data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
+            <td> <button data-achat="${article.achat_id}" data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier">
                         <i class="fa fa-trash"></i> </button>
             </td>
         </tr>`;
@@ -1914,14 +1930,15 @@ $(function () {
             }
 
             var data = {
-                id: pushData("id"),
+                id: articleSelected,
                 qte: pushData("qte"),
                 pu: pushData("pu"),
                 total:pushData("total"),
-                code: $(this).data('code'),
+                code_achat: $(this).data('code'),
                 fournisseur: fournisseur,
                 btn_modifier_achat: 1
             };
+            console.log(data);
             
             modifier_achat(data);
 
@@ -1933,31 +1950,16 @@ $(function () {
             url: "../partials/rooter.php",
             method: "POST",
             data,
+            dataType: 'JSON',
             success: function (data) {
                 console.log(data);
 
-                // return
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-
-                    swal({
-                        title: "Succès",
-                        text: verif[1],
-                        icon: "success",
-                        button: true,
-
-                    }).then(() =>
-                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
-
-                        window.history.go(0)
-                    );
-
+                if (data.code == 200){
+                    articleSelected = null;
+                    $.notify(data.message, 'success');
                 } else {
-                    notify(verif[1], "", "alert", "warning");
-
-
+                    $.notify(data.message);
                 }
-
             }
         });
     }
@@ -2059,6 +2061,54 @@ $(function () {
             })
         });
     }
+
+    btn_suprimer_modifier_achat_panier();
+     function btn_suprimer_modifier_achat_panier() {
+         $('body').on('click','.btn_remove_data_modifier_panier', function (e) {
+            e.preventDefault();
+            var element = $(this);
+            var id_article = $(this).data('id');
+            var id_achat = $(this).data('achat');
+
+            // console.log(id_achat,id_article);
+            // return
+            
+
+          swal({
+                title: "Etes vous sure",
+                text: "de vouloir supprimer cet element555 ?",
+                icon: "warning",
+                buttons: ['Non', 'Oui'],
+                dangerMode: true,
+            }).then((a) => {
+                if (a) {
+
+                    $.ajax({
+                        url: "../partials/rooter.php",
+                        method: "POST",
+                        data: {
+                            id_achat: id_achat,
+                            id_article: id_article,
+                            remove_modifier_panier_achat: 1
+                        },
+                        dataType: 'JSON',
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code = 200) {
+                                element.closest('tr').remove();
+                                articleSelected = articleSelected.filter(a => a != id_article);
+                                $.notify(data.message, "success");
+                                loadTotalRow();
+                            } else {
+                                $.notify("Erreur de suppression du produit!")
+                            }
+                        }
+                    });
+                }
+            })
+        });
+    }
+
 
     btn_remove_achat_detail();
 
@@ -2319,19 +2369,7 @@ $(function () {
         });
     }
 
-    update_achat();
-
-    function update_achat() {
-        $('body').delegate('#btn_modifier_achat', 'submit', function (e) {
-            e.preventDefault();
-
-
-            var achat = $(this).serialize();
-
-            achat_ajax(achat);
-
-        });
-    }
+  
 
     function achat_ajax(achat) {
         $.ajax({
