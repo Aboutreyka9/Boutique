@@ -907,41 +907,19 @@ class ControllerAchat extends Connexion
 
 
 
-  public static function ajouter_depense()
-  {
-    if (isset($_POST['btn_ajouter_depense'])) {
+  // public static function ajouter_depense()
+  // {
+  //   if (isset($_POST['btn_ajouter_depense'])) {
 
-      if (isset($_POST['id_depense']) && !empty($_POST['id_depense'])) {
-        // mod()
-        self::modifier_depense();
-      } else {
-        // Ajouter
-        self::createDepense();
-      }
-    }
-  }
-
-  /**
-   * Vérifie la validité des données envoyées
-   */
-  private static function validateDepense($data)
-  {
-    $errors = "";
-
-    if (empty($data['type_id'])) {
-      $errors = "Le type de dépense est obligatoire.";
-    }
-    if (empty($data['montant'])) {
-      $errors = "Le montant est obligatoire.";
-    } elseif (!is_numeric($data['montant'])) {
-      $errors = "Le montant doit être un nombre.";
-    }
-    if (empty($data['periode'])) {
-      $errors = "La date est obligatoire.";
-    }
-
-    return $errors;
-  }
+  //     if (isset($_POST['id_depense']) && !empty($_POST['id_depense'])) {
+  //       // mod()
+  //       self::modifier_depense();
+  //     } else {
+  //       // Ajouter
+  //       self::createDepense();
+  //     }
+  //   }
+  // }
 
   /**
    * Insère une dépense dans la base
@@ -962,118 +940,34 @@ class ControllerAchat extends Connexion
     return Soutra::insert("depense",   $insertData);
   }
 
-  public static function modifier_depense()
-  {
-    extract($_POST);
-    $msg = "";
-
-    // Étape 1 : validation
-    $errors = self::validateDepense($_POST);
-
-    if (!empty($errors)) {
-      echo "2& $errors";
-      return;
-    }
-    $insertData = [
-      'montant'      => $montant,
-      'description'  => $description,
-      'periode'      => $periode,
-      'type_id'      => $type_id,
-      'id_depense'   => $id_depense,
-    ];
-    if (Soutra::update("depense", $insertData)) {
-      // $retour = self::liste_depense_detail($code_depense);
-      $msg = "1&Dépendence modifiée avec succès.";
-    } else {
-      $msg = '2&Une erreur est survenue !';
-    }
-
-    echo $msg;
-  }
-
 
   /**
    * Méthode publique appelée pour traiter le formulaire
    */
-  public static function createDepense()
-  {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_ajouter_depense'])) {
-      $data = $_POST;
 
-      // Étape 1 : validation
-      $errors = self::validateDepense($data);
+  // public static function createDepense()
+  // {
+  //   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_ajouter_depense'])) {
+  //     $data = $_POST;
 
-      if (!empty($errors)) {
-        echo "2& $errors";
-        return;
-      }
+  //     // Étape 1 : validation
+  //     $errors = self::validateDepense($data);
 
-      // Étape 2 : insertion
-      if (self::saveDepense($data)) {
-        echo "1&Dépense ajoutée avec succès.";
-      } else {
-        echo "2&Une erreur est survenue lors de l'enregistrement.";
-      }
-    }
-  }
+  //     if (!empty($errors)) {
+  //       echo "2& $errors";
+  //       return;
+  //     }
+
+  //     // Étape 2 : insertion
+  //     if (self::saveDepense($data)) {
+  //       echo "1&Dépense ajoutée avec succès.";
+  //     } else {
+  //       echo "2&Une erreur est survenue lors de l'enregistrement.";
+  //     }
+  //   }
+  // }
   // }
 
-  public static function getDepense()
-  {
-    if (isset($_POST["frm_updepense"])) {
-
-      $id_depense = $_POST['id_depense'];
-      $depense = Soutra::getSingleDepense($id_depense);
-      // $approvision = Soutra::getAllTable('entree','ID_entree',$id_entree);
-
-      $output = '
-                     <div class="form-row menu-modal">
-                         <div class="col-md-12">
-                             <div class="form-group">
-                                 <label for="nom">Dépende</label>
-                                 <select name="type_id" class="form-control select" id="">
-                                    <option value="' . $depense['ID_type'] . '">' . $depense['libelle_type'] . '</option>
-                                    ';
-
-      $data = Soutra::getAllByFromTable("type_depense", "libelle_type");
-      foreach ($data as $value) {
-        $output .= '
-                                        <option value="' . $value['ID_type'] . '">' . $value['libelle_type'] . '</option>
-                                        ';
-      }
-      $output .= '
-                                 </select>
-                             </div>
-                         </div>
-                         <div class="col-md-12">
-                             <div class="form-group">
-                                 <label for="montant">Montant</label>
-                                 <input type="text" value="' . $depense['montant'] . '" name="montant" id="montant"
-                                     class="form-control">
-                             </div>
-                         </div>
-                         <div class="col-md-12">
-                             <div class="form-group">
-                             <input type="hidden"  name="id_depense" value="' . $depense['id_depense'] . '" class="form-control" />
-                                 <label for="periode">date</label>
-                                 <input type="date" name="periode" value="' . $depense['periode_depense'] . '" id="periode" 
-                                     class="form-control">
-                             </div>
-                         </div>
-                         <div class="col-md-12">
-                             <div class="form-group">
-                                 <label for="Description">Description</label>
-                                 <textarea name="description" class="form-control" id="Description" rows="3"> ' . $depense['description'] . ' </textarea>
-                             </div>
-                         </div>
-
-                     </div>
-            ';
-
-
-      echo $output;
-    }
-  }
 
   public static function suppresion_depense()
   {
@@ -1122,44 +1016,44 @@ class ControllerAchat extends Connexion
     }
   }
 
-  private static function returnDataDepense($data)
-  {
-    $output = '';
+  // private static function returnDataDepense($data)
+  // {
+  //   $output = '';
 
-    // $achat = Soutra::getAllListeachatByDateRange();
-    if (!empty($data)) {
+  //   // $achat = Soutra::getAllListeachatByDateRange();
+  //   if (!empty($data)) {
 
-      $i = 0;
-      foreach ($data as $row) {
-        ++$i;
-        $output .= '
-  <tr class="row' . $row['id_depense'] . '">
-     <td>' . $i . '</td>
-     <td>' . Soutra::date_format($row['date_created']) . '</td>
-     <td class="text-right">' . $row['libelle_type'] . '</td>
-     <td class="text-right">' . number_format($row['montant'], 0, ',', ' ') . '</td>
-     <td title="' . $row['description'] . '" >
-     ...
-     </td>
-     <td>' . Soutra::date_format($row['periode']) . '</td>
-     <td class="text-right">' . $row['employe'] . '</td>
-     <td class="text-right"> 
-          <div class="d-inline ">
-              <button data-id="' . $row['id_depense'] . '" title="Modifier depense" class="btn btn-primary btn-sm btn_update_depense">
-              <i class="fa fa-edit"></i> Modifier</button>
-              <button data-id="' . $row['id_depense'] . '" title="Supprimer depense" class="btn btn-danger btn-sm btn_remove_depense">
-              <i class="fa fa-trash"></i> </button>
-          </div>
-     </td>
-   </tr>
-   ';
-      }
-    } else {
-      $output .= '<tr><td colspan="7" class="text-center">Aucun achat trouvé pour la plage de dates sélectionnée.</td></tr>';
-    }
+  //     $i = 0;
+  //     foreach ($data as $row) {
+  //       ++$i;
+  //       $output .= '
+  // <tr class="row' . $row['id_depense'] . '">
+  //    <td>' . $i . '</td>
+  //    <td>' . Soutra::date_format($row['date_created']) . '</td>
+  //    <td class="text-right">' . $row['libelle_type'] . '</td>
+  //    <td class="text-right">' . number_format($row['montant'], 0, ',', ' ') . '</td>
+  //    <td title="' . $row['description'] . '" >
+  //    ...
+  //    </td>
+  //    <td>' . Soutra::date_format($row['periode']) . '</td>
+  //    <td class="text-right">' . $row['employe'] . '</td>
+  //    <td class="text-right"> 
+  //         <div class="d-inline ">
+  //             <button data-id="' . $row['id_depense'] . '" title="Modifier depense" class="btn btn-primary btn-sm btn_update_depense">
+  //             <i class="fa fa-edit"></i> Modifier</button>
+  //             <button data-id="' . $row['id_depense'] . '" title="Supprimer depense" class="btn btn-danger btn-sm btn_remove_depense">
+  //             <i class="fa fa-trash"></i> </button>
+  //         </div>
+  //    </td>
+  //  </tr>
+  //  ';
+  //     }
+  //   } else {
+  //     $output .= '<tr><td colspan="7" class="text-center">Aucun achat trouvé pour la plage de dates sélectionnée.</td></tr>';
+  //   }
 
-    return $output;
-  }
+  //   return $output;
+  // }
 
   public static function ajouter_versement_achat()
   {
