@@ -181,6 +181,33 @@ class ControllerAchat extends Connexion
     }
   }
 
+  public static function modifier_panier_achat()
+  {
+    if (isset($_POST['btn_modifier_panier_achat'])) {
+      $output = '';
+      if (!empty($_POST['article'])) {
+
+        $search = [];
+        $achat = [];
+
+        // if (!empty($_POST['article'])) {
+
+        for ($i = 0; $i < count($_POST['article']); $i++) {
+          $id = $_POST['article'][$i];
+          if (!in_array($id, $_SESSION['panier'])) {
+            $_SESSION['panier'][] = $id;
+            $search[] = $id;
+          }
+        }
+
+        $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+
+        // }
+        echo json_encode($achat);
+      }
+    }
+  }
+
   public static function validation_achat()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_validation_achat") {

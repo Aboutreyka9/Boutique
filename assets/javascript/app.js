@@ -4,6 +4,8 @@ $(function () {
     var STARDATE = "";
     const KEY = "start@1234";
     let charts = {}; // stocker les graphiques par ID
+    let articleSelected = [];
+    let articlesMap = {};
 
 
 
@@ -1673,9 +1675,53 @@ $(function () {
         });
     }
 
+    initDataSelected();
+    function initDataSelected() {
+       if ($('.table_commande').length && $('.table_commande').is(':visible')) {
+            $('.table_commande tbody tr').each(function () {
+                articleSelected.push($(this).data('code'));
+            });
+           console.log(articleSelected);
+           
+        }
+    }
 
+    function transformToMap(dataArticles) {
+      dataArticles.forEach(a => {
+    articlesMap[a.ID_article] = a;
+      });
+        console.log(articlesMap);
+    }
 
+    function AddNewRowTable(dataArticles) {
+        let html = '';
 
+        dataArticles.forEach(article => {
+
+        if (articleSelected.includes(article.ID_article)) return;
+
+        let index = $('.table_commande tbody tr').length + 1;
+
+        html += `
+        <tr data-code="${article.ID_article}">
+            <td>${index}</td>
+            <td>${article.libelle_article}</td>
+            <td>${article.famille}</td>
+            <td>${article.mark}</td>
+            <td class="label-price col pu" contenteditable="true">${article.prix_achat}</td>
+            <td class="label-price col qte" contenteditable="true">0</td>
+            <td class="col total">0</td>
+            
+            <td> <button data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
+                        <i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>`;
+
+        articleSelected.push(article.ID_article);
+        });
+
+        $('.table_commande tbody').append(html);
+    }
 
     function ajouter_panier_achat(achat) {
         $.ajax({
@@ -1695,6 +1741,34 @@ $(function () {
         });
     }
 
+    btn_modifier_panier_achat();
+
+    function btn_modifier_panier_achat() {
+        $('body').delegate('#btn_modifier_panier_achat', 'submit', function (e) {
+            e.preventDefault();
+            
+            var achat = $(this).serialize();
+            modifier_panier_achat(achat);
+        });
+    }
+
+
+
+
+
+    function modifier_panier_achat(achat) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: achat,
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);  
+                AddNewRowTable(data);
+                $.notify("Produit ajouté dans la liste",'success')
+            }
+        });
+    }
 
     totalRow()
 
