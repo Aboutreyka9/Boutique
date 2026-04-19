@@ -124,6 +124,7 @@ ControllerAchat::liste_detail_achat_fournisseur();
 ControllerAchat::getCanvasMonthAchat();
 ControllerAchat::getAchat();
 ControllerAchat::suppresion_achat();
+ControllerAchat::btn_remove_modifier_panier_achat();
 ControllerAchat::btn_remove_achat_detail();
 ControllerAchat::getCanvasfournisseur();
 ControllerAchat::getDataDateRangeFilterAchat();

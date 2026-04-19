@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
 class ControllerAchat extends Connexion
 {
 
@@ -377,7 +379,7 @@ class ControllerAchat extends Connexion
       $data = array(
         'code_achat' => $code,
         'employe_id' => $employe_id,
-        'fournisseur_id' => $fournisseur,
+        'fournisseur_id' => $fournisseur ?? 1,
         'created_at' => $date_emission ?? $date,
         'date_echeance' => $date_echeance ?? $date,
         'entrepot_id' => $entrepot_id
@@ -484,6 +486,28 @@ class ControllerAchat extends Connexion
       );
       Soutra::update("achat", $data);
       echo 1;
+    }
+  }
+
+  public static function btn_remove_modifier_panier_achat()
+  {
+    if (isset($_POST['remove_modifier_panier_achat'])) {
+
+      $article = $_POST['id_article'];
+      $achat = $_POST['id_achat'];
+
+      if ($achat != 'undefined')
+        Soutra::deleted('entree', ['achat_id' => $achat, 'article_id' => $article]);
+
+      $_SESSION['panier'] = array_filter($_SESSION['panier'], function ($item) use ($article) {
+        return $item != $article;
+      });
+
+      echo json_encode([
+        'code' => '200',
+        'message' => 'Produit retiré de la liste avec succès!',
+        'panier' => $_SESSION['panier']
+      ]);
     }
   }
 
@@ -1030,7 +1054,7 @@ class ControllerAchat extends Connexion
 
       $output = '';
       // si le btn = 1 on affiche par depense
-      $output .= self::returnDatADepense($data_depense);
+      // $output .= self::returnDatADepense($data_depense);:
 
 
       $data_json = [
