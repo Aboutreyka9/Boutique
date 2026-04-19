@@ -6,14 +6,14 @@ $end   = (new DateTime('today'))->format('Y-m-d');
 $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée que l'on a créée
 ?>
 <header class="page-title-bar">
-  <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2" >
+  <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
     <div class="title">
       <h1 class="page-title">Point de Vente</h1>
     </div>
     <div class="activity">
       <b id="activityDateRange">Activité du <?= date("d-m-Y") ?> </b>
     </div>
-    <div class="input-group w-100 w-md-auto filter-box" >
+    <div class="input-group w-100 w-md-auto filter-box">
 
       <span class="input-group-text"><i class="fa fa-calendar"></i></span>
       <input type="text" name="datefilterVente" class="form-control" placeholder="Sélectionner la période">
@@ -126,7 +126,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
 
           // btn Modifier la commande
           if ($row['statut_vente'] == STATUT_COMMANDE[0]):
-            $output .= '<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm" data-original-title="Modifier la commande"> <i class="fa fa-edit text-icon-primary"></i> </button>';
+            $output .= '<a href="' . URL . 'modifier_vente&id=' . $row['code_vente'] . '" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm" data-original-title="Modifier la commande"> <i class="fa fa-edit text-icon-primary"></i> </a>';
           endif;
 
           // btn Annuler la commande

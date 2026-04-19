@@ -1452,6 +1452,52 @@ $(function () {
         });
     }
 
+         btn_modifier_vente();
+
+    function btn_modifier_vente() {
+        $('body').on('click','#btn_modifier_vente', function (e) {
+            e.preventDefault();
+
+            var client = $('#client').val();
+            if (!client) {
+                $.notify("Veuillez choisir un client");
+                return;
+            }
+
+            var data = {
+                id: articleSelected,
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code_ventet: $(this).data('code'),
+                client: client,
+                btn_modifier_vente: 1
+            };
+            console.log(data);
+            
+            modifier_vente(data);
+
+        });
+    }
+
+    function modifier_vente(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+
+                if (data.code == 200){
+                    articleSelected = null;
+                    $.notify(data.message, 'success');
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        });
+    }
     
     // SEXION VENTE
     $('#select_code_achat').select2(); // Select2 pour la recherche de code d'achat
@@ -1608,20 +1654,7 @@ $(function () {
         });
     }
 
-     function loadTotalRow() {
-
-            var currow = $(".table_commande").closest('tr');
-            total = 0
-            var pu = currow.find('.pu').text();
-            var qte = currow.find('.qte').text();
-
-            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
-            // // 
-            currow.find('.total').text(total);
-
-            totalAll();
-
-    }
+  
 
 
     function totalAll() {
@@ -1643,7 +1676,7 @@ $(function () {
     }
 
 
-    // espace clean 1
+ 
 
     btn_ajouter_panier_vente();
 
@@ -1670,6 +1703,83 @@ $(function () {
                     notify("Veuillez choisir au moins un article svp!", "", "", "warning")
                 }
             }
+        });
+    }
+
+    btn_modifier_panier_vente();
+
+    function btn_modifier_panier_vente() {
+        $('body').delegate('#btn_modifier_panier_vente', 'submit', function (e) {
+            e.preventDefault();
+            
+            var vente = $(this).serialize();
+            modifier_panier_vente(vente);
+        });
+    }
+
+
+
+
+
+    function modifier_panier_vente(vente) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: vente,
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);  
+                // return;
+                AddNewRowTableVente(data);
+                $.notify("Produit ajouté dans la liste",'success')
+            }
+        });
+    }
+
+    btn_suprimer_modifier_panier_vente();
+    function btn_suprimer_modifier_panier_vente() {
+        $('body').on('click','.btn_remove_data_modifier_panier_vente', function (e) {
+            e.preventDefault();
+            var element = $(this);
+            var id_article = $(this).data('id');
+            var id_vente = $(this).data('vente');
+
+            // console.log(id_vente,id_article);
+            // return:
+            
+
+          swal({
+                title: "Etes vous sure",
+                text: "de vouloir supprimer cet element ?",
+                icon: "warning",
+                buttons: ['Non', 'Oui'],
+                dangerMode: true,
+            }).then((a) => {
+                if (a) {
+
+                    $.ajax({
+                        url: "../partials/rooter.php",
+                        method: "POST",
+                        data: {
+                            id_vente: id_vente,
+                            id_article: id_article,
+                            remove_modifier_panier_vente: 1
+                        },
+                        dataType: 'JSON',
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code = 200) {
+                                element.closest('tr').remove();
+                                articleSelected = articleSelected.filter(a => a != id_article);
+                                $.notify(data.message, "success");
+                                loadTotalRow();
+                            } else {
+                                $.notify("Erreur de suppression du produit!")
+                            }
+                        }
+                    });
+                }
+            })
         });
     }
 
@@ -1739,6 +1849,36 @@ $(function () {
         $('.table_commande tbody').append(html);
     }
 
+     function AddNewRowTableVente(dataArticles) {
+        let html = '';
+
+        dataArticles.forEach(article => {
+
+        if (articleSelected.includes(article.ID_article)) return;
+
+        let index = $('.table_commande tbody tr').length + 1;
+
+        html += `
+        <tr data-code="${article.ID_article}">
+            <td>${index}</td>
+            <td>${article.libelle_article}</td>
+            <td>${article.famille}</td>
+            <td>${article.mark}</td>
+            <td class="label-price col pu" contenteditable="true">${article.prix_vente}</td>
+            <td class="label-price col qte" contenteditable="true">0</td>
+            <td class="col total">0</td>
+            
+            <td> <button data-vente="${article.vente_id}" data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier_vente">
+                        <i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>`;
+
+        articleSelected.push(article.ID_article);
+        });
+
+        $('.table_commande tbody').append(html);
+    }
+
     function ajouter_panier_achat(achat) {
         $.ajax({
             url: "../partials/rooter.php",
@@ -1784,6 +1924,21 @@ $(function () {
                 $.notify("Produit ajouté dans la liste",'success')
             }
         });
+    }
+
+       function loadTotalRow() {
+
+            var currow = $(".table_commande").closest('tr');
+            total = 0
+            var pu = currow.find('.pu').text();
+            var qte = currow.find('.qte').text();
+
+            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
+            // // 
+            currow.find('.total').text(total);
+
+            totalAll();
+
     }
 
     totalRow()
@@ -2076,7 +2231,7 @@ $(function () {
 
           swal({
                 title: "Etes vous sure",
-                text: "de vouloir supprimer cet element555 ?",
+                text: "de vouloir supprimer cet element ?",
                 icon: "warning",
                 buttons: ['Non', 'Oui'],
                 dangerMode: true,
