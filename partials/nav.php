@@ -45,7 +45,12 @@
         <?php if (strtolower($_SESSION['role']) == ADMIN): ?>
 
           <ul class="header-nav nav">
-            <!-- .nav-item -->
+            <li class="nav-item dropdown header-nav-dropdown has-notified">
+              <a href="<?= URL; ?>ajouter_vente" class="nav-link">
+                <i class="bi bi-cart4 heart-beat"></i>
+              </a>
+            </li>
+
             <li class="nav-item dropdown header-nav-dropdown has-notified">
               <a data-id="<?= pages(); ?>" class="nav-link sauvegard"><i class="fa fa-download"></i></a>
               <!-- .dropdown-menu -->

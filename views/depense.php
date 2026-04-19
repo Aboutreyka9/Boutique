@@ -132,12 +132,12 @@
                         $start = (new DateTime('first day of this month'))->format('Y-m-d');
                         $end = (new DateTime('last day of this month'))->format('Y-m-d');
                         // Récupérer les achats du mois courant
-                        $depense = Soutra::getAllListeDepenses($start, $end);
+                        $depenses = Soutra::getAllListeDepenses($start, $end, $_SESSION['id_entrepot']);
                         $output = '';
-                        // $depense = Soutra::getAllListedepense();
-                        if (!empty($depense)) {
+                        // $depenses = Soutra::getAllListedepenses();
+                        if (!empty($depenses)) {
                             $i = 0;
-                            foreach ($depense as $row) {
+                            foreach ($depenses as $row) {
                                 ++$i;
                                 $output .= '
                                 <tr class="row' . $row['ID_depense'] . '">
@@ -152,13 +152,16 @@
 
                                 // btn Valider la deSTATUT_DEPENSE
                                 $output .= '
-                                        <button type="button" data-id="' . $row['ID_depense'] . '" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm btn_confirmer_depense " data-original-title="Voir details depense"> <i class="fa fa-eye text-icon-primary"></i> </button>
+                                        <a href="'.URL.'detail_depense&id=' . $row['ID_depense'] . '" data-id="' . $row['ID_depense'] . '" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-sm btn_confirmer_depense " data-original-title="Voir details depense"> <i class="fa fa-eye text-icon-primary"></i> </a>
                                         ';
 
                                 // btn Valider la deSTATUT_DEPENSE
                                 if ($row['statut_depense'] == STATUT_DEPENSE[0]):
                                     $output .= '
-                                        <button type="button" data-id="' . $row['ID_depense'] . '" data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm btn_confirmer_depense " data-original-title="Approuver la depense"> <i class="fa fa-check text-icon-success"></i> </button>
+                                        <button type="button"  
+                                        id="btn_validation_depense"
+                                        onclick="updateELementDepense(this,\'' . $row['ID_depense'] . '\')"
+                                        data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm btn_confirmer_depense " data-original-title="Approuver la depense"> <i class="fa fa-check text-icon-success"></i> </button>
                                         ';
                                 endif;
 
@@ -172,7 +175,10 @@
                                 // btn Valider la deSTATUT_DEPENSE
                                 if ($row['statut_depense'] == STATUT_DEPENSE[0]):
                                     $output .= '
-                                        <button type="button" data-id="' . $row['ID_depense'] . '" data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm btn_remove_depense " data-original-title="Annulé la depense"> <i class="fa fa-times text-icon-danger"></i> </button>
+                                        <button type="button" 
+                                        id="btn_annulation_depense"
+                                        onclick="updateELementDepense(this,\'' . $row['ID_depense'] . '\')"
+                                        data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm " data-original-title="Annulé la depense"> <i class="fa fa-times text-icon-danger"></i> </button>
                                         ';
                                 endif;
 
