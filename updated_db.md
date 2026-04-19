@@ -8,4 +8,5 @@ change type de statut_vente en enum() => default en attente
 - ALTER TABLE `employe` ADD `email_employe` VARCHAR(100) NULL DEFAULT NULL AFTER `telephone_employe`;
 
 
-
+<!-- 18/10/2025 à 15h12 -->
+ALTER TABLE `depense` CHANGE `statut_depense` `statut_depense` ENUM('en attente','approuvé','annulé','') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'en attente';

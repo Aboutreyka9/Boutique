@@ -4161,7 +4161,8 @@ $(function () {
                 btn_liste_depense: 1
             },
             success: function (data) {
-                // 
+                console.log(data);
+                
                 $('.depense-table').html(data);
             }
         });
@@ -4181,11 +4182,14 @@ $(function () {
                 data: depense,
                 dataType:"JSON",
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);return
                     
                     if (data.code == 200) {
                         $.notify(data.message, 'success');
-                        liste_depense();
+                        // liste_depense();
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
 
                         //  $("#btn_ajouter_depense")[0].reset()
                         // resetForm();
@@ -4217,51 +4221,56 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // // 
-                    $(".menu-modal").html(data);
-                    $("#depense-modal").modal('show');
+                    // console.log(data);return
+                    if (data.success) {
+                        
+                        $(".menu-modal").html(data.html);
+                        $("#depense-modal").modal('show');
+                    }else{
+                        $.notify('Erreur lors de la récupération des données', 'error');
+                    }
                 }
             });
         });
     }
 
-    btn_suprimer_depense();
+    // btn_suprimer_depense();
 
-    function btn_suprimer_depense() {
-        $('body').delegate('.btn_remove_depense', 'click', function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            swal({
-                title: "Etes vous sure",
-                text: "de vouloir supprimer cet element ?",
-                icon: "warning",
-                buttons: ['Non', 'Oui'],
-                dangerMode: true,
-            }).then((a) => {
-                if (a) {
+    // function btn_suprimer_depense() {
+    //     $('body').delegate('.btn_remove_depense', 'click', function (e) {
+    //         e.preventDefault();
+    //         var id = $(this).data('id');
+    //         swal({
+    //             title: "Etes vous sure",
+    //             text: "de vouloir supprimer cet element ?",
+    //             icon: "warning",
+    //             buttons: ['Non', 'Oui'],
+    //             dangerMode: true,
+    //         }).then((a) => {
+    //             if (a) {
 
-                    $.ajax({
-                        url: "../partials/rooter.php",
-                        method: "POST",
-                        data: {
-                            id_depense: id,
-                            btn_supprimer_depense: 1
-                        },
-                        dataType: 'JSON',
-                        success: function (data) {
+    //                 $.ajax({
+    //                     url: "../partials/rooter.php",
+    //                     method: "POST",
+    //                     data: {
+    //                         id_depense: id,
+    //                         btn_supprimer_depense: 1
+    //                     },
+    //                     dataType: 'JSON',
+    //                     success: function (data) {
 
 
-                            $('.row' + id).remove();
-                            swal("Notification", "Element supprimé avec succès", "success")
-                                .then(function () {
-                                    history.go(0);
-                                });
-                        }
-                    });
-                }
-            })
-        });
-    }
+    //                         $('.row' + id).remove();
+    //                         swal("Notification", "Element supprimé avec succès", "success")
+    //                             .then(function () {
+    //                                 history.go(0);
+    //                             });
+    //                     }
+    //                 });
+    //             }
+    //         })
+    //     });
+    // }
 
     initDateRangeFilterDepense(date_start_picker,date_end_picker);
 
@@ -4439,7 +4448,6 @@ function updateELement(btn_action,code) {
                     },
                     dataType: 'JSON',
                     success: function (data) {
-                        // console.log(data);return
                         
                         if (data.success) {
                             swal("Notification", data.msg, "success")
@@ -4451,6 +4459,45 @@ function updateELement(btn_action,code) {
                             // .then(function () {
                             //     history.go(0);
                             // });
+                        }
+
+                        
+                    }
+                });
+            }
+    });
+}
+// =====================================================
+// ============== GESTION DES DEPENSES ================
+// =====================================================
+function updateELementDepense(btn_action,code) {
+    let btn = btn_action.id;
+    swal({
+            title: "Etes vous sure",
+            text: "de vouloir effectuer cette opération?",
+            icon: "warning",
+            buttons: ['Non', 'Oui'],
+            dangerMode: true,
+        }).then((a) => {
+            
+            if (a) {
+                $.ajax({
+                    url: "../partials/rooter.php",
+                    method: "POST",
+                    data: {
+                        id: code,
+                        btn_action: btn
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        
+                        if (data.success) {
+                            $.notify(data.msg, "success")
+                            setTimeout(function() {
+                                history.go(0);
+                            }, 2000);
+                        }else{
+                            $.notify(data.msg, "error");
                         }
 
                         
