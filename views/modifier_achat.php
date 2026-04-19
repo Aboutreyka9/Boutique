@@ -8,28 +8,26 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   // TODO: Get command data from database
   $achat = Soutra::getSingleAchatByCode($code);
   $merge = Soutra::getPanierModifierAchat($code);
+  if (empty($merge)) {
+    pageNotFound();
+    return;
+    // http_response_code(404);
+  }
   if (!isset($_SESSION['achat']) || $_SESSION['achat'] != $code) {
     $_SESSION['achat'] = $code;
     $_SESSION['panier'] = [];
     foreach ($merge as  $value) {
       $_SESSION['panier'][] = $value['ID_article'];
     }
-  } else {
-    // $detail = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
   }
   $data2 = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
 
-  // $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
-
   if (count($merge) < count($data2))
     $merge = mergeByKeyArticlesCommande($merge, $data2, ['prix_achat', 'qte', 'total_ttc']);
-
-  var_dump($merge);
-  // return;
 } else {
   // error 404
-  http_response_code(404);
-  exit();
+  pageNotFound();
+  return;
 }
 ?>
 <header class="page-title-bar">
@@ -201,8 +199,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
             $output .= '
                   <td> 
-                      <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
-                      <i class="fa fa-trash"></i> </button>
+                      <button data-achat="' . $_SESSION['achat'] . '" data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier">
+                      <i class="fa fa-trash"></i> </button> 
                   
                 </td>
                   </tr>

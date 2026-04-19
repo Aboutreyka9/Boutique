@@ -2214,6 +2214,73 @@ class Soutra extends Connexion
             return false;
     }
 
+    /**
+     * 
+     */
+    public static function deleted(string $table, array $conditions)
+    {
+        if (empty($conditions)) {
+            throw new Exception("Delete sans condition interdit !");
+        }
+
+        $where = implode(' AND ', array_map(fn($col) => "$col = :$col", array_keys($conditions)));
+
+        $sql = "DELETE FROM $table WHERE $where";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($conditions);
+    }
+
+    public static function deleteWhereIn(string $table, string $column, array $values, array $conditions = [])
+    {
+        if (empty($values)) {
+            throw new Exception("Liste vide !");
+        }
+
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+
+        $sql = "DELETE FROM $table WHERE $column IN ($placeholders)";
+
+        if (!empty($conditions)) {
+            $where = implode(' AND ', array_map(fn($col) => "$col = ?", array_keys($conditions)));
+            $sql .= " AND $where";
+        }
+
+        $stmt = self::getConnexion()->prepare($sql);
+
+        return $stmt->execute(array_merge($values, array_values($conditions)));
+    }
+
+    /**
+     * Soutra::deleteMultipleKeys('entree', ['achat_id', 'article_id'], [
+     * ['achat_id' => 1, 'article_id' => 2],
+     * ['achat_id' => 1, 'article_id' => 3],
+     *  ]);
+     */
+    public static function deleteMultipleKeys(string $table, array $columns, array $rows)
+    {
+        if (empty($rows)) {
+            throw new Exception("Aucune donnée !");
+        }
+
+        $colList = implode(',', $columns);
+
+        $placeholders = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $placeholders[] = '(' . implode(',', array_fill(0, count($columns), '?')) . ')';
+            foreach ($columns as $col) {
+                $values[] = $row[$col];
+            }
+        }
+
+        $sql = "DELETE FROM $table WHERE ($colList) IN (" . implode(',', $placeholders) . ")";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($values);
+    }
+
     public static function vue_globale($annee, $ecole)
     {
         $result = [];

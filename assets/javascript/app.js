@@ -1608,6 +1608,21 @@ $(function () {
         });
     }
 
+     function loadTotalRow() {
+
+            var currow = $(".table_commande").closest('tr');
+            total = 0
+            var pu = currow.find('.pu').text();
+            var qte = currow.find('.qte').text();
+
+            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
+            // // 
+            currow.find('.total').text(total);
+
+            totalAll();
+
+    }
+
 
     function totalAll() {
         var somme = 0;
@@ -1681,7 +1696,8 @@ $(function () {
             $('.table_commande tbody tr').each(function () {
                 articleSelected.push($(this).data('code'));
             });
-           console.log(articleSelected);
+           loadTotalRow();
+        //    console.log(articleSelected);
            
         }
     }
@@ -1712,7 +1728,7 @@ $(function () {
             <td class="label-price col qte" contenteditable="true">0</td>
             <td class="col total">0</td>
             
-            <td> <button data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
+            <td> <button data-achat="${article.achat_id}" data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier">
                         <i class="fa fa-trash"></i> </button>
             </td>
         </tr>`;
@@ -2059,6 +2075,54 @@ $(function () {
             })
         });
     }
+
+    btn_suprimer_modifier_achat_panier();
+     function btn_suprimer_modifier_achat_panier() {
+         $('body').on('click','.btn_remove_data_modifier_panier', function (e) {
+            e.preventDefault();
+            var element = $(this);
+            var id_article = $(this).data('id');
+            var id_achat = $(this).data('achat');
+
+            // console.log(id_achat,id_article);
+            // return
+            
+
+          swal({
+                title: "Etes vous sure",
+                text: "de vouloir supprimer cet element555 ?",
+                icon: "warning",
+                buttons: ['Non', 'Oui'],
+                dangerMode: true,
+            }).then((a) => {
+                if (a) {
+
+                    $.ajax({
+                        url: "../partials/rooter.php",
+                        method: "POST",
+                        data: {
+                            id_achat: id_achat,
+                            id_article: id_article,
+                            remove_modifier_panier_achat: 1
+                        },
+                        dataType: 'JSON',
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code = 200) {
+                                element.closest('tr').remove();
+                                articleSelected = articleSelected.filter(a => a != id_article);
+                                $.notify(data.message, "success");
+                                loadTotalRow();
+                            } else {
+                                $.notify("Erreur de suppression du produit!")
+                            }
+                        }
+                    });
+                }
+            })
+        });
+    }
+
 
     btn_remove_achat_detail();
 
