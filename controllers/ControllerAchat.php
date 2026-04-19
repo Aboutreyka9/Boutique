@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
 class ControllerAchat extends Connexion
 {
 
@@ -181,6 +183,33 @@ class ControllerAchat extends Connexion
     }
   }
 
+  public static function modifier_panier_achat()
+  {
+    if (isset($_POST['btn_modifier_panier_achat'])) {
+      $output = '';
+      if (!empty($_POST['article'])) {
+
+        $search = [];
+        $achat = [];
+
+        // if (!empty($_POST['article'])) {
+
+        for ($i = 0; $i < count($_POST['article']); $i++) {
+          $id = $_POST['article'][$i];
+          if (!in_array($id, $_SESSION['panier'])) {
+            $_SESSION['panier'][] = $id;
+            $search[] = $id;
+          }
+        }
+
+        $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+
+        // }
+        echo json_encode($achat);
+      }
+    }
+  }
+
   public static function validation_achat()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_validation_achat") {
@@ -350,7 +379,7 @@ class ControllerAchat extends Connexion
       $data = array(
         'code_achat' => $code,
         'employe_id' => $employe_id,
-        'fournisseur_id' => $fournisseur,
+        'fournisseur_id' => $fournisseur ?? 1,
         'created_at' => $date_emission ?? $date,
         'date_echeance' => $date_echeance ?? $date,
         'entrepot_id' => $entrepot_id
@@ -393,58 +422,68 @@ class ControllerAchat extends Connexion
 
   public static function modifier_achat()
   {
-    extract($_POST);
-    $verifEmpty = false;
-    $verifType = false;
+    if (isset($_POST['btn_modifier_achat'])) {
+      extract($_POST);
+      $verifEmpty = false;
+      $verifType = false;
+      $msg['code'] = 400;
 
-    for ($i = 0; $i < count($pu); $i++) {
-      if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
-        $verifEmpty = true;
-      } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
-        $verifType = true;
-      }
-    }
-
-    $msg = "";
-
-    if ($verifEmpty) {
-      $msg =  '2&Veuillez Entrer toutes les valeurs !';
-    } elseif ($verifType) {
-      $msg = '2&Verifier les valeurs renseignées';
-    } else {
-
-      $date = date('Y-m-d');
-      $entrepot_id = $_SESSION['id_entrepot'];
-
-      $data = array(
-        'fournisseur_id' => $fournisseur,
-        'code_achat' => $code,
-      );
-
-      $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
-        Soutra::update("achat", $data);
-
-        for ($i = 0; $i < count($pu); $i++) {
-          $achat = array(
-            'prix_achat' => $pu[$i],
-            'qte' => $qte[$i],
-            'article_id' => $id[$i],
-            'achat_id' => $code,
-          );
-
-          Soutra::upsert("entree", $achat, ['article_id', 'achat_id']);
+      for ($i = 0; $i < count($pu); $i++) {
+        if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
+          $verifEmpty = true;
+        } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
+          $verifType = true;
         }
-
-        // return false;
-      });
-      if ($results) {
-        $msg = "1&Approvisionement effectué avec succès.";
-      } else {
-        $msg = '2&Une erreur est survenue! ';
       }
-    }
 
-    echo $msg;
+
+
+      if ($verifEmpty) {
+        $msg['message'] = 'Veuillez renseigner toutes les valeurs !';
+      } elseif ($verifType) {
+        $msg['message'] = 'Verifier les valeurs renseignées';
+      } else {
+
+        $entrepot_id = $_SESSION['id_entrepot'];
+
+        $data = array(
+          'fournisseur_id' => $fournisseur,
+          'entrepot_id' => $entrepot_id,
+          'code_achat' => $code_achat
+        );
+
+        $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code_achat) {
+          Soutra::update("achat", $data);
+          $date = date('Y-m-d');
+
+          for ($i = 0; $i < count($pu); $i++) {
+            $achat = array(
+              'prix_achat' => $pu[$i],
+              'qte' => $qte[$i],
+              'article_id' => $id[$i],
+              'achat_id' => $code_achat,
+              'etat' => 1,
+              'updated_at' => $date
+            );
+
+            Soutra::updateOrInsertAchat($achat);
+          }
+
+          // return false;
+        });
+
+        if ($results) {
+          unset($_SESSION['achat']);
+          unset($_SESSION['panier']);
+          $msg['code'] = 200;
+          $msg['message'] = 'Commande modifiée avec succès!';
+        } else {
+          $msg['message'] = 'Une erreur est survenue!';
+        }
+      }
+
+      echo json_encode($msg);
+    }
   }
 
   public static function suppresion_achat()
@@ -457,6 +496,28 @@ class ControllerAchat extends Connexion
       );
       Soutra::update("achat", $data);
       echo 1;
+    }
+  }
+
+  public static function btn_remove_modifier_panier_achat()
+  {
+    if (isset($_POST['remove_modifier_panier_achat'])) {
+
+      $article = $_POST['id_article'];
+      $achat = $_POST['id_achat'];
+
+      if ($achat != 'undefined')
+        Soutra::deleted('entree', ['achat_id' => $achat, 'article_id' => $article]);
+
+      $_SESSION['panier'] = array_filter($_SESSION['panier'], function ($item) use ($article) {
+        return $item != $article;
+      });
+
+      echo json_encode([
+        'code' => '200',
+        'message' => 'Produit retiré de la liste avec succès!',
+        'panier' => $_SESSION['panier']
+      ]);
     }
   }
 
@@ -511,14 +572,8 @@ class ControllerAchat extends Connexion
   public static function ajouter_achat()
   {
     if (isset($_POST['btn_ajouter_achat'])) {
-
-      if (isset($_POST['id_approvision'])) {
-        // mod()
-        self::modifier_achat();
-      } else {
-        // Ajouter
-        self::createAchat();
-      }
+      // Ajouter
+      self::createAchat();
     }
   }
 
@@ -1003,7 +1058,7 @@ class ControllerAchat extends Connexion
 
       $output = '';
       // si le btn = 1 on affiche par depense
-      $output .= self::returnDatADepense($data_depense);
+      // $output .= self::returnDatADepense($data_depense);:
 
 
       $data_json = [

@@ -1301,7 +1301,7 @@ class Soutra extends Connexion
         $query->execute([$id]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -1318,7 +1318,7 @@ class Soutra extends Connexion
         $query->execute(['entrepot_id' => $entrepot]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -2170,6 +2170,7 @@ class Soutra extends Connexion
         return $stmt->execute($data);
     }
 
+
     public static function updated($table, array $data, array $where)
     {
         // SET part
@@ -2212,6 +2213,73 @@ class Soutra extends Connexion
             return true;
         else
             return false;
+    }
+
+    /**
+     * 
+     */
+    public static function deleted(string $table, array $conditions)
+    {
+        if (empty($conditions)) {
+            throw new Exception("Delete sans condition interdit !");
+        }
+
+        $where = implode(' AND ', array_map(fn($col) => "$col = :$col", array_keys($conditions)));
+
+        $sql = "DELETE FROM $table WHERE $where";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($conditions);
+    }
+
+    public static function deleteWhereIn(string $table, string $column, array $values, array $conditions = [])
+    {
+        if (empty($values)) {
+            throw new Exception("Liste vide !");
+        }
+
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+
+        $sql = "DELETE FROM $table WHERE $column IN ($placeholders)";
+
+        if (!empty($conditions)) {
+            $where = implode(' AND ', array_map(fn($col) => "$col = ?", array_keys($conditions)));
+            $sql .= " AND $where";
+        }
+
+        $stmt = self::getConnexion()->prepare($sql);
+
+        return $stmt->execute(array_merge($values, array_values($conditions)));
+    }
+
+    /**
+     * Soutra::deleteMultipleKeys('entree', ['achat_id', 'article_id'], [
+     * ['achat_id' => 1, 'article_id' => 2],
+     * ['achat_id' => 1, 'article_id' => 3],
+     *  ]);
+     */
+    public static function deleteMultipleKeys(string $table, array $columns, array $rows)
+    {
+        if (empty($rows)) {
+            throw new Exception("Aucune donnée !");
+        }
+
+        $colList = implode(',', $columns);
+
+        $placeholders = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $placeholders[] = '(' . implode(',', array_fill(0, count($columns), '?')) . ')';
+            foreach ($columns as $col) {
+                $values[] = $row[$col];
+            }
+        }
+
+        $sql = "DELETE FROM $table WHERE ($colList) IN (" . implode(',', $placeholders) . ")";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($values);
     }
 
     public static function vue_globale($annee, $ecole)
@@ -2436,6 +2504,60 @@ class Soutra extends Connexion
         $query->closeCursor();
 
         return $data;
+    }
+
+    public static function upsertMultipleAchat(array $rows)
+    {
+        if (empty($rows)) return false;
+
+        $columns = ['achat_id', 'article_id', 'prix_achat', 'qte', 'etat', 'created_at'];
+
+        $placeholders = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $placeholders[] = '(' . implode(',', array_fill(0, count($columns), '?')) . ')';
+            foreach ($columns as $col) {
+                $values[] = $row[$col];
+            }
+        }
+
+        $sql = "INSERT INTO entree (" . implode(',', $columns) . ")
+            VALUES " . implode(',', $placeholders) . "
+            ON DUPLICATE KEY UPDATE
+                prix_achat = VALUES(prix_achat),
+                qte = VALUES(qte),
+                etat = VALUES(etat)";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public static function updateOrInsertAchat(array $data)
+    {
+        // Sécurité minimale
+        // if (empty($data['achat_id']) || empty($data['article_id'])) {
+        //     throw new Exception("achat_id et article_id sont obligatoires");
+        // }
+
+        $sql = "INSERT INTO entree 
+                (achat_id, article_id, prix_achat, qte, etat_entree, updated_at)
+            VALUES 
+                (:achat_id, :article_id, :prix_achat, :qte, :etat_entree, :updated_at)
+            ON DUPLICATE KEY UPDATE
+                prix_achat = VALUES(prix_achat),
+                qte = VALUES(qte)";
+
+        $stmt = self::getConnexion()->prepare($sql);
+
+        return $stmt->execute([
+            ':achat_id'   => $data['achat_id'],
+            ':article_id' => $data['article_id'],
+            ':prix_achat' => $data['prix_achat'],
+            ':qte'        => $data['qte'],
+            ':etat_entree'       => $data['etat'],
+            ':updated_at' => $data['updated_at'],
+        ]);
     }
 
     public static function getAllListeBonCommandeFournisseur($dateStart, $dateEnd)
