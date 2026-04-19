@@ -1930,14 +1930,15 @@ $(function () {
             }
 
             var data = {
-                id: pushData("id"),
+                id: articleSelected,
                 qte: pushData("qte"),
                 pu: pushData("pu"),
                 total:pushData("total"),
-                code: $(this).data('code'),
+                code_achat: $(this).data('code'),
                 fournisseur: fournisseur,
                 btn_modifier_achat: 1
             };
+            console.log(data);
             
             modifier_achat(data);
 
@@ -1949,31 +1950,16 @@ $(function () {
             url: "../partials/rooter.php",
             method: "POST",
             data,
+            dataType: 'JSON',
             success: function (data) {
                 console.log(data);
 
-                // return
-                var verif = data.split("&");
-                if (verif[0] == 1) {
-
-                    swal({
-                        title: "Succès",
-                        text: verif[1],
-                        icon: "success",
-                        button: true,
-
-                    }).then(() =>
-                        // document.location.href = ROOT_SIMPLE + "home.php/?pg=achat"
-
-                        window.history.go(0)
-                    );
-
+                if (data.code == 200){
+                    articleSelected = null;
+                    $.notify(data.message, 'success');
                 } else {
-                    notify(verif[1], "", "alert", "warning");
-
-
+                    $.notify(data.message);
                 }
-
             }
         });
     }
@@ -2383,19 +2369,7 @@ $(function () {
         });
     }
 
-    update_achat();
-
-    function update_achat() {
-        $('body').delegate('#btn_modifier_achat', 'submit', function (e) {
-            e.preventDefault();
-
-
-            var achat = $(this).serialize();
-
-            achat_ajax(achat);
-
-        });
-    }
+  
 
     function achat_ajax(achat) {
         $.ajax({

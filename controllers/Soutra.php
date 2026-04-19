@@ -2170,6 +2170,7 @@ class Soutra extends Connexion
         return $stmt->execute($data);
     }
 
+
     public static function updated($table, array $data, array $where)
     {
         // SET part
@@ -2503,6 +2504,60 @@ class Soutra extends Connexion
         $query->closeCursor();
 
         return $data;
+    }
+
+    public static function upsertMultipleAchat(array $rows)
+    {
+        if (empty($rows)) return false;
+
+        $columns = ['achat_id', 'article_id', 'prix_achat', 'qte', 'etat', 'created_at'];
+
+        $placeholders = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $placeholders[] = '(' . implode(',', array_fill(0, count($columns), '?')) . ')';
+            foreach ($columns as $col) {
+                $values[] = $row[$col];
+            }
+        }
+
+        $sql = "INSERT INTO entree (" . implode(',', $columns) . ")
+            VALUES " . implode(',', $placeholders) . "
+            ON DUPLICATE KEY UPDATE
+                prix_achat = VALUES(prix_achat),
+                qte = VALUES(qte),
+                etat = VALUES(etat)";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public static function updateOrInsertAchat(array $data)
+    {
+        // Sécurité minimale
+        // if (empty($data['achat_id']) || empty($data['article_id'])) {
+        //     throw new Exception("achat_id et article_id sont obligatoires");
+        // }
+
+        $sql = "INSERT INTO entree 
+                (achat_id, article_id, prix_achat, qte, etat_entree, updated_at)
+            VALUES 
+                (:achat_id, :article_id, :prix_achat, :qte, :etat_entree, :updated_at)
+            ON DUPLICATE KEY UPDATE
+                prix_achat = VALUES(prix_achat),
+                qte = VALUES(qte)";
+
+        $stmt = self::getConnexion()->prepare($sql);
+
+        return $stmt->execute([
+            ':achat_id'   => $data['achat_id'],
+            ':article_id' => $data['article_id'],
+            ':prix_achat' => $data['prix_achat'],
+            ':qte'        => $data['qte'],
+            ':etat_entree'       => $data['etat'],
+            ':updated_at' => $data['updated_at'],
+        ]);
     }
 
     public static function getAllListeBonCommandeFournisseur($dateStart, $dateEnd)

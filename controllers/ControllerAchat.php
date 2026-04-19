@@ -422,58 +422,68 @@ class ControllerAchat extends Connexion
 
   public static function modifier_achat()
   {
-    extract($_POST);
-    $verifEmpty = false;
-    $verifType = false;
+    if (isset($_POST['btn_modifier_achat'])) {
+      extract($_POST);
+      $verifEmpty = false;
+      $verifType = false;
+      $msg['code'] = 400;
 
-    for ($i = 0; $i < count($pu); $i++) {
-      if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
-        $verifEmpty = true;
-      } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
-        $verifType = true;
-      }
-    }
-
-    $msg = "";
-
-    if ($verifEmpty) {
-      $msg =  '2&Veuillez Entrer toutes les valeurs !';
-    } elseif ($verifType) {
-      $msg = '2&Verifier les valeurs renseignées';
-    } else {
-
-      $date = date('Y-m-d');
-      $entrepot_id = $_SESSION['id_entrepot'];
-
-      $data = array(
-        'fournisseur_id' => $fournisseur,
-        'code_achat' => $code,
-      );
-
-      $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
-        Soutra::update("achat", $data);
-
-        for ($i = 0; $i < count($pu); $i++) {
-          $achat = array(
-            'prix_achat' => $pu[$i],
-            'qte' => $qte[$i],
-            'article_id' => $id[$i],
-            'achat_id' => $code,
-          );
-
-          Soutra::upsert("entree", $achat, ['article_id', 'achat_id']);
+      for ($i = 0; $i < count($pu); $i++) {
+        if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
+          $verifEmpty = true;
+        } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
+          $verifType = true;
         }
-
-        // return false;
-      });
-      if ($results) {
-        $msg = "1&Approvisionement effectué avec succès.";
-      } else {
-        $msg = '2&Une erreur est survenue! ';
       }
-    }
 
-    echo $msg;
+
+
+      if ($verifEmpty) {
+        $msg['message'] = 'Veuillez renseigner toutes les valeurs !';
+      } elseif ($verifType) {
+        $msg['message'] = 'Verifier les valeurs renseignées';
+      } else {
+
+        $entrepot_id = $_SESSION['id_entrepot'];
+
+        $data = array(
+          'fournisseur_id' => $fournisseur,
+          'entrepot_id' => $entrepot_id,
+          'code_achat' => $code_achat
+        );
+
+        $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code_achat) {
+          Soutra::update("achat", $data);
+          $date = date('Y-m-d');
+
+          for ($i = 0; $i < count($pu); $i++) {
+            $achat = array(
+              'prix_achat' => $pu[$i],
+              'qte' => $qte[$i],
+              'article_id' => $id[$i],
+              'achat_id' => $code_achat,
+              'etat' => 1,
+              'updated_at' => $date
+            );
+
+            Soutra::updateOrInsertAchat($achat);
+          }
+
+          // return false;
+        });
+
+        if ($results) {
+          unset($_SESSION['achat']);
+          unset($_SESSION['panier']);
+          $msg['code'] = 200;
+          $msg['message'] = 'Commande modifiée avec succès!';
+        } else {
+          $msg['message'] = 'Une erreur est survenue!';
+        }
+      }
+
+      echo json_encode($msg);
+    }
   }
 
   public static function suppresion_achat()
@@ -562,14 +572,8 @@ class ControllerAchat extends Connexion
   public static function ajouter_achat()
   {
     if (isset($_POST['btn_ajouter_achat'])) {
-
-      if (isset($_POST['id_approvision'])) {
-        // mod()
-        self::modifier_achat();
-      } else {
-        // Ajouter
-        self::createAchat();
-      }
+      // Ajouter
+      self::createAchat();
     }
   }
 

@@ -1,18 +1,18 @@
 <?php
 if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
-  // $_SESSION['panier'] = [];
-  // return;
+
   $merge = [];
 
   // TODO: Get command data from database
   $achat = Soutra::getSingleAchatByCode($code);
   $merge = Soutra::getPanierModifierAchat($code);
-  if (empty($merge)) {
+
+  if (empty($merge) && !isset($_SESSION['achat'])) {
     pageNotFound();
     return;
-    // http_response_code(404);
   }
+
   if (!isset($_SESSION['achat']) || $_SESSION['achat'] != $code) {
     $_SESSION['achat'] = $code;
     $_SESSION['panier'] = [];
@@ -20,10 +20,14 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
       $_SESSION['panier'][] = $value['ID_article'];
     }
   }
-  $data2 = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
 
-  if (count($merge) < count($data2))
-    $merge = mergeByKeyArticlesCommande($merge, $data2, ['prix_achat', 'qte', 'total_ttc']);
+  if (!empty($_SESSION['panier'])) {
+
+    $data2 = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+
+    if (count($merge) < count($data2))
+      $merge = mergeByKeyArticlesCommande($merge, $data2, ['prix_achat', 'qte', 'total_ttc']);
+  }
 } else {
   // error 404
   pageNotFound();
