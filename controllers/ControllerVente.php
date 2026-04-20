@@ -251,6 +251,8 @@ class ControllerVente extends Connexion
       echo $output;
     }
   }
+
+
   public static function ajouter_panier_vente()
   {
     if (isset($_POST['btn_ajouter_panier_vente'])) {
@@ -285,6 +287,55 @@ class ControllerVente extends Connexion
         }
         echo $output;
       }
+    }
+  }
+
+  public static function modifier_panier_vente()
+  {
+    if (isset($_POST['btn_modifier_panier_vente'])) {
+      $output = '';
+      if (!empty($_POST['article'])) {
+
+        $search = [];
+        $vente = [];
+
+        // if (!empty($_POST['article'])) {
+
+        for ($i = 0; $i < count($_POST['article']); $i++) {
+          $id = $_POST['article'][$i];
+          if (!in_array($id, $_SESSION['panier_vente'])) {
+            $_SESSION['panier_vente'][] = $id;
+            $search[] = $id;
+          }
+        }
+
+        $vente = Soutra::getPaniervente(implode(',', $_SESSION['panier_vente']), $_SESSION['id_entrepot']);
+
+        // }
+        echo json_encode($vente);
+      }
+    }
+  }
+
+  public static function btn_remove_modifier_panier_vente()
+  {
+    if (isset($_POST['remove_modifier_panier_vente'])) {
+
+      $article = $_POST['id_article'];
+      $vente = $_POST['id_vente'];
+
+      if ($vente != 'undefined')
+        Soutra::deleted('sortie', ['vente_id' => $vente, 'article_id' => $article]);
+
+      $_SESSION['panier_vente'] = array_filter($_SESSION['panier_vente'], function ($item) use ($article) {
+        return $item != $article;
+      });
+
+      echo json_encode([
+        'code' => '200',
+        'message' => 'Produit retiré de la liste avec succès!',
+        'panier' => $_SESSION['panier_vente']
+      ]);
     }
   }
 
@@ -484,14 +535,8 @@ class ControllerVente extends Connexion
   public static function ajouter_vente()
   {
     if (isset($_POST['btn_ajouter_vente'])) {
-
-      if (isset($_POST['id_sortie'])) {
-        // mod()
-        self::modifier_vente();
-      } else {
-        // Ajouter
-        self::createvente();
-      }
+      // Ajouter
+      self::createvente();
     }
   }
 
@@ -649,30 +694,70 @@ class ControllerVente extends Connexion
     }
     return $code;
   }
+
   public static function modifier_vente()
   {
-    extract($_POST);
-    $msg = "";
+    if (isset($_POST['btn_modifier_vente'])) {
+      extract($_POST);
+      $verifEmpty = false;
+      $verifType = false;
+      $msg['code'] = 400;
 
-    if (empty($qte)) {
-      $msg = '2&Veuillez remplir tous les champs !';
-    } elseif (!ctype_digit($qte) || $qte <= 0) {
-      $msg = '2&La quantité est invalide !';
-    } else {
-      $data = array(
-        // 'prix_vente' => $prix_vente,
-        'qte' => $qte,
-        'ID_sortie' => $id_sortie
-      );
-      if (Soutra::update("sortie", $data)) {
-        $code_vente = Soutra::libelle('sortie', 'vente_id', 'ID_sortie', $id_sortie);
-        $retour = self::liste_detail_vente($code_vente);
-        $msg = "1 & $retour & Element modifié avec succès.";
-      } else {
-        $msg = '2&Une erreur est survenue !';
+      for ($i = 0; $i < count($pu); $i++) {
+        if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
+          $verifEmpty = true;
+        } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
+          $verifType = true;
+        }
       }
+
+
+      if ($verifEmpty) {
+        $msg['message'] = 'Veuillez renseigner toutes les valeurs !';
+      } elseif ($verifType) {
+        $msg['message'] = 'Verifier les valeurs renseignées';
+      } else {
+
+        $entrepot_id = $_SESSION['id_entrepot'];
+
+        $data = array(
+          'client_id' => $client,
+          'entrepot_id' => $entrepot_id,
+          'code_vente' => $code_vente
+        );
+
+        $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code_vente) {
+          Soutra::update("vente", $data);
+          $date = date('Y-m-d');
+
+          for ($i = 0; $i < count($pu); $i++) {
+            $vente = array(
+              'prix_vente' => $pu[$i],
+              'qte' => $qte[$i],
+              'article_id' => $id[$i],
+              'vente_id' => $code_vente,
+              'etat' => 1,
+              'updated_at' => $date
+            );
+
+            Soutra::updateOrInsertvente($vente);
+          }
+
+          // return false;
+        });
+
+        if ($results) {
+          unset($_SESSION['vente']);
+          unset($_SESSION['panier_vente']);
+          $msg['code'] = 200;
+          $msg['message'] = 'Commande modifiée avec succès!';
+        } else {
+          $msg['message'] = 'Une erreur est survenue!';
+        }
+      }
+
+      echo json_encode($msg);
     }
-    echo $msg;
   }
 
   public static function suppresion_vente()

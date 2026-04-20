@@ -154,7 +154,9 @@ ControllerClient::ajouter_versement();
 
 // VENTE
 ControllerVente::ajouter_panier_vente();
+ControllerVente::modifier_panier_vente();
 ControllerVente::ajouter_vente();
+ControllerVente::modifier_vente();
 ControllerVente::liste_vente();
 ControllerVente::liste_detail_vente_client();
 ControllerVente::getVente();
@@ -162,6 +164,7 @@ ControllerVente::getEncaissementvente();
 ControllerVente::verifQteArticleVente();
 ControllerVente::verifDetail();
 ControllerVente::suppresion_vente();
+ControllerVente::btn_remove_modifier_panier_vente();
 ControllerVente::btn_remove_vente_detail();
 ControllerVente::getDataDateRangeFilterInventaire();
 ControllerVente::ajouter_versement_vente();

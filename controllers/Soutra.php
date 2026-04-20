@@ -1349,6 +1349,31 @@ class Soutra extends Connexion
         return $data;
     }
 
+    public static function getPanierModifierVente($code_vente)
+    {
+        $data = [];
+        $sql = 'SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark , 
+            a.code_vente,
+            so.prix_vente,
+            so.qte,
+            SUM(so.prix_vente * so.qte) AS total_ttc
+        FROM vente a
+        JOIN sortie so ON so.vente_id = a.code_vente
+        JOIN article ar ON ar.ID_article = so.article_id
+        JOIN famille fa ON fa.ID_famille = ar.famille_id 
+        JOIN mark ma ON ma.ID_mark = ar.mark_id
+        WHERE a.code_vente = :codevente GROUP BY ar.ID_article
+        ';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['codevente' => $code_vente]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
 
     public static function getAllArticleFamilleMarkTransfert($etat = 1)
     {
@@ -2560,6 +2585,33 @@ class Soutra extends Connexion
         ]);
     }
 
+    public static function updateOrInsertVente(array $data)
+    {
+        // Sécurité minimale
+        // if (empty($data['vente_id']) || empty($data['article_id'])) {
+        //     throw new Exception("vente_id et article_id sont obligatoires");
+        // }
+
+        $sql = "INSERT INTO sortie 
+                (vente_id, article_id, prix_vente, qte, etat_sortie, updated_at)
+            VALUES 
+                (:vente_id, :article_id, :prix_vente, :qte, :etat_sortie, :updated_at)
+            ON DUPLICATE KEY UPDATE
+                prix_vente = VALUES(prix_vente),
+                qte = VALUES(qte)";
+
+        $stmt = self::getConnexion()->prepare($sql);
+
+        return $stmt->execute([
+            ':vente_id'   => $data['vente_id'],
+            ':article_id' => $data['article_id'],
+            ':prix_vente' => $data['prix_vente'],
+            ':qte'        => $data['qte'],
+            ':etat_sortie'       => $data['etat'],
+            ':updated_at' => $data['updated_at'],
+        ]);
+    }
+
     public static function getAllListeBonCommandeFournisseur($dateStart, $dateEnd)
     {
         $data = [];
@@ -2651,6 +2703,8 @@ class Soutra extends Connexion
             v.statut_vente,
             v.pay_mode AS mode_paiement,
             v.created_at AS date_emission,
+            v.date_echeance,
+            c.ID_client,
             CONCAT(c.nom_client, \' \', c.prenom_client) AS nom_client,
             c.telephone_client AS telephone_client,
             c.email_client AS email_client,
@@ -2988,6 +3042,61 @@ class Soutra extends Connexion
 
         return $data;
     }
+
+    public static function getTotauxAchatRegler($etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT SUM(en.qte) article, SUM(en.prix_achat * en.qte) total
+            FROM achat ac
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_regler
+              AND en.etat_entree = :etat_entree ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_regler' => STATUT_COMMANDE[2],
+            'etat_entree' => $etat_entree,
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getTotauxAchatBenefice($etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT SUM(en.qte) article, SUM(en.prix_achat * en.qte) total
+            FROM achat ac
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_regler
+              AND en.etat_entree = :etat_entree ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_regler' => STATUT_COMMANDE[2],
+            'etat_entree' => $etat_entree,
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
     // public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_achat = 1, $etat_entree = 1)
     // {
     //     $data = [];
