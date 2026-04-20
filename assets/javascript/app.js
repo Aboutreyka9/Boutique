@@ -385,7 +385,7 @@ $(function () {
         });
     }
 
-    // btn_suprimer_client();
+    btn_suprimer_client();
 
     function btn_suprimer_client() {
         $('body').delegate('.btn_remove_client', 'click', function (e) {
@@ -621,9 +621,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // 
-                    $(".menu-modal").html(data);
-                    $("#categorie-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#categorie-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération de la catégorie", "error");
+                    }
                 }
             });
         });
@@ -734,9 +737,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // // 
-                    $(".menu-modal").html(data);
-                    $("#famille-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#famille-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération du formulaire", "error");
+                    }
                 }
             });
         });
@@ -847,9 +853,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // 
-                    $(".menu-modal").html(data);
-                    $("#mark-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#mark-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération de la marque", "error");
+                    }
                 }
             });
         });
@@ -955,9 +964,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // // 
-                    $(".menu-modal").html(data);
-                    $("#unite-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#unite-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération du formulaire", "error");
+                    }
                 }
             });
         });
@@ -1197,7 +1209,6 @@ $(function () {
     }
 
     btn_suprimer_article();
-
     function btn_suprimer_article() {
         $('body').delegate('.btn_remove_article', 'click', function (e) {
             e.preventDefault();
@@ -2161,7 +2172,7 @@ $(function () {
     function btn_suprimer_achat() {
         $('body').delegate('.btn_remove_achat', 'click', function (e) {
             e.preventDefault();
-            alert("uuu");
+            // alert("uuu");
             return
             var id = $(this).data('id');
             swal({

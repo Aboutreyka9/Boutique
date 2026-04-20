@@ -18,7 +18,7 @@ class ControllerCategorie extends Connexion {
           </div>
             ';
             
-            echo $output;
+            echo json_encode(['success' => true, 'html' => $output]);
         }
     }
   

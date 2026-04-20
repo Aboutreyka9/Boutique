@@ -385,6 +385,7 @@ $(function () {
         $('body').delegate('.btn_remove_client', 'click', function (e) {
             e.preventDefault();
             var id = $(this).data('id');
+            alert(id);
             swal({
                 title: "Etes vous sure",
                 text: "de vouloir supprimer cet element ?",

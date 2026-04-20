@@ -10,54 +10,73 @@
                   <!-- metric row -->
                   <div class="metric-row">
                     <!-- metric column -->
-                    <div class="col-12 col-sm-6 col-lg-3">
-                      <!-- .metric -->
-                      <div class="card-metric">
-                        <div class="metric">
-                          <p class="metric-value h3">
-                            <sub><i class="oi oi-dollar"></i></sub> <span class="value"><?= number_format(Soutra::getSumMontantAchatByEmploye(1,$id_employe) ??0,0,","," ") ?></span>
-                          </p>
-                          <h2 class="metric-label"> Valeur Total Achat </h2>
+                    <div class="col-md-3">
+                      <div class="card custom-card-detail">
+                        <div class="card-body">
+                          <div class="d-flex align-items-center">
+                            <div class="icon bg-info mr-2">
+                              <i class="bi bi-cart-plus"></i>
+                            </div>
+                            <h6><span class="text-muted text-uppercase">Valeur Total Achat</span> </h6>
+                          </div>
+                          <h5><span id="total_achat"><?= number_format(Soutra::getSumMontantAchatByEmploye(1,$id_employe) ??0,0,","," ") ?>
+                            </span> FCFA</h5>
                         </div>
-                      </div><!-- /.metric -->
-                    </div><!-- /metric column -->
+                      </div>
+                    </div>
+                    <!-- /metric column -->
                     <!-- metric column -->
-                    <div class="col-12 col-sm-6 col-lg-3">
-                      <!-- .metric -->
-                      <div class="card-metric">
-                        <div class="metric">
-                          <p class="metric-value h3">
-                            <sub><i class="oi oi-dollar"></i></sub> <span class="value"><?= number_format(Soutra::getSumMontantVenteByEmploye(1,$id_employe) ??0,0,","," ") ?></span>
-                          </p>
-                          <h2 class="metric-label"> Valeur Total Vente </h2>
+                    
+                    <div class="col-md-3">
+                      <div class="card custom-card-detail">
+                        <div class="card-body">
+                          <div class="d-flex align-items-center">
+                            <div class="icon bg-success mr-2">
+                              <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <h6><span class="text-muted text-uppercase">Valeur Total Vente</span> </h6>
+                          </div>
+                          <h5><span id="value"><?= number_format(Soutra::getSumMontantVenteByEmploye(1,$id_employe) ??0,0,","," ") ?>
+                            </span> FCFA</h5>
                         </div>
-                      </div><!-- /.metric -->
-                    </div><!-- /metric column -->
+                      </div>
+                    </div>
+
+                    <!-- /metric column -->
                     <!-- metric column -->
-                    <div class="col-12 col-sm-6 col-lg-3">
-                      <!-- .metric -->
-                      <div class="card-metric">
-                        <div class="metric">
-                          <p class="metric-value h3">
-                            <sub><i class="fa fa-tasks"></i></sub> <span class="value"><?= Soutra::getCompterVenteArticleByEmploye(1,$id_employe) ??0 ?></span>
-                          </p>
-                          <h2 class="metric-label"> Nombre Article Vendu </h2>
+                    
+                    <div class="col-md-3">
+                      <div class="card custom-card-detail">
+                        <div class="card-body">
+                          <div class="d-flex align-items-center">
+                            <div class="icon bg-info mr-2">
+                              <i class="bi bi-box-seam"></i>
+                            </div>
+                            <h6><span class="text-muted text-uppercase">Nombre Article Vendu</span> </h6>
+                          </div>
+                          <h5><span id="value"><?= Soutra::getCompterVenteArticleByEmploye(1,$id_employe) ??0 ?></span></h5>
                         </div>
-                      </div><!-- /.metric -->
-                    </div><!-- /metric column -->
+                      </div>
+                    </div>
+                    
+                    <!-- /metric column -->
                     <!-- metric column -->
-                    <div class="col-12 col-sm-6 col-lg-3">
-                      <!-- .metric -->
-                      <div class="card-metric">
-                        <div class="metric">
-                          <p class="metric-value h3">
-                            <sub><i class="oi oi-people"></i></sub> <span class="value"><?= Soutra::getCompterClientByEmploye(1,$id_employe) ??0 ?></span>
-                          </p>
-                          <h2 class="metric-label"> Nombre Client </h2>
+                    <div class="col-md-3">
+                      <div class="card custom-card-detail">
+                        <div class="card-body">
+                          <div class="d-flex align-items-center">
+                            <div class="icon bg-success mr-2">
+                              <i class="bi bi-people"></i>
+                            </div>
+                            <h6><span class="text-muted text-uppercase">Nombre Client</span> </h6>
+                          </div>
+                          <h5><span id="value"><?= Soutra::getCompterClientByEmploye(1,$id_employe) ??0 ?></span></h5>
                         </div>
-                      </div><!-- /.metric -->
-                    </div><!-- /metric column -->
-                  </div><!-- /metric row -->
+                      </div>
+                    </div>
+                    <!-- /metric column -->
+                  </div>
+                  <!-- /metric row -->
                   <div class="d-flex justify-content-between align-items-center">
                     <h1 class="section-title mb-0"> Ventes Annuelle </h1><!-- .dropdown -->
                   </div>
