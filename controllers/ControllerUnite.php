@@ -32,7 +32,7 @@ class ControllerUnite extends Connexion {
             ';
             
             
-            echo $output;
+            echo json_encode(['success' => true, 'html' => $output]);
         }
     }
   

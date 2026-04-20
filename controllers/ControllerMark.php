@@ -20,7 +20,7 @@ class ControllerMark extends Connexion {
             ';
             
             
-            echo $output;
+            echo json_encode(['success' => true, 'html' => $output]);
         }
     }
   

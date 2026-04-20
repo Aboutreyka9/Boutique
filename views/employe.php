@@ -14,7 +14,7 @@
     <!-- .page-section -->
     <div class="table-responsive col-12 col-md-* col-lg-*">
 <!-- .table -->
-<table class="table table-striped table-hover my-table ">
+<table class="table table-striped table-hover my-table bg-light">
   <!-- thead -->
   <thead class="thead-dark">
     <tr>

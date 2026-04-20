@@ -29,43 +29,49 @@ $bilan_fournisseur_nbre = Soutra::getBilanFournisseurNbre($id);
         <!-- metric row -->
         <div class="metric-row">
         <!-- metric column -->
-        <div class="col-12 col-sm-4 col-lg-4">
-            <!-- .metric -->
-            <div class="card-metric">
-            <div class="metric">
-                <p class="metric-value h3">
-                <sub><i class="oi oi-people"></i></sub> <span class="value"><?= @$bilan_fournisseur_nbre['nb_achat'] ?></span>
-                </p>
-                <h2 class="metric-label"> Nombre de commandes </h2>
+       <div class="col-md-4">
+            <div class="card custom-card-detail">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                <div class="icon bg-primary mr-2">
+                    <i class="bi bi-cart4"></i>
+                </div>
+                <h6><span class="text-muted text-uppercase">Nombre de commandes</span> </h6>
+                </div>
+                <h5><span id="value"><?= $bilan_fournisseur_nbre['nb_achat'] ?? 0 ?></span></h5>
             </div>
-            </div><!-- /.metric -->
-        </div><!-- /metric column -->
-        <!-- metric column -->
-        <div class="col-12 col-sm-4 col-lg-4">
-            <!-- .metric -->
-            <div class="card-metric">
-            <div class="metric">
-                <p class="metric-value h3">
-                <sub><i class="oi oi-fork"></i></sub> <span class="value"><?= @$bilan_fournisseur['qte'] ?></span>
-                </p>
-                <h2 class="metric-label"> Quantité des commandes </h2>
             </div>
-            </div><!-- /.metric -->
-        </div><!-- /metric column -->
+        </div>
         <!-- metric column -->
-        <div class="col-12 col-sm-4 col-lg-4">
-            <!-- .metric -->
-            <div class="card-metric">
-            <div class="metric">
-                <p class="metric-value h3">
-                <sub><i class="fa fa-tasks"></i></sub> <span class="value"><?= number_format(@$bilan_fournisseur['total'] ??0,0,","," ") ?></span>
-                </p>
-                <h2 class="metric-label"> Montant Total de commandes </h2>
+        <div class="col-md-4">
+            <div class="card custom-card-detail">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                <div class="icon bg-info mr-2">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <h6><span class="text-muted text-uppercase">Quantité des commandes</span> </h6>
+                </div>
+                <h5><span id="value"><?= $bilan_fournisseur_nbre['qte'] ?? 0 ?></span></h5>
             </div>
-            </div><!-- /.metric -->
-        </div><!-- /metric column -->
+            </div>
+        </div>
         <!-- metric column -->
-        </div><!-- /metric row -->
+    <div class="col-md-4">
+            <div class="card custom-card-detail">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                <div class="icon bg-success mr-2">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <h6><span class="text-muted text-uppercase">Montant total des commandes</span> </h6>
+                </div>
+                <h5><span id="value"><?= number_format($bilan_fournisseur['total'] ??0,0,","," ") ?> FCFA</span></h5>
+            </div>
+            </div>
+        </div>
+        
+        <!-- /metric row -->
         
     </div><!-- /.section-block -->
     <!-- grid row -->

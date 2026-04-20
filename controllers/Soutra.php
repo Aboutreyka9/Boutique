@@ -1041,12 +1041,12 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getAllFamille($etat = 1)
+    public static function getAllFamille($etat1 = 1, $etat2 = 1)
     {
         $data = [];
-        $sql = "SELECT fa.*, ca.libelle_categorie AS categorie  FROM famille fa INNER JOIN categorie ca ON ca.ID_categorie = fa.categorie_id WHERE etat_famille = ?  ORDER BY ID_famille DESC";
+        $sql = "SELECT fa.*, ca.libelle_categorie AS categorie  FROM famille fa INNER JOIN categorie ca ON ca.ID_categorie = fa.categorie_id WHERE etat_famille =:etat1  AND etat_categorie = :etat2 ORDER BY ID_famille DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$etat]);
+        $query->execute(['etat1' => $etat1, 'etat2' => $etat2]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1072,9 +1072,11 @@ class Soutra extends Connexion
     public static function getAllArticle($etat = 1)
     {
         $data = [];
-        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id LEFT JOIN mark ma ON ma.ID_mark = ar.mark_id LEFT JOIN unite un ON un.ID_unite = ar.unite_id  ORDER BY ID_article DESC";
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite FROM article ar INNER JOIN famille fa ON fa.ID_famille = ar.famille_id LEFT JOIN mark ma ON ma.ID_mark = ar.mark_id LEFT JOIN unite un ON un.ID_unite = ar.unite_id  
+        WHERE ar.etat_article = :etat1 AND fa.etat_famille = :etat2 
+        ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([]);
+        $query->execute(['etat1' => $etat, 'etat2' => STATUT[1]]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1115,9 +1117,9 @@ class Soutra extends Connexion
         INNER JOIN article ar ON e.article_id = ar.ID_article
         INNER JOIN famille fa ON fa.ID_famille = ar.famille_id 
         INNER JOIN mark ma ON ma.ID_mark = ar.mark_id  
-        WHERE etat_article = ? group by ar.ID_article ORDER BY ID_article DESC";
+        WHERE ar.etat_article = :etat group by ar.ID_article ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$etat]);
+        $query->execute(['etat' => $etat]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
