@@ -3042,6 +3042,61 @@ class Soutra extends Connexion
 
         return $data;
     }
+
+    public static function getTotauxAchatRegler($etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT SUM(en.qte) article, SUM(en.prix_achat * en.qte) total
+            FROM achat ac
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_regler
+              AND en.etat_entree = :etat_entree ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_regler' => STATUT_COMMANDE[2],
+            'etat_entree' => $etat_entree,
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getTotauxAchatBenefice($etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT SUM(en.qte) article, SUM(en.prix_achat * en.qte) total
+            FROM achat ac
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_regler
+              AND en.etat_entree = :etat_entree ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_regler' => STATUT_COMMANDE[2],
+            'etat_entree' => $etat_entree,
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
     // public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_achat = 1, $etat_entree = 1)
     // {
     //     $data = [];

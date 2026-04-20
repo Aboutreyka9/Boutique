@@ -8,7 +8,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   $achat = Soutra::getSingleAchatByCode($code);
   $merge = Soutra::getPanierModifierAchat($code);
 
-  if (empty($merge) && !isset($_SESSION['achat'])) {
+  if ((empty($merge) && !isset($_SESSION['achat'])) || $achat['reference'] == null) {
     pageNotFound();
     return;
   }

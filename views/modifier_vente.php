@@ -7,8 +7,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   // TODO: Get command data from database
   $vente = Soutra::getSingleVenteByCode($code);
   $merge = Soutra::getPanierModifierVente($code);
-  // var_dump($vente);:
-  if (empty($merge) && !isset($_SESSION['vente'])) {
+  // var_dump($vente);
+  if ((empty($merge) && !isset($_SESSION['vente'])) || $vente['reference'] == null) {
     pageNotFound();
     return;
   }

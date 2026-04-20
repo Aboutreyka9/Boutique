@@ -15,6 +15,9 @@
   // Récupérer les achats du mois courant
   $totaux = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
   $totalAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
+  $totalRegler = Soutra::getTotauxAchatRegler(); // méthode adaptée que l'on a créée
+  $totalBenefice = Soutra::getTotauxAchatBenefice(); // méthode adaptée que l'on a créée
+  $reste = $totaux['total'] - $totalRegler['total'];
   ?>
 
  <header class="page-title-bar">
@@ -25,7 +28,7 @@
      <div class="activity">
        <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF ?> </b>
      </div>
-     <div class="input-group w-100 w-md-auto filter-box" >
+     <div class="input-group w-100 w-md-auto filter-box">
        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
        <input type="text" name="datefilterAchat" class="form-control" placeholder="Sélectionner la période">
        <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
@@ -81,6 +84,52 @@
          </div>
        </div>
      </div>
+
+     <div class="col-md-4">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-primary mr-2">
+               <i class="bi bi-cash-stack"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Facture reglée</span> </h6>
+           </div>
+           <h5><span class="tester" id="total_montant_regler"><?= number_format($total_regler['total'] ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
+     </div>
+
+     <div class="col-md-4">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-danger mr-2">
+               <i class="bi bi-cash-stack"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Reste à payer</span> </h6>
+           </div>
+           <h5><span class="tester" id="total_montant_reste"><?= number_format($reste ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
+     </div>
+
+     <div class="col-md-4">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-danger mr-2">
+               <i class="bi bi-cash-stack"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Benefice</span> </h6>
+           </div>
+           <h5><span class="tester" id="total_montant_reste"><?= number_format($reste ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
+     </div>
+
 
    </div>
 
