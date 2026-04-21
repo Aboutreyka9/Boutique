@@ -173,6 +173,8 @@
         if (!empty($achat)) {
           $i = 0;
           foreach ($achat as $row) {
+            $montant_versement_total = Soutra::getSumMontantVersementByCode($row['code_achat']);
+            $reste_a_payer = $row['total'] - $montant_versement_total;
             $i++;
             $output .= '
             <tr class="row' . $row['ID_achat'] . '">
@@ -206,10 +208,9 @@
               $output .= '
 
         <button type="button" 
-        id="btn_encaisser_achat"
-            data-toggle="modal" data-target="#encaisser-modal"
             data-code="' . $row['code_achat'] . '"
-            data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i>
+            data-reste_a_payer="'. $reste_a_payer .'" 
+            data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm btn_encaisser_achat" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i>
         </button> ';
             endif;
             // btn Modifier la commande
@@ -271,36 +272,4 @@
 
  <!-- .modal -->
 
- <div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
-   <!-- .modal-dialog -->
-   <div class="modal-dialog" role="document">
-     <!-- .modal-content -->
-     <div class="modal-content">
-       <!-- .modal-header -->
-       <div class="modal-header">
-         <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-         </h6>
-       </div><!-- /.modal-header -->
-       <!-- .modal-body -->
-       <form action="" id="form_encaisser_achat" method="POST">
-         <div class="modal-body">
-           <!-- .form-row -->
-           <div class="form-row menu-modal">
-             <input type="hidden" name="code_achat" id="code_achat">
-             <div class="col-md-12">
-               <div class="form-group">
-                 <label for="montant_versement">Montant versement</label>
-                 <input type="text" name="montant_versement" id="montant_versement" class="form-control">
-               </div>
-             </div>
-           </div><!-- /.form-row -->
-         </div><!-- /.modal-body -->
-         <!-- .modal-footer -->
-         <div class="modal-footer">
-           <input type="hidden" name="btn_encaisser_achat" class="form-control">
-
-           <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
-         </div><!-- /.modal-footer -->
-       </form><!-- /.modal-content -->
-     </div><!-- /.modal-dialog -->
-   </div><!-- /.m -->
+<?= modalEncaissement() ?>

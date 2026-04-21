@@ -144,6 +144,60 @@
                 </div><!-- .dropdown-sheets -->
               </div><!-- .dropdown-menu -->
             </li><!-- /.nav-item -->
+
+
+          <?php
+          $entrepots = Soutra::getAllTable('entrepot',"etat_entrepot");
+          $styles = [
+  ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
+  ["color" => "bg-success", "icon" => "fa fa-box"],
+  ["color" => "bg-warning", "icon" => "fa fa-building"],
+  ["color" => "bg-danger", "icon" => "fa fa-archive"],
+];
+          ?>
+
+            <!-- .nav-item -->
+            <li class="nav-item dropdown header-nav-dropdown">
+              <a class="nav-link" href="#!" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
+                  class="bi bi-box-seam "></span></a>
+              <div class="dropdown-arrow"></div><!-- .dropdown-menu -->
+              <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right">
+                <!-- .dropdown-sheets -->
+              <div class="dropdown-sheets">
+                  <?php foreach ($entrepots as $index => $row): 
+                    $style = $styles[$index % count($styles)];
+                    $isActive = ($row['ID_entrepot'] == ($_SESSION['id_entrepot'] ?? null));
+              ?>
+
+                <div class="dropdown-sheet-item">
+                  <a href="#" 
+                    class="tile-wrapper entrepot-item position-relative"
+                    data-id="<?= $row['ID_entrepot']; ?>">
+
+                    <span class="tile tile-lg <?= $style['color']; ?>">
+                      <i class="<?= $style['icon']; ?>"></i>
+                    </span>
+
+                    <!-- ✅ BADGE ACTIF -->
+                    <?php if ($isActive): ?>
+                      <span class="badge-active"></span>
+                    <?php endif; ?>
+
+                    <span class="tile-peek">
+                      <?= $row['libelle_entrepot']; ?><br>
+                      <small><?= $row['ville_entrepot']; ?></small>
+                    </span>
+
+                  </a>
+                </div>
+
+              <?php endforeach; ?>
+                </div>
+                <!-- .dropdown-sheets -->
+              </div><!-- .dropdown-menu -->
+            </li><!-- /.nav-item -->
+
+            
           </ul><!-- /.nav -->
         <?php endif; ?>
 

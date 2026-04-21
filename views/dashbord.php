@@ -71,9 +71,9 @@ if (strtolower($_SESSION['role']) == ADMIN):
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="icon bg-success mr-2">
-                <i class="bi bi-x-wallet2"></i>
+                <i class="bi bi-wallet"></i>
               </div>
-              <h6><span class="text-muted text-uppercase">ENCAISSÉ </span></h6>
+              <h6><span class="text-muted text-uppercase">DETTE CLIENTS</span></h6>
             </div>
             <h5><span id="monant_encaisse"> 0 </span> FCFA</h5>
           </div>
@@ -87,7 +87,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               <div class="icon bg-info mr-2">
                 <i class="bi bi-credit-card"></i>
               </div>
-              <h6><span class="text-muted text-uppercase">RÈGLEMENTS</span> </h6>
+              <h6><span class="text-muted text-uppercase">DETTE FOURNISSEURS</span> </h6>
             </div>
             <h5><span id="montant_reglement"> 0 </span> FCFA</h5>
           </div>
@@ -99,7 +99,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="icon bg-purple mr-2">
-                <i class="bi bi-cart"></i>
+                <i class="bi bi-cart-plus"></i>
               </div>
               <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
             </div>
@@ -113,7 +113,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="icon bg-danger mr-2">
-                <i class="bi bi-cash"></i>
+                <i class="bi bi-cash-coin"></i>
               </div>
               <h6><span class="text-muted text-uppercase">DÉPENSES</span> (<span id="nombre_depense"> 0 </span>)</h6>
             </div>
@@ -135,7 +135,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
           </div>
         </div>
       </div>
-
+<!-- 
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
@@ -148,7 +148,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
             <h5><span id="montant_remise"> 0 </span> FCFA</h5>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="col-md-4">
         <div class="card custom-card-detail">

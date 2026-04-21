@@ -3,8 +3,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
   // TODO: Get command data from database
   $achat = Soutra::getSingleAchatByCode($code);
-  $montant_versement_total = Soutra::getSumMontantVersementByAchat(1, $code);
   $versements = Soutra::getAllTableByClauses('versement', 'transaction_code', $code, 'etat_versement', 1);
+  $montant_versement_total = Soutra::getSumMontantVersementByCode($code);
+  $reste_a_payer = $achat['total_ttc'] - $montant_versement_total;
 } else {
   // error 404
   http_response_code(404);
@@ -17,11 +18,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
 
   <div class="d-flex gap-5">
-    <button class="btn btn-success ml-2" title=""
-      id="btn_encaisser_achat"
-      data-toggle="modal" data-target="#encaisser-modal"
+    <button class="btn btn-success ml-2 btn_encaisser_achat" title=""
+      data-original-title="Encaisser la facture de la commande"
       data-code="<?= $code ?>"
-      data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
+    data-reste_a_payer="<?= $reste_a_payer ?>"
+      > <i class="bi bi-cash-coin"></i> Encaisser</button>
     <a href="<?= RACINE ?>views/print_achat.php?id=<?= $code ?>&statut=<?= $achat['statut_achat'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
   </div>
 </div>
@@ -213,67 +214,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 </div>
 
-<!-- Reglement facture(liste des versements de l'achat) -->
-<div class="card">
-  <div class="card-header">
-    <h5 class="text-info"> <i class="fa fa-credit-card"></i> Reglement facture </h5>
-  </div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <!-- .table -->
-      <table class="table table-striped table-hover">
-        <!-- thead -->
-        <thead class="thead-dark">
-          <tr>
-            <th> # </th>
-            <th>REFERENCE</th>
-            <th>DATE </th>
-            <th>MONTANT </th>
-            <th style="width: 20%;text-align: center;"> STATUT </th>
 
-          </tr>
-        </thead><!-- /thead -->
-        <!-- tbody -->
-        <tbody class="achat-table">
-          <?php
-
-          $i = 0;
-          $output = "";
-          if (!empty($versements)) {
-
-            foreach ($versements as $row) {
-              $i++;
-
-              $output .= '
-        <tr class="row' . $row['ID_versement'] . '">
-           <td class="col id d_none">' . $row['ID_versement'] . '</td>
-           <td>' . $i . '</td>
-           <td>' . $row['code_versement'] . '</td>
-           <td>' . $row['created_at'] . '</td>
-           <td>' . number_format($row['montant_versement'], 0, ",", " ") . ' FCFA</td>
-           <td>' . checkEtat($row['etat_versement']) . '</td>
-           ';
-
-              $output .= '
-            </tr>
-            ';
-            }
-          } else {
-            $output .= '
-            <tr>
-              <td colspan="6" class="text-center">Aucun versement trouvé</td>
-            </tr>
-            ';
-          }
-          echo $output;
-          ?>
-
-
-        </tbody><!-- /tbody -->
-      </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
-  </div>
-</div>
 
 <!-- Detail des produits commandés -->
 <div class="card">
@@ -348,6 +289,70 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 
 
+<!-- Reglement facture(liste des versements de l'achat) -->
+<div class="card">
+  <div class="card-header">
+    <h5 class="text-info"> <i class="fa fa-credit-card"></i> Reglement facture </h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <!-- .table -->
+      <table class="table table-striped table-hover">
+        <!-- thead -->
+        <thead class="thead-dark">
+          <tr>
+            <th> # </th>
+            <th>REFERENCE</th>
+            <th>DATE </th>
+            <th>MONTANT </th>
+            <th style="width: 20%;text-align: center;"> STATUT </th>
+
+          </tr>
+        </thead><!-- /thead -->
+        <!-- tbody -->
+        <tbody class="achat-table">
+          <?php
+
+          $i = 0;
+          $output = "";
+          if (!empty($versements)) {
+
+            foreach ($versements as $row) {
+              $i++;
+
+              $output .= '
+        <tr class="row' . $row['ID_versement'] . '">
+           <td class="col id d_none">' . $row['ID_versement'] . '</td>
+           <td>' . $i . '</td>
+           <td>' . $row['code_versement'] . '</td>
+           <td>' . $row['created_at'] . '</td>
+           <td>' . number_format($row['montant_versement'], 0, ",", " ") . ' FCFA</td>
+           <td>' . checkEtat($row['etat_versement']) . '</td>
+           ';
+
+              $output .= '
+            </tr>
+            ';
+            }
+          } else {
+            $output .= '
+            <tr>
+              <td colspan="6" class="text-center">Aucun versement trouvé</td>
+            </tr>
+            ';
+          }
+          echo $output;
+          ?>
+
+
+        </tbody><!-- /tbody -->
+      </table><!-- /.table -->
+    </div><!-- /.table-responsive -->
+  </div>
+</div>
+
+
+
 <!-- ------------------------------------------------------ -->
 <!-- ------------------------------------------------------ -->
 <!-- ------------------------------------------------------ -->
@@ -393,38 +398,5 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 </form><!-- /.modal -->
 
 
-<!-- .modal -->
-
-<div class="modal fade" data-backdrop="static" id="encaisser-modal" tabindex="-1" role="dialog" aria-labelledby="encaisser-modal" aria-hidden="true">
-  <!-- .modal-dialog -->
-  <div class="modal-dialog" role="document">
-    <!-- .modal-content -->
-    <div class="modal-content">
-      <!-- .modal-header -->
-      <div class="modal-header">
-        <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-        </h6>
-      </div><!-- /.modal-header -->
-      <!-- .modal-body -->
-      <form action="" id="form_encaisser_achat" method="POST">
-        <div class="modal-body">
-          <!-- .form-row -->
-          <div class="form-row menu-modal">
-            <input type="hidden" name="code_achat" id="code_achat">
-            <div class="col-md-12">
-              <div class="form-group">
-                <label for="montant_versement">Montant versement</label>
-                <input type="text" name="montant_versement" id="montant_versement" class="form-control">
-              </div>
-            </div>
-          </div><!-- /.form-row -->
-        </div><!-- /.modal-body -->
-        <!-- .modal-footer -->
-        <div class="modal-footer">
-          <input type="hidden" name="btn_encaisser_achat" class="form-control">
-
-          <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
-        </div><!-- /.modal-footer -->
-      </form><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.m -->
+    <!-- modal -->
+<?= modalEncaissement() ?>

@@ -82,6 +82,7 @@ ControllerEntrepot::liste_entrepot();
 ControllerEntrepot::modifier_entrepot();
 ControllerEntrepot::getEntrepotForTransfert();
 ControllerEntrepot::changeStatutEntrepot();
+ControllerEntrepot::set_entrepot();
 
 
 // CATEGORIE
@@ -135,6 +136,7 @@ ControllerAchat::validation_achat();
 ControllerAchat::encaissement_achat();
 ControllerAchat::annulation_achat();
 ControllerAchat::retourner_achat();
+ControllerAchat::getEncaissementAchat();
 
 // ControllerAchat::ajouter_depense();
 // DEPENSES

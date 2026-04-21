@@ -3,8 +3,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   $code = $_GET['id'] ?? '';
   // TODO: Get command data from database
   $vente = Soutra::getSingleVenteByCode($code);
-  $montant_versement_total = Soutra::getSumMontantVersementByVente(1, $code);
-  $versements = Soutra::getAllTableByClauses('versement', 'transaction_code', $code, 'etat_versement', 1);
+  $montant_versement_total = Soutra::getSumMontantVersementByCode($code);
+  $versements = Soutra::getVersementsByCode($code);
+  $reste_a_payer = $vente['total_ttc'] - $montant_versement_total;
 } else {
   // error 404
   http_response_code(404);
@@ -18,6 +19,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
   <div class="d-flex gap-5">
     <button class="btn btn-success ml-2 btn_encaisser_vente" title="" data-code="<?= $code ?>"
+    data-reste_a_payer="<?= $reste_a_payer ?>"
       data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
 
     <a href="<?= RACINE ?>views/print.php?id=<?= $code ?>&statut=<?= $vente['statut_vente'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
@@ -90,7 +92,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted">Reste à payer</span></h6>
         </div>
-        <h5><?= number_format(($vente['total_ttc'] - $montant_versement_total), 0, ',', ' ') ?> CFA</h5>
+        <h5><?= number_format(($reste_a_payer), 0, ',', ' ') ?> CFA</h5>
       </div>
     </div>
   </div>
@@ -258,13 +260,14 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <thead class="thead-dark">
           <tr>
             <th> # </th>
-            <th>Statut</th>
+            <th>CODE </th>
             <th>Montant </th>
             <th>Mode de paiement </th>
-            <th>Commentaire </th>
+            <!-- <th>Commentaire </th> -->
             <th>Fait par </th>
             <th>Fait le </th>
-            <th>Actions </th>
+            <th>Statut</th>
+            <!-- <th>Actions </th> -->
 
           </tr>
         </thead><!-- /thead -->
@@ -283,8 +286,10 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
            <td class="col id d_none">' . $row['ID_versement'] . '</td>
            <td>' . $i . '</td>
            <td>' . $row['code_versement'] . '</td>
-           <td>' . $row['created_at'] . '</td>
            <td>' . number_format($row['montant_versement'], 0, ",", " ") . ' FCFA</td>
+           <td>' . $row['pay_mode'] . '</td>
+           <td>' . $row['employe'] . '</td>
+           <td>' . $row['created_at'] . '</td>
            <td>' . checkEtat($row['etat_versement']) . '</td>
            ';
 

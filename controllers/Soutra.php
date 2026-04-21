@@ -846,7 +846,7 @@ class Soutra extends Connexion
         return $data['nb'];
     }
 
-    public static function getSumMontantVenteByVente($etat, $id_vente)
+    public static function getSumMontantVenteByVente($id_vente,$etat = 1)
     {
         $sql = "SELECT SUM(prix_vente * qte) AS nb FROM sortie so WHERE so.etat_sortie = :etat AND so.vente_id = :id_vente";
         $query = self::getConnexion()->prepare($sql);
@@ -855,7 +855,7 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data['nb'] ?? 0;
     }
-    public static function getSumMontantAchatByAchat($etat, $id_achat)
+    public static function getSumMontantAchatByCode($id_achat,$etat = 1)
     {
         $sql = "SELECT SUM(prix_achat * qte) AS nb FROM entree en WHERE en.etat_entree = :etat AND en.achat_id = :id_achat";
         $query = self::getConnexion()->prepare($sql);
@@ -865,7 +865,7 @@ class Soutra extends Connexion
         return $data['nb'] ?? 0;
     }
 
-    public static function getSumMontantVersementByVente($etat, $id_vente)
+    public static function getSumMontantVersementByCode($id_vente,$etat = 1)
     {
         $sql = "SELECT SUM(montant_versement) AS nb FROM versement WHERE etat_versement = :etat AND transaction_code = :id_vente";
         $query = self::getConnexion()->prepare($sql);
@@ -875,15 +875,27 @@ class Soutra extends Connexion
         return $data['nb'] ?? 0;
     }
 
-    public static function getSumMontantVersementByAchat($etat, $id_achat)
+    public static function getVersementsByCode($code,$etat= 1)
     {
-        $sql = "SELECT SUM(montant_versement) AS nb FROM versement WHERE etat_versement = :etat AND transaction_code = :id_achat";
+        $sql = "SELECT ve.*,CONCAT(em.nom_employe, ' ', em.prenom_employe) as employe FROM versement ve 
+        JOIN employe em ON em.ID_employe = ve.employe_id
+        WHERE transaction_code = :code AND etat_versement = :etat";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['etat' => $etat, 'id_achat' => $id_achat]);
-        $data = $query->fetch();
+        $query->execute(['code' => $code,'etat' => $etat]);
+        $data = $query->fetchAll(PDO::FETCH_ASSOC);
         $query->closeCursor();
-        return $data['nb'] ?? 0;
+        return $data ?? [];
     }
+
+    // public static function getSumMontantVersementByAchat($etat, $id_achat)
+    // {
+    //     $sql = "SELECT SUM(montant_versement) AS nb FROM versement WHERE etat_versement = :etat AND transaction_code = :id_achat";
+    //     $query = self::getConnexion()->prepare($sql);
+    //     $query->execute(['etat' => $etat, 'id_achat' => $id_achat]);
+    //     $data = $query->fetch();
+    //     $query->closeCursor();
+    //     return $data['nb'] ?? 0;
+    // }
 
     public static function getAllEmployer($id, $etat = 1)
     {
