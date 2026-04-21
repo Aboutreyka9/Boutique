@@ -1,4 +1,5 @@
 $(function () {
+
     const ROOT_HOST = window.location.origin + "/boutique/";
     const ROOT_SIMPLE = window.location.origin + "/";
     var STARDATE = "";
@@ -6,8 +7,8 @@ $(function () {
     let charts = {}; // stocker les graphiques par ID
     let articleSelected = [];
     let articlesMap = {};
-
-
+    let montant_global = 0;
+    let taxe_global = 0;
 
     let date_start_picker = moment().startOf('month'); // 1er du mois
     let date_end_picker = moment(); // aujourd’hui
@@ -107,7 +108,25 @@ $(function () {
 
     function changerMontant(val = 0) {
         $('.mtt').text(money(val));
+        $('.mtt').val((val));
+
+        $("#total_ttc").text(money(val));
+
+    $(".montant_total_ttc").text(calculMontantTaxe(val));
+    $("#total_ttc_hidden").val(calculMontantTaxe(val));
+
     }
+
+    function calculMontantTaxe(total_ht = 0) {
+ let taxe = parseFloat($("#taxe").val()) || 0;
+
+    let montant_taxe = total_ht * (taxe / 100);
+
+    let total_ttc = total_ht + montant_taxe;
+    
+return total_ttc;
+    
+}
 
     // RESET FORM
     function resetForm() {
@@ -1619,17 +1638,21 @@ $(function () {
 
         });
     }
-
-  
-
-
+// rien
     function totalAll() {
         var somme = 0;
         $('.table_total tbody tr').each(function () {
             var val = $(this).find('.total').text();
             somme += Number(val);
         });
+        // montant_global = somme;
         changerMontant(somme);
+        $("#total_ttc").text(somme);
+        console.log($("#total_ttc").text(somme));
+        
+        let taxe = $("#total_ttc").data("taxe");
+        // console.log(taxe);
+        
     }
 
     function pushData(selector) {
@@ -1814,6 +1837,7 @@ $(function () {
             $('.table_commande tbody tr').each(function () {
                 articleSelected.push($(this).data('code'));
             });
+            // taxe_global = $('#total_ttc').data('taxe');
            loadTotalRow();
         //    console.log(articleSelected);
            
@@ -2002,6 +2026,8 @@ $(function () {
             somme += Number(val);
         });
         changerMontant(somme);
+        console.log(taxe_global);
+        
     }
 
     function pushData(selector) {
@@ -2481,6 +2507,8 @@ $(function () {
         $('body').delegate('#btn_ajouter_vente', 'click', function (e) {
             e.preventDefault();
             var client = $('#client').val();
+            var montant_encaisse = $('#montant_encaisse').val();
+            var pay_mode = $('.pay_mode').val();
             if (!client) {
                 notify("Veuillez choisir un client", "", "alert", "warning");
                 return;
@@ -2489,12 +2517,12 @@ $(function () {
             var qte = pushData("qte");
             var pu = pushData("pu");
 
-            ajouter_vente(id, qte, pu, client);
+            ajouter_vente(id, qte, pu, client, montant_encaisse,pay_mode);
 
         });
     }
 
-    function ajouter_vente(id, qte, pu, client) {
+    function ajouter_vente(id, qte, pu, client, montant_encaisse,pay_mode) {
         $.ajax({
             url: "../partials/rooter.php",
             method: "POST",
@@ -2503,16 +2531,19 @@ $(function () {
                 qte: qte,
                 pu: pu,
                 client: client,
+                montant_encaisse: montant_encaisse,
+                pay_mode: pay_mode,
                 btn_ajouter_vente: 1
             },
+            dataType: "json",
             success: function (data) {
-                console.log(data);
-                var verif = data.split("&");
-                if (verif[0] == 1) {
+                
+                var verif = data;
+                if (verif.status) {
 
-                      swal({
+                    swal({
                         title: "Succès",
-                        text: verif[1],
+                        text: verif.message,
                         icon: "success",
                         button: true,
 
@@ -2523,7 +2554,7 @@ $(function () {
                     );
 
                 } else {
-                    notify(verif[1], "", "alert", "warning");
+                    notify(verif.message, "", "alert", "warning");
 
 
                 }
@@ -4707,33 +4738,31 @@ function updateELementDepense(btn_action,code) {
             }
     });
 }
-form_encaisser_vente();
+
+    form_encaisser_vente();
+
     function form_encaisser_vente() {
-
-        $('#form_encaisser_vente').on('submit', function (e) {
+        $('body').on('submit', '#form_encaisser_vente', function (e) {
             e.preventDefault();
-
-            var codeVente = $(this).find('#code_vente').val();
-            var montantVersement = $(this).find('#montant_versement').val();
+            
+            let data = $(this).serialize();
             
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
-                data: {
-                    code_vente: codeVente,
-                    montant_versement: montantVersement,
-                    btn_encaisser_vente: 1
-                },
+                data: data,
                 dataType: 'JSON',
                 success: function (data) {
                     // console.log(data);return;
                     
                     if(data.status) {
+
                         swal("Notification", data.message, "success");
+                        $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
-                    $("#encaisser-modal").modal('hide');
+                    
                 }
             });
         });
@@ -4741,59 +4770,90 @@ form_encaisser_vente();
 form_encaisser_achat();
     function form_encaisser_achat() {
 
-        $('#form_encaisser_achat').on('submit', function (e) {
+        $('body').on('submit', '#form_encaisser_achat', function (e) {
             e.preventDefault();
 
-            var codeAchat = $(this).find('#code_achat').val();
-            var montantVersement = $(this).find('#montant_versement').val();
+            let data = $(this).serialize();
             
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
-                data: {
-                    code_achat: codeAchat,
-                    montant_versement: montantVersement,
-                    btn_encaisser_achat: 1
-                },
+                data: data,
                 dataType: 'JSON',
                 success: function (data) {
                     // console.log(data);return;
                     
-                    if(data.status) {
+                     if(data.status) {
+
                         swal("Notification", data.message, "success");
+                        $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
-                    $("#encaisser-modal").modal('hide');
                 }
             });
         });
     }
-    modal_encaisser("#btn_encaisser_achat","#code_achat")
-modal_encaisser("#btn_encaisser_vente", "#code_vente")
+    // modal_encaisser("#btn_encaisser_achat","#code_achat")
+// modal_encaisser("#btn_encaisser_vente", "#code_vente")
     
-function modal_encaisser(selector,code_select) {    
+// function modal_encaisser(selector,code_select) {    
+//     $(document).on('click', selector, function () {
+//         let code = $(this).data('code');
+       
+//         // injecter dans le champ hidden
+//         $(code_select).val(code);
+
+//         console.log(code); // pour vérifier
+//     });
+// }
+
+modalEncaissementVente(".btn_encaisser_vente")
+
+function modalEncaissementVente(selector) {    
     $(document).on('click', selector, function () {
         let code = $(this).data('code');
-
-        // injecter dans le champ hidden
-        $(code_select).val(code);
-
-        console.log(code); // pour vérifier
-    });
-}
-
-modalEncaissement(".btn_encaisser_vente")
-
-function modalEncaissement(selector) {    
-    $(document).on('click', selector, function () {
-        let code = $(this).data('code');
+        let reste_a_payer = $(this).data('reste_a_payer');
+        if(reste_a_payer <= 0) {
+            swal("Notification", "Le reste à payer est déjà à zéro", "error");
+            return;
+        }
          $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: {
                     code: code,
+                    reste_a_payer:reste_a_payer,
                     frm_encaissement: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    
+                    $(".menu-modal-encaissement").html(data);
+                    $("#encaisser-modal").modal('show');
+                }
+            });
+    });
+}
+
+modalEncaissementAchat(".btn_encaisser_achat")
+
+function modalEncaissementAchat(selector) {    
+    $(document).on('click', selector, function () {
+        let code = $(this).data('code');
+        let reste_a_payer = $(this).data('reste_a_payer');
+        if(reste_a_payer <= 0) {
+            swal("Notification", "Le reste à payer est déjà à zéro", "error");
+            return;
+        }
+         $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    reste_a_payer:reste_a_payer,
+                    frm_encaissement_achat: 1
                 },
                 dataType: 'JSON',
                 success: function (data) {
@@ -4828,3 +4888,123 @@ function modalEncaissement(selector) {
             });
         });
     }
+    calculReste('#montant_total_vente', '#montant_recu_vente', '#reste_a_payer_vente');
+    calculReste('#montant_total_achat', '#montant_recu_achat', '#reste_a_payer_achat');
+function calculReste(montantTotalSelector, montantRecuSelector, resteSelector) {
+
+    $('body').on('input', montantRecuSelector, function() {
+
+        let total = parseFloat($(montantTotalSelector).val()) || 0;
+        let recu = parseFloat($(this).val()) || 0;
+
+        let reste = total - recu;
+
+        // éviter négatif
+        if (reste < 0) {
+            reste = 0;
+        }
+
+        $(resteSelector).val(reste);
+    });
+}
+
+calculAfterRemise();
+function calculAfterRemise() {
+
+    $('body').on('input', '#montant_remise', function() {
+
+
+        let total_ht = parseFloat($(".mtt").val()) || 0;
+        let remise = parseFloat($("#montant_remise").val()) || 0;
+// console.log(total_ht , remise);return
+
+        // sécurité
+        if (remise > total_ht) {
+            remise = total_ht;
+            $(".remise-input input").val(total_ht);
+        }
+
+
+        let reste = total_ht - remise;
+
+        // éviter négatif
+        if (reste < 0) {
+            reste = 0;
+        }
+
+        $("#total_apres_remise").text(reste);
+        $(".montant_total_ttc").text(reste);
+        $("#total_ttc_hidden").val(reste);
+
+    });
+}
+
+calculAfterEncaisse();
+function calculAfterEncaisse() {
+
+    $('body').on('input', '#montant_encaisse', function() {
+
+
+        let total_ht = parseFloat($("#total_ttc_hidden").val()) || 0;
+        let encaisse = parseFloat($("#montant_encaisse").val()) || 0;
+console.log(total_ht, encaisse);
+
+        let reliquat = total_ht - encaisse;
+
+        $("#reliquat").val(reliquat);
+
+
+
+
+$("#reliquat").val(reliquat);
+
+// reset classes
+$("#reliquat").removeClass("reliquat-ok reliquat-warning reliquat-danger");
+
+// conditions
+if (reliquat > 0) {
+    $("#reliquat").addClass("reliquat-warning"); // reste à payer
+}
+else if (reliquat < 0) {
+    $("#reliquat").addClass("reliquat-danger"); // trop payé
+}
+else {
+    $("#reliquat").addClass("reliquat-ok"); // exact
+}
+
+
+    });
+}
+activeEntrepot();
+function activeEntrepot() {  
+$(document).on("click", ".entrepot-item", function(e) {
+    e.preventDefault(); // bloque le reload
+
+    let id = $(this).data("id");
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: { set_entrepot: 1, id_entrepot: id },
+                dataType: 'JSON',
+                success: function (data) {
+                    
+                    if(data.success) {
+                        $.notify(data.message, "success");
+                    }else{
+                        $.notify(data.message, "error");
+                    }
+                }
+            });
+});
+}
+
+// $(document).on("click", ".entrepot-item", function() {
+
+//     let id = $(this).data("id");
+
+//     // enlever ancien badge
+//     $(".badge-active").remove();
+
+//     // ajouter sur le nouveau
+//     $(this).append('<span class="badge-active"></span>');
+// });

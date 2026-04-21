@@ -1115,30 +1115,30 @@ class ControllerAchat extends Connexion
     if (isset($_POST['btn_encaisser_achat'])) {
 
       extract($_POST);
-      $msg = [];
       // var_dump($_POST);return;
-
-      if (isset($montant_versement) && !empty($montant_versement)) {
+      $msg = [];
+      if (isset($montant_recu_achat) && !empty($montant_recu_achat)) {
         if (isset($code_achat) && !empty($code_achat)) {
           $achat = Soutra::getByItem("achat", "code_achat", $code_achat);
           if (!empty($achat)) {
-            $montant_total = Soutra::getSumMontantAchatByAchat(1, $code_achat);
-            $montant_versement_total = Soutra::getSumMontantVersementByAchat(1, $code_achat);
-            if ($montant_total >= ($montant_versement + $montant_versement_total)) {
+            $montant_total = Soutra::getSumMontantAchatByCode($code_achat);
+            $montant_recu_achat_total = Soutra::getSumMontantVersementByCode($code_achat);
+            if ($montant_total >= ($montant_recu_achat + $montant_recu_achat_total)) {
 
-              if (Soutra::verif_type($montant_versement)) {
+              if (Soutra::verif_type($montant_recu_achat)) {
                 $date = date('Y-m-d');
                 $code = strtoupper(self::checkCode());
-                $data_versement = array(
-                  'montant_versement' => $montant_versement,
-                  'fournisseur_id' => $achat["fournisseur_id"],
+                $data_versement = [
+                  'montant_versement' => $montant_recu_achat,
+                  // 'client_id' => $achat["client_id"],
                   'employe_id' => $_SESSION['id_employe'],
                   'etat_versement' => 1,
                   'code_versement' => $code,
                   'created_at' => $date,
                   'transaction_code' => $code_achat,
-                  'type_versement' => 'achat'
-                );
+                  'type_versement' => 'achat',
+                  'pay_mode' => $pay_mode
+                ];
 
                 $connect = Soutra::getConnexion();
                 $connect->query("SET AUTOCOMMIT = 0");
@@ -1146,7 +1146,7 @@ class ControllerAchat extends Connexion
                 try {
 
                   if (Soutra::insert("versement", $data_versement)) {
-                    if (Soutra::getSumMontantachatByachat(1, $code_achat) == Soutra::getSumMontantVersementByachat(1, $code_achat)) {
+                    if (Soutra::getSumMontantAchatByCode($code_achat) == Soutra::getSumMontantVersementByCode($code_achat)) {
                       $data_updated = [
                         'statut_achat' => STATUT_COMMANDE[2],
                         'code_achat' => $code_achat
@@ -1169,7 +1169,7 @@ class ControllerAchat extends Connexion
                 $msg = ['status' => false, 'message' => 'Le montant invalide !'];
               }
             } else {
-              $reste = Soutra::getSumMontantachatByachat(1, $code_achat) - Soutra::getSumMontantVersementByachat(1, $code_achat);
+              $reste = Soutra::getSumMontantAchatByCode($code_achat) - Soutra::getSumMontantVersementByCode($code_achat);
               $msg = ['status' => false, 'message' => "Il reste " . $reste . " pour finaliser le paiement"];
             }
           } else {
@@ -1179,9 +1179,62 @@ class ControllerAchat extends Connexion
           $msg = ['status' => false, 'message' => 'Le code de achat invalide !'];
         }
       } else {
-        $msg =  ['status' => false, 'message' => 'Veuillez remplir tous les champs !'];
+        $msg =  ['status' => false, 'message' => 'Montant invalide1 !'];
       }
       echo json_encode($msg);
+    }
+  }
+
+
+  
+  public static function getEncaissementAchat()
+  {
+    if (isset($_POST["frm_encaissement_achat"])) {
+      $code = $_POST["code"];
+      // $article = Soutra::getSingleVenteArticle($id_sortie);
+      // $vente = Soutra::getAllTable('sortie', 'ID_sortie', $id_sortie);
+
+      $output = '
+            <form id="form_encaisser_achat" method="POST">
+            <div class="row">
+            <input type="hidden" name="code_achat" value="'.$code.'">
+            <input type="hidden" name="btn_encaisser_achat" class="form-control">
+                <div class="col-md-12">
+                <div class="form-group">
+                  <label for="article_id">Mode de paiement</label>
+                  <select name="pay_mode" class="form-control">
+                  ' . payement() . '
+                  </select>
+                </div>
+              </div>
+              
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="montant_total">Montant à regler</label>
+                  <input readOnly type="text" class="form-control" id="montant_total_achat" value="'.$_POST['reste_a_payer'].'">
+                </div>
+
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="qte">Montant reçu</label>
+                  <input type="number" min="0" name="montant_recu_achat" id="montant_recu_achat" class="form-control ">
+                </div>
+              </div>
+                <div class="col-md-12">
+                <div class="form-group">
+                  <label for="qte">Reste à payer</label>
+                  <input type="number" min="0" id="reste_a_payer_achat" name="qte" class="form-control ">
+                </div>
+              </div>
+              <div class="col-md-12 modal_footer">
+              <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+              </div>
+              </div>
+          </form>';
+
+
+      echo json_encode($output);
     }
   }
 }

@@ -58,38 +58,40 @@ class ControllerVente extends Connexion
       // $vente = Soutra::getAllTable('sortie', 'ID_sortie', $id_sortie);
 
       $output = '
-            <form action="" id="form_encaisser_vente" method="POST">
+            <form id="form_encaisser_vente" method="POST">
             <div class="row">
+            <input type="hidden" name="code_vente" value="'.$code.'">
             <input type="hidden" name="btn_encaisser_vente" class="form-control">
                 <div class="col-md-12">
                 <div class="form-group">
                   <label for="article_id">Mode de paiement</label>
-                  <select name="mode_paiement" class="form-control">
+                  <select name="pay_mode" class="form-control">
                   ' . payement() . '
                   </select>
                 </div>
               </div>
+              
               <div class="col-md-12">
                 <div class="form-group">
                   <label for="montant_total">Montant à regler</label>
-                  <input readOnly type="text" class="form-control" id="montant_total">
+                  <input readOnly type="text" class="form-control" id="montant_total_vente" value="'.$_POST['reste_a_payer'].'">
                 </div>
 
               </div>
               <div class="col-md-12">
                 <div class="form-group">
                   <label for="qte">Montant reçu</label>
-                  <input type="number" min="0" name="qte" class="form-control qte_vente_detail">
+                  <input type="number" min="0" name="montant_recu_vente" id="montant_recu_vente" class="form-control ">
                 </div>
               </div>
                 <div class="col-md-12">
                 <div class="form-group">
                   <label for="qte">Reste à payer</label>
-                  <input type="number" min="0" name="qte" class="form-control qte_vente_detail">
+                  <input type="number" min="0" id="reste_a_payer_vente" name="qte" class="form-control ">
                 </div>
               </div>
               <div class="col-md-12 modal_footer">
-               <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
+              <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
               </div>
               </div>
           </form>';
@@ -536,7 +538,7 @@ class ControllerVente extends Connexion
   {
     if (isset($_POST['btn_ajouter_vente'])) {
       // Ajouter
-      self::createvente();
+      self::createVente();
     }
   }
 
@@ -546,28 +548,30 @@ class ControllerVente extends Connexion
     if (isset($_POST['btn_encaisser_vente'])) {
 
       extract($_POST);
+      // var_dump($_POST);return;
       $msg = [];
-      if (isset($montant_versement) && !empty($montant_versement)) {
+      if (isset($montant_recu_vente) && !empty($montant_recu_vente)) {
         if (isset($code_vente) && !empty($code_vente)) {
           $vente = Soutra::getByItem("vente", "code_vente", $code_vente);
           if (!empty($vente)) {
-            $montant_total = Soutra::getSumMontantVenteByVente(1, $code_vente);
-            $montant_versement_total = Soutra::getSumMontantVersementByVente(1, $code_vente);
-            if ($montant_total >= ($montant_versement + $montant_versement_total)) {
+            $montant_total = Soutra::getSumMontantVenteByVente($code_vente);
+            $montant_recu_vente_total = Soutra::getSumMontantVersementByCode($code_vente);
+            if ($montant_total >= ($montant_recu_vente + $montant_recu_vente_total)) {
 
-              if (Soutra::verif_type($montant_versement)) {
+              if (Soutra::verif_type($montant_recu_vente)) {
                 $date = date('Y-m-d');
                 $code = strtoupper(self::checkCode());
-                $data_versement = array(
-                  'montant_versement' => $montant_versement,
-                  'client_id' => $vente["client_id"],
+                $data_versement = [
+                  'montant_versement' => $montant_recu_vente,
+                  // 'client_id' => $vente["client_id"],
                   'employe_id' => $_SESSION['id_employe'],
                   'etat_versement' => 1,
                   'code_versement' => $code,
                   'created_at' => $date,
                   'transaction_code' => $code_vente,
-                  'type_versement' => 'vente'
-                );
+                  'type_versement' => 'vente',
+                  'pay_mode' => $pay_mode
+                ];
 
                 $connect = Soutra::getConnexion();
                 $connect->query("SET AUTOCOMMIT = 0");
@@ -575,7 +579,7 @@ class ControllerVente extends Connexion
                 try {
 
                   if (Soutra::insert("versement", $data_versement)) {
-                    if (Soutra::getSumMontantVenteByVente(1, $code_vente) == Soutra::getSumMontantVersementByVente(1, $code_vente)) {
+                    if (Soutra::getSumMontantVenteByVente($code_vente) == Soutra::getSumMontantVersementByCode($code_vente)) {
                       $data_updated = [
                         'statut_vente' => STATUT_COMMANDE[2],
                         'code_vente' => $code_vente
@@ -598,7 +602,7 @@ class ControllerVente extends Connexion
                 $msg = ['status' => false, 'message' => 'Le montant invalide !'];
               }
             } else {
-              $reste = Soutra::getSumMontantVenteByVente(1, $code_vente) - Soutra::getSumMontantVersementByVente(1, $code_vente);
+              $reste = Soutra::getSumMontantVenteByVente($code_vente) - Soutra::getSumMontantVersementByCode($code_vente);
               $msg = ['status' => false, 'message' => "Il reste " . $reste . " pour finaliser le paiement"];
             }
           } else {
@@ -608,7 +612,7 @@ class ControllerVente extends Connexion
           $msg = ['status' => false, 'message' => 'Le code de vente invalide !'];
         }
       } else {
-        $msg =  ['status' => false, 'message' => 'Veuillez remplir tous les champs !'];
+        $msg =  ['status' => false, 'message' => 'Montant invalide1 !'];
       }
       echo json_encode($msg);
     }
@@ -616,16 +620,19 @@ class ControllerVente extends Connexion
 
   public static function createVente()
   {
+    
     extract($_POST);
+    // $montant_encaisse = $_POST['montant_encaisse'] ?? 0;
+    // var_dump($montant_encaisse,'cool');return;
 
     $verifEmpty = false;
     $verifType = false;
-    $msg = "";
+    $msg = [];
 
     // || empty($qte[$i])
 
     if (empty($pu) || empty($qte)) {
-      $msg = '2&Desolé Verifier les informations.';
+      $msg = ['status' => false, 'message' => 'Desolé Verifier les informations.'];
     } else {
 
       for ($i = 0; $i < count($pu); $i++) {
@@ -637,9 +644,9 @@ class ControllerVente extends Connexion
       }
 
       if ($verifEmpty) {
-        $msg =  '2&Veuillez Entrer toutes les valeurs !';
+        $msg = ['status' => false, 'message' => 'Veuillez Entrer toutes les valeurs !'];
       } elseif ($verifType) {
-        $msg = '2&Verifier les valeurs renseignées';
+        $msg = ['status' => false, 'message' => 'Verifier les valeurs renseignées'];
       } else {
         $date = date('Y-m-d');
         $code = self::checkCode();
@@ -658,7 +665,7 @@ class ControllerVente extends Connexion
           'created_at' => $date
         );
 
-        $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
+        $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code,$montant_encaisse,$pay_mode) {
           Soutra::inserted("vente", $data);
           for ($i = 0; $i < count($pu); $i++) {
             $vente = array(
@@ -672,17 +679,45 @@ class ControllerVente extends Connexion
             // return true;
           }
 
+           if (Soutra::verif_type($montant_encaisse)) {
+                $date = date('Y-m-d');
+                $code_versement = strtoupper(self::checkCode());
+                $data_versement = [
+                  'montant_versement' => (int)$montant_encaisse,
+                  'employe_id' => $_SESSION['id_employe'],
+                  'etat_versement' => ETATS[1],
+                  'code_versement' => $code_versement,
+                  'created_at' => $date,
+                  'transaction_code' => $code,
+                  'type_versement' => 'vente',
+                  'pay_mode' => $pay_mode
+                ];
+
+                  if (Soutra::insert("versement", $data_versement)) {
+
+                    if (Soutra::getSumMontantVenteByVente($code) == Soutra::getSumMontantVersementByCode($code)) {
+                      $data_updated = [
+                        'statut_vente' => STATUT_COMMANDE[2],
+                        'code_vente' => $code
+                      ];
+                      Soutra::update('vente', $data_updated);
+                    }
+
+                  }
+              
+              } 
+
           // return false;
         });
-        if ($results) {
-          $msg = "1&Bon de commande client créé avec succès.";
-        } else {
-          $msg = '2&Une erreur est survenue! ';
+        if($results){
+          $msg = ['status' => true, 'message' => 'Vente enregistrée avec succès.'];
+        }else{
+          $msg = ['status' => false, 'message' => 'Une erreur est survenue !'];
         }
       }
       // echo $msg;
     }
-    echo $msg;
+    echo json_encode($msg);
   }
 
 

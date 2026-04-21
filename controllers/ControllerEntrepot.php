@@ -322,6 +322,27 @@ class ControllerEntrepot extends Connexion
             }
         }
     }
+
+    public static function set_entrepot()
+    {
+        if (isset($_POST['set_entrepot'])) {
+            $msg = [];
+            if (!empty($_POST['id_entrepot'])) {
+                if(Soutra::exite('entrepot', 'ID_entrepot', $_POST['id_entrepot'])) {
+                    // L'entrepôt existe, on peut continuer
+                    $_SESSION['id_entrepot'] = $_POST['id_entrepot'];
+                    $msg = ['success' => true, 'message' => 'Entrepôt sélectionné avec succès'];
+                } else {
+                    $msg = ['success' => false, 'message' => 'Entrepôt non trouvé'];
+                }
+                
+            }else{
+                $msg = ['success' => false, 'message' => 'ID entrepôt manquant'];
+            }
+            echo json_encode($msg);
+        }
+    }
+
 }
 
 //fin de la class

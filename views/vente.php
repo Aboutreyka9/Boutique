@@ -23,22 +23,57 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
   </div>
   <!-- Résumé des ventes -->
   <div class="row mt-5">
-    <div class="col-md-6 col-lg-6">
+
+
+    <!-- <div class="col-md-6 col-lg-6">
       <div class="card text-center shadow-sm border-primary">
         <div class="card-body">
           <h6 class="text-muted">Nombre de Vente</h6>
           <h3 class="text-primary" id="nb_ventes"><?= $totaux['nb_ventes'] ?? 0 ?></h3>
         </div>
       </div>
-    </div>
-    <div class="col-md-6 col-lg-6">
+    </div> -->
+
+ <div class="col-md-6">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-info mr-2">
+               <i class="bi bi-cart4"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Nombre de Vente</span></h6>
+           </div>
+           <h3 class="text-primary" id="nb_ventes"><?= $totaux['nb_ventes'] ?? 0 ?></h3>
+         </div>
+       </div>
+     </div>
+
+     
+
+    <!-- <div class="col-md-6 col-lg-6">
       <div class="card text-center shadow-sm border-success">
         <div class="card-body">
           <h6 class="text-muted">Montant Ventes</h6>
           <h3 class="text-success" id="total_montant"><?= number_format($totaux['total_montant'] ?? 0, 0, ',', ' ') ?> FCFA</h3>
         </div>
       </div>
-    </div>
+    </div> -->
+
+ <div class="col-md-6">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-success mr-2">
+               <i class="bi bi-cash-coin"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Montant Ventes</span></h6>
+           </div>
+           <h3 class="text-success" id="total_montant"><?= number_format($totaux['total_montant'] ?? 0, 0, ',', ' ') ?> FCFA</h3>
+         </div>
+       </div>
+     </div>
+
+
   </div>
 
   <!-- floating action -->
@@ -49,9 +84,9 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
   <!-- title and toolbar -->
   <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
 
-    <div class="form-group">
+    <!-- <div class="form-group">
       <a href="<?= URL ?>view_vente_by_article" id="clearFilterBtn" class="btn btn-info"><i class="fa fa-eye"></i> Voir par article</a>
-    </div>
+    </div> -->
   </div>
 </header>
 
@@ -87,6 +122,8 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
       if (!empty($vente)) {
         $i = 0;
         foreach ($vente as $row) {
+          $montant_versement_total = Soutra::getSumMontantVersementByCode($row['code_vente']);
+          $reste_a_payer = $row['total'] - $montant_versement_total;
           $i++;
           $payment = '<span class="payment-method">' . $row['pay_mode'] . '</span>';
           $output .= '
@@ -118,9 +155,9 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
 
           // btn Encaisser la facture
           if ($row['statut_vente'] == STATUT_COMMANDE[1]):
-            $output .= '<button type="button" 
-            id="btn_encaisser_vente"
-            data-code="' . $row['code_vente'] . '"
+            $output .= '<button type="button"
+             data-code="'. $row['code_vente'] .'"
+            data-reste_a_payer="'. $reste_a_payer .'" 
             data-toggle="tooltip" title="" class="btn btn-link btn-success btn-sm btn_encaisser_vente" data-original-title="Encaisser la facture de la commande"> <i class="fbi bi-cash text-icon-success"></i> </button>';
           endif;
 

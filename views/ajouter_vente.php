@@ -1,3 +1,13 @@
+ <?php 
+if(notAdmin()){
+  return;
+}
+
+$info = Soutra::getInfoBoutique();
+$taxe = $info['taxe'];
+// var_dump($info);
+ ?>
+ 
  <header class="page-title-bar">
    <h1 class="page-title mb-3"> Espace vente</h1>
    <!-- <p class="text-muted"> Ajouter une vente</p> -->
@@ -155,13 +165,15 @@
            <div class="line">
              <span>Total HT:</span>
              <h5> <strong><span class="mtt" id="total_ht">0</span> FCFA</strong></h5>
+             <input type="hidden" name="mtt" class="mtt">
+
            </div>
 
            <div class="line align-items-center">
              <span>Montant de la remise :</span>
 
              <div class="input-group remise-input">
-               <input type="number" class="form-control" value="0">
+               <input type="number" class="form-control" id="montant_remise" value="0">
                <span class="input-group-text"> FCFA</span>
              </div>
            </div>
@@ -173,7 +185,9 @@
 
            <div class="line total-ttc">
              <span>Total TTC:</span>
-             <h3 class="text-primary"><span id="total_ttc">0</span> FCFA</h3>
+             <input type="hidden" id="taxe" value="<?= $taxe ?>">
+             <h3 class="text-primary montant_total_ttc"><span id="total_ttc"></span> FCFA</h3>
+             <input type="hidden" id="total_ttc_hidden">
            </div>
 
          </div>
@@ -183,7 +197,7 @@
 
            <div class="mb-3">
              <label class="form-label">Mode de paiement :</label>
-             <select class="form-control">
+             <select name="pay_mode" class="form-control pay_mode">
                <option value=""></option>
                <?= payement() ?>
 
@@ -191,9 +205,9 @@
            </div>
 
            <div class="mb-3">
-             <label class="form-label">Encaissé :</label>
+             <label class="form-label">Encaissé :</label>
              <div class="input-group">
-               <input type="number" class="form-control" value="0">
+               <input type="number" class="form-control "  id="montant_encaisse" value="0">
                <span class="input-group-text"> FCFA</span>
              </div>
            </div>
@@ -201,7 +215,7 @@
            <div class="mb-3">
              <label class="form-label">Reliquat :</label>
              <div class="input-group">
-               <input type="number" class="form-control" value="0">
+               <input type="number" class="form-control" id="reliquat" value="0">
                <span class="input-group-text"> FCFA</span>
              </div>
            </div>
