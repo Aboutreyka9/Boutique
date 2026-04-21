@@ -89,3 +89,67 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.2); }
 }
+
+.badge-active {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 12px;
+    height: 12px;
+    background-color: #28a745;
+    border-radius: 50%;
+    box-shadow: 0 0 0 rgba(40, 167, 69, 0.7);
+    animation: pulse 1.2s infinite;
+}
+
+/* effet clignotement doux */
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(40, 167, 69, 0);
+    }
+    100% {
+        transform: scale(0.9);
+    }
+}
+.reliquat-ok {
+    color: #00a28a !important;
+    background-color: #d4edda !important;
+    border: 1px solid #00a28a !important;
+}
+
+.reliquat-warning {
+    color: #fe5548 !important;
+    background-color: #fff3cd !important;
+    border: 1px solid #fe5548 !important;
+}
+
+.reliquat-danger {
+    color: #b90e0e !important;
+    background-color: #f8d7da !important;
+    border: 1px solid #b90e0e !important;
+}
+
+#reliquat {
+    transition: all 0.25s ease;
+    font-weight: 600;
+}
+
+.reliquat-ok:focus {
+    border-color: #00a28a !important;
+    box-shadow: 0 0 0 0.2rem rgba(0,162,138,0.25) !important;
+}
+
+.reliquat-warning:focus {
+    border-color: #fe5548 !important;
+    box-shadow: 0 0 0 0.2rem rgba(254,85,72,0.25) !important;
+}
+
+.reliquat-danger:focus {
+    border-color: #b90e0e !important;
+    box-shadow: 0 0 0 0.2rem rgba(185,14,14,0.25) !important;
+}

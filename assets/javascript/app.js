@@ -1,4 +1,5 @@
 $(function () {
+
     const ROOT_HOST = window.location.origin + "/boutique/";
     const ROOT_SIMPLE = window.location.origin + "/";
     var STARDATE = "";
@@ -6,8 +7,8 @@ $(function () {
     let charts = {}; // stocker les graphiques par ID
     let articleSelected = [];
     let articlesMap = {};
-
-
+    let montant_global = 0;
+    let taxe_global = 0;
 
     let date_start_picker = moment().startOf('month'); // 1er du mois
     let date_end_picker = moment(); // aujourd’hui
@@ -107,7 +108,25 @@ $(function () {
 
     function changerMontant(val = 0) {
         $('.mtt').text(money(val));
+        $('.mtt').val((val));
+
+        $("#total_ttc").text(money(val));
+
+    $(".montant_total_ttc").text(calculMontantTaxe(val));
+    $("#total_ttc_hidden").val(calculMontantTaxe(val));
+
     }
+
+    function calculMontantTaxe(total_ht = 0) {
+ let taxe = parseFloat($("#taxe").val()) || 0;
+
+    let montant_taxe = total_ht * (taxe / 100);
+
+    let total_ttc = total_ht + montant_taxe;
+    
+return total_ttc;
+    
+}
 
     // RESET FORM
     function resetForm() {
@@ -385,7 +404,7 @@ $(function () {
         });
     }
 
-    // btn_suprimer_client();
+    btn_suprimer_client();
 
     function btn_suprimer_client() {
         $('body').delegate('.btn_remove_client', 'click', function (e) {
@@ -621,9 +640,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // 
-                    $(".menu-modal").html(data);
-                    $("#categorie-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#categorie-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération de la catégorie", "error");
+                    }
                 }
             });
         });
@@ -734,9 +756,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // // 
-                    $(".menu-modal").html(data);
-                    $("#famille-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#famille-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération du formulaire", "error");
+                    }
                 }
             });
         });
@@ -847,9 +872,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // 
-                    $(".menu-modal").html(data);
-                    $("#mark-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#mark-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération de la marque", "error");
+                    }
                 }
             });
         });
@@ -955,9 +983,12 @@ $(function () {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // // 
-                    $(".menu-modal").html(data);
-                    $("#unite-modal").modal('show');
+                    if (data.success) {
+                        $(".menu-modal").html(data.html);
+                        $("#unite-modal").modal('show');
+                    }else{
+                        $.notify("Erreur lors de la récupération du formulaire", "error");
+                    }
                 }
             });
         });
@@ -1197,7 +1228,6 @@ $(function () {
     }
 
     btn_suprimer_article();
-
     function btn_suprimer_article() {
         $('body').delegate('.btn_remove_article', 'click', function (e) {
             e.preventDefault();
@@ -1452,6 +1482,7 @@ $(function () {
         });
     }
 
+ 
     
     // SEXION VENTE
     $('#select_code_achat').select2(); // Select2 pour la recherche de code d'achat
@@ -1607,30 +1638,21 @@ $(function () {
 
         });
     }
-
-     function loadTotalRow() {
-
-            var currow = $(".table_commande").closest('tr');
-            total = 0
-            var pu = currow.find('.pu').text();
-            var qte = currow.find('.qte').text();
-
-            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
-            // // 
-            currow.find('.total').text(total);
-
-            totalAll();
-
-    }
-
-
+// rien
     function totalAll() {
         var somme = 0;
         $('.table_total tbody tr').each(function () {
             var val = $(this).find('.total').text();
             somme += Number(val);
         });
+        // montant_global = somme;
         changerMontant(somme);
+        $("#total_ttc").text(somme);
+        console.log($("#total_ttc").text(somme));
+        
+        let taxe = $("#total_ttc").data("taxe");
+        // console.log(taxe);
+        
     }
 
     function pushData(selector) {
@@ -1643,7 +1665,7 @@ $(function () {
     }
 
 
-    // espace clean 1
+ 
 
     btn_ajouter_panier_vente();
 
@@ -1673,6 +1695,125 @@ $(function () {
         });
     }
 
+    btn_modifier_panier_vente();
+
+    function btn_modifier_panier_vente() {
+        $('body').delegate('#btn_modifier_panier_vente', 'submit', function (e) {
+            e.preventDefault();
+            
+            var vente = $(this).serialize();
+            modifier_panier_vente(vente);
+        });
+    }
+
+
+    function modifier_panier_vente(vente) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: vente,
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);  
+                // return;
+                AddNewRowTableVente(data);
+                $.notify("Produit ajouté dans la liste",'success')
+            }
+        });
+    }
+
+       btn_modifier_vente();
+
+    function btn_modifier_vente() {
+        $('body').on('click','#btn_modifier_vente', function (e) {
+            e.preventDefault();
+
+            var client = $('#client').val();
+            if (!client) {
+                $.notify("Veuillez choisir un client");
+                return;
+            }
+
+            var data = {
+                id: articleSelected,
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code_vente: $(this).data('code'),
+                client: client,
+                btn_modifier_vente: 1
+            };
+            console.log(data);
+            
+            modifier_vente(data);
+
+        });
+    }
+
+    function modifier_vente(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data.code == 200){
+                    articleSelected = null;
+                    $.notify(data.message, 'success');
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        });
+    }
+
+    btn_suprimer_modifier_panier_vente();
+    function btn_suprimer_modifier_panier_vente() {
+        $('body').on('click','.btn_remove_data_modifier_panier_vente', function (e) {
+            e.preventDefault();
+            var element = $(this);
+            var id_article = $(this).data('id');
+            var id_vente = $(this).data('vente');
+
+            // console.log(id_vente,id_article);
+            // return:
+            
+
+          swal({
+                title: "Etes vous sure",
+                text: "de vouloir supprimer cet element ?",
+                icon: "warning",
+                buttons: ['Non', 'Oui'],
+                dangerMode: true,
+            }).then((a) => {
+                if (a) {
+
+                    $.ajax({
+                        url: "../partials/rooter.php",
+                        method: "POST",
+                        data: {
+                            id_vente: id_vente,
+                            id_article: id_article,
+                            remove_modifier_panier_vente: 1
+                        },
+                        dataType: 'JSON',
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code = 200) {
+                                element.closest('tr').remove();
+                                articleSelected = articleSelected.filter(a => a != id_article);
+                                $.notify(data.message, "success");
+                                loadTotalRow();
+                            } else {
+                                $.notify("Erreur de suppression du produit!")
+                            }
+                        }
+                    });
+                }
+            })
+        });
+    }
+
     // SEXION ACHAT_VENTE
 
 
@@ -1696,6 +1837,7 @@ $(function () {
             $('.table_commande tbody tr').each(function () {
                 articleSelected.push($(this).data('code'));
             });
+            // taxe_global = $('#total_ttc').data('taxe');
            loadTotalRow();
         //    console.log(articleSelected);
            
@@ -1729,6 +1871,36 @@ $(function () {
             <td class="col total">0</td>
             
             <td> <button data-achat="${article.achat_id}" data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier">
+                        <i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>`;
+
+        articleSelected.push(article.ID_article);
+        });
+
+        $('.table_commande tbody').append(html);
+    }
+
+     function AddNewRowTableVente(dataArticles) {
+        let html = '';
+
+        dataArticles.forEach(article => {
+
+        if (articleSelected.includes(article.ID_article)) return;
+
+        let index = $('.table_commande tbody tr').length + 1;
+
+        html += `
+        <tr data-code="${article.ID_article}">
+            <td>${index}</td>
+            <td>${article.libelle_article}</td>
+            <td>${article.famille}</td>
+            <td>${article.mark}</td>
+            <td class="label-price col pu" contenteditable="true">${article.prix_vente}</td>
+            <td class="label-price col qte" contenteditable="true">0</td>
+            <td class="col total">0</td>
+            
+            <td> <button data-vente="${article.vente_id}" data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier_vente">
                         <i class="fa fa-trash"></i> </button>
             </td>
         </tr>`;
@@ -1786,6 +1958,21 @@ $(function () {
         });
     }
 
+       function loadTotalRow() {
+
+            var currow = $(".table_commande").closest('tr');
+            total = 0
+            var pu = currow.find('.pu').text();
+            var qte = currow.find('.qte').text();
+
+            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
+            // // 
+            currow.find('.total').text(total);
+
+            totalAll();
+
+    }
+
     totalRow()
 
     function totalRow() {
@@ -1839,6 +2026,8 @@ $(function () {
             somme += Number(val);
         });
         changerMontant(somme);
+        console.log(taxe_global);
+        
     }
 
     function pushData(selector) {
@@ -2009,7 +2198,7 @@ $(function () {
     function btn_suprimer_achat() {
         $('body').delegate('.btn_remove_achat', 'click', function (e) {
             e.preventDefault();
-            alert("uuu");
+            // alert("uuu");
             return
             var id = $(this).data('id');
             swal({
@@ -2076,7 +2265,7 @@ $(function () {
 
           swal({
                 title: "Etes vous sure",
-                text: "de vouloir supprimer cet element555 ?",
+                text: "de vouloir supprimer cet element ?",
                 icon: "warning",
                 buttons: ['Non', 'Oui'],
                 dangerMode: true,
@@ -2318,6 +2507,8 @@ $(function () {
         $('body').delegate('#btn_ajouter_vente', 'click', function (e) {
             e.preventDefault();
             var client = $('#client').val();
+            var montant_encaisse = $('#montant_encaisse').val();
+            var pay_mode = $('.pay_mode').val();
             if (!client) {
                 notify("Veuillez choisir un client", "", "alert", "warning");
                 return;
@@ -2326,12 +2517,12 @@ $(function () {
             var qte = pushData("qte");
             var pu = pushData("pu");
 
-            ajouter_vente(id, qte, pu, client);
+            ajouter_vente(id, qte, pu, client, montant_encaisse,pay_mode);
 
         });
     }
 
-    function ajouter_vente(id, qte, pu, client) {
+    function ajouter_vente(id, qte, pu, client, montant_encaisse,pay_mode) {
         $.ajax({
             url: "../partials/rooter.php",
             method: "POST",
@@ -2340,16 +2531,19 @@ $(function () {
                 qte: qte,
                 pu: pu,
                 client: client,
+                montant_encaisse: montant_encaisse,
+                pay_mode: pay_mode,
                 btn_ajouter_vente: 1
             },
+            dataType: "json",
             success: function (data) {
-                console.log(data);
-                var verif = data.split("&");
-                if (verif[0] == 1) {
+                
+                var verif = data;
+                if (verif.status) {
 
-                      swal({
+                    swal({
                         title: "Succès",
-                        text: verif[1],
+                        text: verif.message,
                         icon: "success",
                         button: true,
 
@@ -2360,7 +2554,7 @@ $(function () {
                     );
 
                 } else {
-                    notify(verif[1], "", "alert", "warning");
+                    notify(verif.message, "", "alert", "warning");
 
 
                 }
@@ -2723,12 +2917,28 @@ $(function () {
                 success: function (data) {
                     console.log(data);
                     // return
-                    $("#nombre_vente").text(data.ventes.nombre_vente);
-                    $("#montant_vente").text(money(data.ventes.montant_vente));
-                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_reapprovisionnement);
-                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_reapprovisionnement));
+                    $("#achat_attente").text(data.totalAchatAttente.total);
+                    $("#vente_attente").text(data.totalVenteAttente.total);
+                    $("#nombre_vente").text(data.ventes.nombre_ventes);
+                    $("#montant_vente").text(money(data.ventes.montant_total));
+                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_achats);
+                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_total));
+
                     $("#nombre_depense").text(data.depenses.nombre_depense);
                     $("#montant_depense").text(money(data.depenses.montant_depense));
+                    
+                    $("#nombre_dette_client").text(money(data.detteClient.nombre_total));
+                    $("#montant_dette_client").text(money(data.detteClient.montant_total));
+                    
+                    $("#nombre_dette_fournisseur").text(money(data.detteFournisseur.nombre_total));
+                    $("#montant_dette_fournisseur").text(money(data.detteFournisseur.montant_total));
+                    
+                    
+                    $("#nombre_stock_dispo").text(money(data.stockDispo.total_quantite));
+                    $("#montant_stock_dispo").text(money(data.stockDispo.total_montant));
+
+                    $("#nombre_stock_alert").text(money(data.stockAlert));
+                    // $("#montant_stock_alert").text(money(data.stockAlert.montant_stock_alert));
 
                 }
             });
@@ -4544,33 +4754,31 @@ function updateELementDepense(btn_action,code) {
             }
     });
 }
-form_encaisser_vente();
+
+    form_encaisser_vente();
+
     function form_encaisser_vente() {
-
-        $('#form_encaisser_vente').on('submit', function (e) {
+        $('body').on('submit', '#form_encaisser_vente', function (e) {
             e.preventDefault();
-
-            var codeVente = $(this).find('#code_vente').val();
-            var montantVersement = $(this).find('#montant_versement').val();
+            
+            let data = $(this).serialize();
             
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
-                data: {
-                    code_vente: codeVente,
-                    montant_versement: montantVersement,
-                    btn_encaisser_vente: 1
-                },
+                data: data,
                 dataType: 'JSON',
                 success: function (data) {
                     // console.log(data);return;
                     
                     if(data.status) {
+
                         swal("Notification", data.message, "success");
+                        $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
-                    $("#encaisser-modal").modal('hide');
+                    
                 }
             });
         });
@@ -4578,59 +4786,90 @@ form_encaisser_vente();
 form_encaisser_achat();
     function form_encaisser_achat() {
 
-        $('#form_encaisser_achat').on('submit', function (e) {
+        $('body').on('submit', '#form_encaisser_achat', function (e) {
             e.preventDefault();
 
-            var codeAchat = $(this).find('#code_achat').val();
-            var montantVersement = $(this).find('#montant_versement').val();
+            let data = $(this).serialize();
             
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
-                data: {
-                    code_achat: codeAchat,
-                    montant_versement: montantVersement,
-                    btn_encaisser_achat: 1
-                },
+                data: data,
                 dataType: 'JSON',
                 success: function (data) {
                     // console.log(data);return;
                     
-                    if(data.status) {
+                     if(data.status) {
+
                         swal("Notification", data.message, "success");
+                        $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
-                    $("#encaisser-modal").modal('hide');
                 }
             });
         });
     }
-    modal_encaisser("#btn_encaisser_achat","#code_achat")
-modal_encaisser("#btn_encaisser_vente", "#code_vente")
+    // modal_encaisser("#btn_encaisser_achat","#code_achat")
+// modal_encaisser("#btn_encaisser_vente", "#code_vente")
     
-function modal_encaisser(selector,code_select) {    
+// function modal_encaisser(selector,code_select) {    
+//     $(document).on('click', selector, function () {
+//         let code = $(this).data('code');
+       
+//         // injecter dans le champ hidden
+//         $(code_select).val(code);
+
+//         console.log(code); // pour vérifier
+//     });
+// }
+
+modalEncaissementVente(".btn_encaisser_vente")
+
+function modalEncaissementVente(selector) {    
     $(document).on('click', selector, function () {
         let code = $(this).data('code');
-
-        // injecter dans le champ hidden
-        $(code_select).val(code);
-
-        console.log(code); // pour vérifier
-    });
-}
-
-modalEncaissement(".btn_encaisser_vente")
-
-function modalEncaissement(selector) {    
-    $(document).on('click', selector, function () {
-        let code = $(this).data('code');
+        let reste_a_payer = $(this).data('reste_a_payer');
+        if(reste_a_payer <= 0) {
+            swal("Notification", "Le reste à payer est déjà à zéro", "error");
+            return;
+        }
          $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: {
                     code: code,
+                    reste_a_payer:reste_a_payer,
                     frm_encaissement: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+                    
+                    $(".menu-modal-encaissement").html(data);
+                    $("#encaisser-modal").modal('show');
+                }
+            });
+    });
+}
+
+modalEncaissementAchat(".btn_encaisser_achat")
+
+function modalEncaissementAchat(selector) {    
+    $(document).on('click', selector, function () {
+        let code = $(this).data('code');
+        let reste_a_payer = $(this).data('reste_a_payer');
+        if(reste_a_payer <= 0) {
+            swal("Notification", "Le reste à payer est déjà à zéro", "error");
+            return;
+        }
+         $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    reste_a_payer:reste_a_payer,
+                    frm_encaissement_achat: 1
                 },
                 dataType: 'JSON',
                 success: function (data) {
@@ -4665,3 +4904,123 @@ function modalEncaissement(selector) {
             });
         });
     }
+    calculReste('#montant_total_vente', '#montant_recu_vente', '#reste_a_payer_vente');
+    calculReste('#montant_total_achat', '#montant_recu_achat', '#reste_a_payer_achat');
+function calculReste(montantTotalSelector, montantRecuSelector, resteSelector) {
+
+    $('body').on('input', montantRecuSelector, function() {
+
+        let total = parseFloat($(montantTotalSelector).val()) || 0;
+        let recu = parseFloat($(this).val()) || 0;
+
+        let reste = total - recu;
+
+        // éviter négatif
+        if (reste < 0) {
+            reste = 0;
+        }
+
+        $(resteSelector).val(reste);
+    });
+}
+
+calculAfterRemise();
+function calculAfterRemise() {
+
+    $('body').on('input', '#montant_remise', function() {
+
+
+        let total_ht = parseFloat($(".mtt").val()) || 0;
+        let remise = parseFloat($("#montant_remise").val()) || 0;
+// console.log(total_ht , remise);return
+
+        // sécurité
+        if (remise > total_ht) {
+            remise = total_ht;
+            $(".remise-input input").val(total_ht);
+        }
+
+
+        let reste = total_ht - remise;
+
+        // éviter négatif
+        if (reste < 0) {
+            reste = 0;
+        }
+
+        $("#total_apres_remise").text(reste);
+        $(".montant_total_ttc").text(reste);
+        $("#total_ttc_hidden").val(reste);
+
+    });
+}
+
+calculAfterEncaisse();
+function calculAfterEncaisse() {
+
+    $('body').on('input', '#montant_encaisse', function() {
+
+
+        let total_ht = parseFloat($("#total_ttc_hidden").val()) || 0;
+        let encaisse = parseFloat($("#montant_encaisse").val()) || 0;
+console.log(total_ht, encaisse);
+
+        let reliquat = total_ht - encaisse;
+
+        $("#reliquat").val(reliquat);
+
+
+
+
+$("#reliquat").val(reliquat);
+
+// reset classes
+$("#reliquat").removeClass("reliquat-ok reliquat-warning reliquat-danger");
+
+// conditions
+if (reliquat > 0) {
+    $("#reliquat").addClass("reliquat-warning"); // reste à payer
+}
+else if (reliquat < 0) {
+    $("#reliquat").addClass("reliquat-danger"); // trop payé
+}
+else {
+    $("#reliquat").addClass("reliquat-ok"); // exact
+}
+
+
+    });
+}
+activeEntrepot();
+function activeEntrepot() {  
+$(document).on("click", ".entrepot-item", function(e) {
+    e.preventDefault(); // bloque le reload
+
+    let id = $(this).data("id");
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: { set_entrepot: 1, id_entrepot: id },
+                dataType: 'JSON',
+                success: function (data) {
+                    
+                    if(data.success) {
+                        $.notify(data.message, "success");
+                    }else{
+                        $.notify(data.message, "error");
+                    }
+                }
+            });
+});
+}
+
+// $(document).on("click", ".entrepot-item", function() {
+
+//     let id = $(this).data("id");
+
+//     // enlever ancien badge
+//     $(".badge-active").remove();
+
+//     // ajouter sur le nouveau
+//     $(this).append('<span class="badge-active"></span>');
+// });

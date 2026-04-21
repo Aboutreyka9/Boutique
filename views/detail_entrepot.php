@@ -6,7 +6,7 @@
   // TODO: Get command data from database
   $entrepot = Soutra::getSingleEntrepotByCode($code);
   // var_dump($entrepot);
-  // $montant_versement_total = Soutra::getSumMontantVersementByVente(1, $code);
+  // $montant_versement_total = Soutra::getSumMontantVersementByCode(1, $code);
     // $versements = Soutra::getAllTableByClauses('versement', 'transaction_code', $code, 'etat_versement', 1);
 }else{
   // error 404

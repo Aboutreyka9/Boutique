@@ -1,6 +1,6 @@
 <?php 
 // session_destroy();
-var_dump($_SESSION);
+// var_dump($_SESSION);
 
 if (strtolower($_SESSION['role']) == ADMIN):
 
@@ -15,6 +15,9 @@ if (strtolower($_SESSION['role']) == ADMIN):
   $entrepot = $_SESSION['entrepot'] ?? null;
   $reapprovisionnements = Soutra::getTotalReapprovisionnementDashboard($start, $end, $entrepot);
   $ventes = Soutra::getTotalVenteDashboard($start, $end, $entrepot);
+
+  // $getTotauxViewStockProduit = Soutra::getTotauxViewStockProduit();
+  // var_dump($getTotauxViewStockProduit);
 
   // var_dump($ventes);
 ?>
@@ -66,54 +69,42 @@ if (strtolower($_SESSION['role']) == ADMIN):
     <!-- STATS -->
     <div class="row g-3 mb-1">
 
-      <div class="col-md-4">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-success mr-2">
-                <i class="bi bi-x-wallet2"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">ENCAISSÉ </span></h6>
-            </div>
-            <h5><span id="monant_encaisse"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-info mr-2">
-                <i class="bi bi-credit-card"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">RÈGLEMENTS</span> </h6>
-            </div>
-            <h5><span id="montant_reglement"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-purple mr-2">
-                <i class="bi bi-cart"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
-            </div>
-            <h5><span id="montant_vente"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
 
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="icon bg-danger mr-2">
-                <i class="bi bi-cash"></i>
+                <i class="bi bi-credit-card"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">DETTE FOURNISSEURS</span> (<span id="nombre_dette_fournisseur"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_dette_fournisseur"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-danger mr-2">
+                <i class="bi bi-wallet"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">DETTE CLIENTS</span> (<span id="nombre_dette_client"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_dette_client"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+            <div class="col-md-4">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-danger mr-2">
+                <i class="bi bi-cash-coin"></i>
               </div>
               <h6><span class="text-muted text-uppercase">DÉPENSES</span> (<span id="nombre_depense"> 0 </span>)</h6>
             </div>
@@ -122,11 +113,14 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
+
+
+
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
-              <div class="icon bg-warning mr-2">
+              <div class="icon bg-success mr-2">
                 <i class="bi bi-arrow-repeat"></i>
               </div>
               <h6><span class="text-muted text-uppercase">RÉAPPRO </span> (<span id="nombre_reapprovisionnement"> 0 </span>)</h6>
@@ -136,25 +130,27 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
+      
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
-              <div class="icon bg-orange mr-2">
-                <i class="bi bi-tag"></i>
+              <div class="icon bg-success mr-2">
+                <i class="bi bi-cart-plus"></i>
               </div>
-              <h6><span class="text-muted text-uppercase">REMISES</span> (<span id="nombre_remise"> 0 </span>)</h6>
+              <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_remise"> 0 </span> FCFA</h5>
+            <h5><span id="montant_vente"> 0 </span> FCFA</h5>
           </div>
         </div>
       </div>
 
+      
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
-              <div class="icon bg-primary mr-2">
+              <div class="icon bg-success mr-2">
                 <i class="bi bi-currency-exchange"></i>
               </div>
               <h6><span class="text-muted text-uppercase">BÉNÉFICES</span> (<span id="nombre_benefice"> 0 </span>)</h6>
@@ -163,6 +159,63 @@ if (strtolower($_SESSION['role']) == ADMIN):
           </div>
         </div>
       </div>
+      
+      <div class="col-md-6">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-orange mr-2">
+                  <i class="bi bi-alarm"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">ACHAT EN ATTENTE</span> </h6>
+            </div>
+            <h5><span id="achat_attente"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-orange mr-2">
+                <i class="bi bi-alarm"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">VENTE EN ATTENTE</span> </h6>
+            </div>
+            <h5><span id="vente_attente"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-info mr-2">
+                  <i class="bi bi-bell"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">STOCK DISPO</span> (<span id="nombre_stock_dispo"> 0 </span>)</h6>
+            </div>
+            <h5><span id="montant_stock_dispo"> 0 </span> FCFA</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card custom-card-detail">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="icon bg-info mr-2">
+                <i class="bi bi-envelope-exclamation-fill"></i>
+              </div>
+              <h6><span class="text-muted text-uppercase">STOCK ALERT</span></h6>
+            </div>
+            <h5><span id="nombre_stock_alert"> 0 </span> </h5>
+          </div>
+        </div>
+      </div>
+
 
     </div>
 
@@ -286,7 +339,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-info"><i class="bi bi-cart-dash-fill"></i></div>
         <h6>PRODUITS </h6>
-        <h5><?= Soutra::getCompter('article', 'ID_article', 'etat_article', 1); ?> </h5>
+        <h5><?= Soutra::getCompterArticleEntrepot($_SESSION['id_entrepot']); ?> </h5>
       </div>
     </div>
 

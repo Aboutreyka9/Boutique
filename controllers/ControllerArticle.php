@@ -257,10 +257,10 @@ class ControllerArticle extends Connexion
                     $output .= '
                 <tr class="row' . $row['ID_article'] . '">
                    <td>' . $i . '</td>
-                   <td>' . $row['libelle_article'] . '</td>
-                  <td>' . $row['famille'] . '</td>
-                  <td>' . $row['mark'] . '</td>
-                  <td>' . $row['unite'] . '</td>
+                   <td>' . $row['libelle_article'] ?? '' . '</td>
+                  <td>' . $row['famille'] ?? '' . '</td>
+                  <td>' . $row['mark'] ?? '' . '</td>
+                  <td>' . $row['unite'] ?? '' . '</td>
                    ';
 
                     $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 

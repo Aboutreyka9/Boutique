@@ -25,81 +25,101 @@ $vente_mois = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adapt
 $benefice = $vente_mois['total_montant'] - ($depenses_mois['total'] + $achat_mois['total']);
 $type = $benefice > 0 ? 'text-success' : 'text-danger';
 
-
 ?>
-
  <header class="page-title-bar">
-     <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2" >
-         <div class="title">
-             <h1 class="page-title">Espace Dépenses</h1>
-         </div>
-         <div class="activity">
-             <b id="activityDateRange">Activité du <?=$dateD.' au '.$dateF; ?> </b>
-         </div>
-         <div class="input-group w-100 w-md-auto filter-box">
-             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-             <input type="text" id="filterInventaire" class="form-control" placeholder="Sélectionner la période">
-             <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
+    
+    <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2" >
+        <div class="title">
+            <h1 class="page-title">Espace Inventaire</h1>
+        </div>
+        <div class="activity">
+            <b id="activityDateRange">Activité du <?=$dateD.' au '.$dateF; ?> </b>
+        </div>
+        <div class="input-group w-100 w-md-auto filter-box">
+            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+            <input type="text" id="filterInventaire" class="form-control" placeholder="Sélectionner la période">
+            <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
 
-         </div>
-     </div>
-     <!-- Résumé des ventes -->
-     <div class="row mt-5">
-         <div class="col-md-6 col-lg-6">
-             <div class="card text-center shadow-sm border-primary">
-                 <div class="card-body">
-                     <h6 class="text-muted">Achats total</h6>
-                     <h3 class="text-primary" id="total_achat">
-                         <?=  number_format($achat_mois['total']  ?? 0, 0, ',', ' '); ?> FCFA</h3>
-                 </div>
+        </div>
+    </div>
+   <!-- Résumé des ventes -->
+
+   <!-- STATS -->
+   <div class="row g-3 mb-1">
+
+     <div class="col-md-6">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-info mr-2">
+               <i class="bi bi-cart-plus"></i>
              </div>
+             <h6><span class="text-muted text-uppercase">Achats total</span> </h6>
+           </div>
+           <h5><span id="total_achat"><?= number_format($achat_mois['total'] ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
          </div>
-         <div class="col-md-6 col-lg-6">
-             <div class="card text-center shadow-sm border-success">
-                 <div class="card-body">
-                     <h6 class="text-muted">Dépense total</h6>
-                     <h3 class="text-primary" id="total_depense">
-                         <?= number_format($depenses_mois['total'] ?? 0, 0, ',', ' '); ?> FCFA
-                     </h3>
-                 </div>
-             </div>
-         </div>
-     </div>
-     
-      <!-- Résumé des ventes -->
-     <div class="row mt-2">
-         <div class="col-md-6 col-lg-6">
-             <div class="card text-center shadow-sm border-primary">
-                 <div class="card-body">
-                     <h6 class="text-muted">Ventes total</h6>
-                     <h3 class="text-primary" id="total_vente">
-                         <?=  number_format($vente_mois['total_montant']  ?? 0, 0, ',', ' '); ?> FCFA</h3>
-                 </div>
-             </div>
-         </div>
-         <div class="col-md-6 col-lg-6">
-             <div class="card text-center shadow-sm border-success">
-                 <div class="card-body">
-                     <h6 class="text-muted">Montant en Caisse </h6>
-                     <h3 class="<?= $type ?>" id="total_caisse">
-                         <?= number_format($benefice ?? 0, 0, ',', ' '); ?> FCFA
-                     </h3>
-                 </div>
-             </div>
-         </div>
+       </div>
      </div>
 
-     <!-- floating action -->
-     <button type="button" data-toggle="modal" data-target="#depense-modal" class="btn btn-success btn-floated" title="Ajouter depense" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
-
-
-     <!-- title and toolbar -->
-     <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-
-
+     <div class="col-md-6">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-success mr-2">
+               <i class="bi bi-check2-circle"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Dépense total</span> </h6>
+           </div>
+           <h5><span id="total_depense"><?= number_format($depenses_mois['total'] ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
      </div>
+
+     <div class="col-md-6">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-success mr-2">
+               <i class="bi bi-cash-stack"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Ventes total</span> </h6>
+           </div>
+           <h5><span class="tester" id="total_vente"><?= number_format($vente_mois['total_montant'] ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
+     </div>
+
+     <div class="col-md-6">
+       <div class="card custom-card-detail">
+         <div class="card-body">
+           <div class="d-flex align-items-center">
+             <div class="icon bg-success mr-2">
+               <i class="bi bi-cash-stack"></i>
+             </div>
+             <h6><span class="text-muted text-uppercase">Bénéfice total</span> </h6>
+           </div>
+           <h5><span class="tester <?= $type ?>" id="total_benefice"><?= number_format($benefice ?? 0, 0, ',', ' ') ?>
+             </span> FCFA</h5>
+         </div>
+       </div>
+     </div>
+
+   </div>
+
+   <!-- floating action -->
+   <a href="<?= URL ?>ajouter_achat" class="btn btn-success btn-floated" title="Ajouter vente">
+     <span style="line-height: 45px" class="fa fa-plus"></span>
+   </a>
+
+   <!-- title and toolbar -->
+   <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+
+   </div>
  </header>
- 
+
  
  <div class="table-responsive">
 <!-- .table -->
@@ -109,11 +129,14 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
     <tr>
       <th> # </th>
       <th class="text-right"> Article </th>
-      <th class="text-right"> Depenses (FCFA)</th>
-      <th class="text-right"> Ventes (FCFA)</th>
+      <th class="text-right">Montant </th>
       <th class="text-right">Qte Reste </th>
-      <th class="text-right"> Mtt Reste (FCFA)</th>
-      <th class="text-right"> Gain (FCFA) </th>
+      <!-- <th class="text-right"> Depenses (FCFA)</th> -->
+      <!-- <th class="text-right"> Ventes (FCFA)</th> -->
+      <!-- <th class="text-right">Qte Initiale </th> -->
+      <!-- <th class="text-right">Qte Vendue </th> -->
+      <!-- <th class="text-right"> Mtt Reste (FCFA)</th> -->
+      <!-- <th class="text-right"> Gain (FCFA) </th> -->
     </tr>
   </thead><!-- /thead -->
   <!-- tbody -->
@@ -122,22 +145,28 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
 
   <?php
   $i = 0;
-  $comptabilite = Soutra::getComptabiliteBilant();
-      foreach ($comptabilite as $key => $value) {
+  $stock = Soutra::getAllByElement('view_stock_produit','ID_entrepot',$_SESSION['id_entrepot']);
+//   $comptabilite = [];
+  if(!empty($stock)){
+      foreach ($stock as $key => $value) {
     $i++;
     ?>
-          <tr>
-              <td><?= $i ?></td>
-              <td class="text-right"><?= $value['article'] ?></td>
-              <td class="text-right"><?= number_format($value['depenses'],0,","," ") ?></td>
-              <td class="text-right"><?= number_format($value['ventes'],0,","," ") ?></td>
-              <td class="text-right"><?= $value['qte_reste']?> </td>
-              <td class="text-right"><?=  number_format($value['mt_reste'],0,","," ")  ?> </td>
-              <td class="text-right"><?= number_format($value['gain'],0,","," ") ?> </td>
+        <tr>
+            <td><?= $i ?></td>
+            <td class="text-right"><?= $value['libelle_article'] ?? '...' ?></td>
+            <td class="text-right"><?= number_format($value['montant_total_stock'] ?? 0,0,","," ") ?> FCFA</td>
+            <td class="text-right"><?= $value['quantite_disponible'] ?? 0?> </td>
+            <!-- <td class="text-right"><?= number_format($value['depenses'] ?? 0,0,","," ") ?></td> -->
+            <!-- <td class="text-right"><?= number_format($value['ventes'] ?? 0,0,","," ") ?></td> -->
+            <!-- <td class="text-right"><?= $value['quantite_initiale'] ?? 0?> </td> -->
+            <!-- <td class="text-right"><?= $value['quantite_vendue'] ?? 0?> </td> -->
+            <!-- <td class="text-right"><?=  number_format($value['mt_reste'] ?? 0,0,","," ")  ?> </td> -->
+            <!-- <td class="text-right"><?= number_format($value['gain'] ?? 0,0,","," ") ?> </td> -->
 
-          </tr>
+        </tr>
     <?php
 }
+  }
 ?>
   </tbody><!-- /tbody -->
 </table><!-- /.table -->

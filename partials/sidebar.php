@@ -155,14 +155,15 @@
             </li> -->
             <!-- /.menu-item -->
             <!-- .menu-item -->
-            <li class="menu-item has-child <?= isActive('audit'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon  oi oi-pencil"></span> <span class="menu-text">Audit stock</span></a> <!-- child menu -->
+            <!-- <li class="menu-item has-child <?= isActive('audit'); ?>">
+              <a href="#" class="menu-link"><span class="menu-icon  oi oi-pencil"></span> <span class="menu-text">Audit stock</span></a>
               <ul class="menu">
                 <li class="menu-item  <?= isActive('audit'); ?>">
                   <a href="<?= URL; ?>audit" class="menu-link">Voir</a>
                 </li>
-              </ul><!-- /child menu -->
-            </li><!-- /.menu-item -->
+              </ul>
+            </li> -->
+            <!-- /.menu-item -->
             <div class="dropdown-divider"></div>
 
             <!--comptabilite supprimé-->

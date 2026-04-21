@@ -63,10 +63,12 @@
                 $output .= '<td style="display: flex; flex-direction: row; align-items: center; gap: 10px;"> 
             <button data-id="' . $row['ID_article'] . '" title="Modifier article" class="btn btn-primary btn-sm btn_update_article">
             <i class="fa fa-edit"></i> </button>
+
             <button data-id="' . $row['ID_article'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article"  data-action="article">
             <i class="fa fa-link"></i></button>
-                <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_article">
-                <i class="fa fa-trash"></i></button>
+            
+            <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_articlek">
+            <i class="fa fa-trash"></i></button>
           </td>
              </tr>
              ';
