@@ -1,4 +1,7 @@
 
+SELECT ve.client_id,ve.code_vente, ve.entrepot_id, ve.created_at, ve.date_echeance, COALESCE(SUM(vs.montant_versement),0) FROM Versement vs JOIN vente ve ON ve.code_vente = vs.transaction_code AND ve.statut_vente IN('validé','encaissé') WHERE vs.type_versement = 'vente' AND vs.etat_versement = 1 GROUP BY ve.code_vente
+
+
 CREATE VIEW view_stock_produit AS SELECT 
     a.ID_article,
     a.libelle_article,

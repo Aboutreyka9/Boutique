@@ -3914,8 +3914,8 @@ return total_ttc;
                     getCanvasMontantByArticle: 1
                 },
                 dataType: 'JSON',
-                success: function (data) {
-                    var vente = JSON.parse(data);
+                success: function (vente) {
+                    // var vente = JSON.parse(data);
                     const total = vente.map(function (val) {
                         return val.total;
                     })
