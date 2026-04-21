@@ -593,6 +593,32 @@ class Soutra extends Connexion
         return $tab;
     }
 
+    
+    public static function getTotalReapprovisionnementValideDashboard($startDate, $endDate, $entrepot = null)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(montant_total),0) as montant_total, COUNT(vmt.ID_achat) as nombre_achats FROM vue_montant_achats vmt 
+            WHERE vmt.entrepot_id = :id AND vmt.statut_achat IN(:s1,:s2) AND DATE(vmt.created_at) BETWEEN :startDate AND :endDate
+        ";
+            $params = [
+                ':id' => $entrepot,
+                ':startDate' => $startDate,
+                ':endDate'   => $endDate,
+                ':s1' => STATUT_COMMANDE[1],
+                ':s2' => STATUT_COMMANDE[2]
+
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
     public static function getTotalReapprovisionnementDashboard($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -642,6 +668,7 @@ class Soutra extends Connexion
             die('Erreur : ' . $e->getMessage());
         }
     }
+    
     public static function getTotalVenteDashboard($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -692,6 +719,55 @@ class Soutra extends Connexion
         }
     }
 
+    public static function getTotalVenteValideDashboard($startDate, $endDate, $entrepot = null)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(montant_total),0) as montant_total, COUNT(vmt.ID_vente) as nombre_ventes FROM vue_montant_ventes vmt 
+            WHERE vmt.entrepot_id = :id AND vmt.statut_vente IN(:s1,:s2) AND DATE(vmt.created_at) BETWEEN :startDate AND :endDate
+        ";
+            $params = [
+                ':id' => $entrepot,
+                ':startDate' => $startDate,
+                ':endDate'   => $endDate,
+                ':s1' => STATUT_COMMANDE[1],
+                ':s2' => STATUT_COMMANDE[2]
+
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
+    public static function getTotalDetteClientDashboard($startDate, $endDate,$nature, $entrepot = null)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(reste_a_payer),0) as montant_total, COUNT(vep.reste_a_payer) as nombre_total FROM vue_etat_paiements vep 
+            WHERE vep.entrepot = :id AND vep.nature = :na AND vep.statut_commande = :st AND DATE(vep.date_facture) BETWEEN :startDate AND :endDate
+            ";
+            $params = [
+                'id' => $entrepot,
+                'na' => $nature,
+                'st' => STATUT_COMMANDE[1],
+                'startDate' => $startDate,
+                'endDate'   => $endDate
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
     public static function getTotalDepenseDAshboard($startDate, $endDate, $entrepot = null)
     {
         $data = [];
@@ -699,19 +775,14 @@ class Soutra extends Connexion
         $sql = 'SELECT  COALESCE(SUM(d.montant),0) montant_depense,  COALESCE(COUNT(d.ID_depense),0) nombre_depense
             FROM type_depense t
             JOIN depense d ON t.ID_type = d.type_id AND d.statut_depense = :statut_depense
-            WHERE DATE(d.date_created) BETWEEN :startDate AND :endDate ';
+            WHERE d.entrepot_id = :entrepot_id AND DATE(d.date_created) BETWEEN :startDate AND :endDate ';
 
         $params = [
             ':startDate' => $startDate,
             ':endDate'   => $endDate,
-            ':statut_depense'   => STATUT_DEPENSE[2],
+            ':statut_depense'   => STATUT_DEPENSE[1],
+            ':entrepot_id' => $entrepot,
         ];
-
-        // Ajout condition dynamique
-        if (!empty($entrepot)) {
-            $sql .= ' AND d.entrepot_id = :entrepot_id ';
-            $params[':entrepot_id'] = $entrepot;
-        }
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute($params);
@@ -1173,6 +1244,7 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data;
     }
+    
     public static function getComptabiliteBilant()
     {
         $data = [];
@@ -1183,6 +1255,21 @@ class Soutra extends Connexion
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getTotauxViewStockProduit()
+    {
+        $data = [];
+
+        $sql = "SELECT SUM(montant_total_stock) as total_montant, SUM(quantite_disponible) as total_quantite FROM view_stock_produit";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute();
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -3030,11 +3117,11 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getTotauxAchatEnAttente($etat_entree = 1)
+    public static function getTotauxAchatEnAttente($etat = 1)
     {
         $data = [];
 
-        $sql = 'SELECT SUM(en.qte) article, SUM(en.prix_achat * en.qte) total
+        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_achat * en.qte),0) total
             FROM achat ac
             JOIN entree en ON en.achat_id = ac.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
@@ -3045,7 +3132,120 @@ class Soutra extends Connexion
         $query->execute([
             'entrepot_id' => $_SESSION['id_entrepot'],
             'statut_en_attente' => STATUT_COMMANDE[0],
-            'etat_entree' => $etat_entree,
+            'etat_entree' => $etat,
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getCountStockAlert()
+    {
+
+// Compter le nombre d'articles en alerte
+$sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v 
+        JOIN article a ON v.ID_article = a.ID_article 
+        JOIN entrepot_article le ON le.article_id = a.ID_article AND le.entrepot_id = :entrepot
+        WHERE v.ID_entrepot = :entrepot AND v.quantite_disponible <= le.stock_alert AND le.stock_alert > 0";
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot' => $_SESSION['id_entrepot']
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+
+        $query->closeCursor();
+
+        return $data['nb_alert'] ?? 0;
+    }
+
+    public static function getStockAlerts()
+    {
+        $data = [];
+
+        $sql = 'SELECT 
+                v.ID_article,
+                v.libelle_article,
+                v.libelle_entrepot,
+                v.quantite_disponible,
+                le.stock_alert,
+                (le.stock_alert - v.quantite_disponible) AS quantite_a_commander
+            FROM view_stock_produit v
+            JOIN article a ON v.ID_article = a.ID_article
+            JOIN entrepot_article le ON le.article_id = a.ID_article
+            WHERE v.ID_entrepot = :entrepot AND v.quantite_disponible <= a.stock_alert
+            AND le.stock_alert > 0  -- Évite les articles sans seuil défini
+            ORDER BY (le.stock_alert - v.quantite_disponible) DESC';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot']
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $query->closeCursor();
+
+        return $data ?? [];
+    }
+
+    // public static function getStockAlerts($nb = 0)
+    // {
+    //     $data = [];
+
+    //     $sql = 'SELECT 
+    //             v.ID_article,
+    //             v.libelle_article,
+    //             v.libelle_entrepot,
+    //             v.quantite_disponible,
+    //             a.stock_alerte,
+    //             (a.stock_alerte - v.quantite_disponible) AS quantite_a_commander
+    //         FROM view_stock_produit v
+    //         JOIN article a ON v.ID_article = a.ID_article
+    //         WHERE v.quantite_disponible <= a.stock_alerte
+    //         AND a.stock_alerte > :nb  -- Évite les articles sans seuil défini
+    //         ORDER BY (a.stock_alerte - v.quantite_disponible) DESC;';
+
+    //     $query = self::getConnexion()->prepare($sql);
+    //     $query->execute([
+    //         'entrepot_id' => $_SESSION['id_entrepot'],
+    //         'nb' => $etat,
+    //     ]);
+
+    //     if ($query->rowCount() > 0) {
+    //         $data = $query->fetch();
+    //     }
+
+    //     $query->closeCursor();
+
+    //     return $data;
+    // }
+
+    public static function getTotauxVenteEnAttente($etat = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(SUM(so.qte),0) article, COALESCE(SUM(so.prix_vente * so.qte),0) total
+            FROM vente ve
+            JOIN sortie so ON so.vente_id = ve.code_vente
+            LEFT JOIN client cl ON cl.ID_client = ve.client_id
+            WHERE ve.entrepot_id = :entrepot_id AND ve.statut_vente = :statut_en_attente
+            AND so.etat_sortie = :etat_sortie ';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_en_attente' => STATUT_COMMANDE[0],
+            'etat_sortie' => $etat,
         ]);
 
         if ($query->rowCount() > 0) {
@@ -3363,7 +3563,7 @@ class Soutra extends Connexion
     public static function getAllEntrepot()
     {
         $data = [];
-        $sql = "SELECT en.*, COALESCE(CONCAT(emp.nom_employe, ' ', emp.prenom_employe), 'Aucun') AS responsable FROM entrepot en
+        $sql = "SELECT en.*, COALESCE(CONCAT(emp.nom_employe, ' ', emp.prenom_employe), '...') AS responsable FROM entrepot en
         LEFT JOIN service se ON se.entrepot_id = en.ID_entrepot AND se.responsable = 1
         LEFT JOIN employe emp ON emp.ID_employe = se.employe_id
         GROUP BY en.ID_entrepot

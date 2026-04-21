@@ -2917,12 +2917,28 @@ return total_ttc;
                 success: function (data) {
                     console.log(data);
                     // return
-                    $("#nombre_vente").text(data.ventes.nombre_vente);
-                    $("#montant_vente").text(money(data.ventes.montant_vente));
-                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_reapprovisionnement);
-                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_reapprovisionnement));
+                    $("#achat_attente").text(data.totalAchatAttente.total);
+                    $("#vente_attente").text(data.totalVenteAttente.total);
+                    $("#nombre_vente").text(data.ventes.nombre_ventes);
+                    $("#montant_vente").text(money(data.ventes.montant_total));
+                    $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_achats);
+                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_total));
+
                     $("#nombre_depense").text(data.depenses.nombre_depense);
                     $("#montant_depense").text(money(data.depenses.montant_depense));
+                    
+                    $("#nombre_dette_client").text(money(data.detteClient.nombre_total));
+                    $("#montant_dette_client").text(money(data.detteClient.montant_total));
+                    
+                    $("#nombre_dette_fournisseur").text(money(data.detteFournisseur.nombre_total));
+                    $("#montant_dette_fournisseur").text(money(data.detteFournisseur.montant_total));
+                    
+                    
+                    $("#nombre_stock_dispo").text(money(data.stockDispo.total_quantite));
+                    $("#montant_stock_dispo").text(money(data.stockDispo.total_montant));
+
+                    $("#nombre_stock_alert").text(money(data.stockAlert));
+                    // $("#montant_stock_alert").text(money(data.stockAlert.montant_stock_alert));
 
                 }
             });

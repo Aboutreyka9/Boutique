@@ -173,7 +173,7 @@ $taxe = $info['taxe'];
              <span>Montant de la remise :</span>
 
              <div class="input-group remise-input">
-               <input type="number" class="form-control" id="montant_remise" value="0">
+               <input type="number" class="form-control"  min="0" id="montant_remise" value="0">
                <span class="input-group-text"> FCFA</span>
              </div>
            </div>

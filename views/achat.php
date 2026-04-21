@@ -168,7 +168,6 @@
        <?php
         // Récupérer les achats du mois courant
         $achat = Soutra::getAllListeBonCommandeFournisseur($start, $end);
-
         $output = '';
         if (!empty($achat)) {
           $i = 0;

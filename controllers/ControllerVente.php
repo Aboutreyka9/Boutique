@@ -656,7 +656,7 @@ class ControllerVente extends Connexion
 
         $data = array(
           'code_vente' => $code,
-          'client_id' => $client ?? 1,
+          'client_id' => empty($client) ? $client : 1,
           'employe_id' => $employe_id,
           'entrepot_id' => $entrepot_id,
           'etat_vente' => 1,
