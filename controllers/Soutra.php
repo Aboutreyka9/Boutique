@@ -2653,6 +2653,59 @@ class Soutra extends Connexion
         return $data;
     }
 
+    public static function getAllListeBonCommandeTransfert($dateStart, $dateEnd, $entrepot)
+    {
+        $data = [];
+        $sql = 'SELECT tr.*, 
+            SUM(lt.qte) AS article,
+            SUM(lt.prix_transfert * lt.qte) AS total,
+            ents.libelle_entrepot AS fournisseur, entd.libelle_entrepot AS client, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
+            FROM transfert tr 
+            JOIN ligne_transfert lt ON lt.transfert_id = tr.code_transfert
+            JOIN entrepot ents ON ents.ID_entrepot = tr.entrepot_source_id
+            JOIN entrepot entd ON entd.ID_entrepot = tr.entrepot_destination_id
+            JOIN employe emp ON emp.ID_employe = tr.employe_id
+            WHERE (tr.entrepot_source_id = :entrepot OR tr.entrepot_destination_id = :entrepot) AND DATE(tr.created_at) BETWEEN :dateStart AND :dateEnd
+            GROUP BY tr.ID_transfert 
+            ORDER BY tr.ID_transfert DESC';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['entrepot' => $entrepot, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+
+        return $data;
+    }
+
+
+    public static function getSingleDataBonCommandeTransfert($code_transfert)
+    {
+        $data = [];
+        $sql = 'SELECT ach.*, 
+            SUM(en.qte) AS article,
+            SUM(en.prix_achat * en.qte) AS total,
+            -- ach._achat,ach.created_at,
+            fr.nom_fournisseur AS fournisseur, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
+            FROM achat ach 
+            JOIN entree en ON en.achat_id = ach.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ach.fournisseur_id
+            JOIN employe emp ON emp.ID_employe = ach.employe_id
+            WHERE ach.code_achat = :code_achat
+            GROUP BY ach.ID_achat';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['code_achat' => $code_transfert]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+
+        return $data;
+    }
 
     public static function getSingleDataBonCommandeFournisseur($code_achat)
     {

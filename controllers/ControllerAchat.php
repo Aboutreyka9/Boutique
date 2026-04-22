@@ -278,10 +278,6 @@ class ControllerAchat extends Connexion
     }
   }
 
-
-
-
-
   public static function retourner_achat()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {

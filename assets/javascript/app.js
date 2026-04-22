@@ -50,13 +50,19 @@ $(function () {
 
         } else {
             STARDATE = st;
-
-
-
         }
 
     }
 
+    function isEmpty(value) {
+    return (
+        value === undefined ||
+        value === null ||
+        value === '' ||
+        (Array.isArray(value) && value.length === 0) ||
+        (typeof value === 'object' && Object.keys(value).length === 0)
+    );
+}
 
     function getDateInterval() {
         var dateDebut = new Date(STARDATE).getFullYear();
@@ -1584,6 +1590,12 @@ return total_ttc;
         $('body').delegate('#btn_ajouter_panier_transfert', 'submit', function (e) {
             e.preventDefault();
             var transfert = $(this).serialize();
+            
+            if (!transfert.includes('article')) {
+                $.notify("Désolé, Veuiller choisir au moins un article");  
+                return;
+            }
+
             $.ajax({
             url: "../partials/rooter.php",
             method: "POST",
@@ -1604,6 +1616,149 @@ return total_ttc;
         });
         });
     }
+
+    btn_ajouter_transfert();
+
+    function btn_ajouter_transfert() {
+        $('body').on('click','#btn_ajouter_transfert', function (e) {
+            e.preventDefault();
+
+            var source = $('#transfert_entrepot_source').val();
+            var destination = $('#transfert_entrepot_destination').val();
+
+            if (source == ""  || destination == "") {
+                $.notify("Veuiller choisir l'entrepot!");  
+                return;
+            }else if (source == destination) {
+                $.notify("Désolé, choisissez deux entrepots differents!");  
+                return;
+            }
+            else if (!articleSelected || articleSelected.length === 0) {
+                $.notify("Désolé, Veuiller choisir au moins un article");  
+                return;
+            }
+
+            var data = {
+                id: articleSelected,
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code_achat: $(this).data('code'),
+                source: source,
+                destination: destination,
+                btn_ajouter_transfert: 1
+            };
+
+            ajouter_transfert(data);
+
+        });
+    }
+
+    function ajouter_transfert(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+                if (data.code == 200) {
+                     swal({
+                        title: "Succès",
+                        text: data.message,
+                        icon: "success",
+                        button: true,
+
+                    }).then(() =>
+                        window.history.go(0)
+                    );
+
+                } else {
+                    $.notify(data.message);
+                }
+            }
+        });
+    }
+
+     btn_suprimer_ajouter_panier_transfert();
+    function btn_suprimer_ajouter_panier_transfert() {
+        $('body').on('click','.btn_remove_data_ajouter_panier_transfert', function (e) {
+            e.preventDefault();
+            var element = $(this);
+            var id_article = $(this).data('id');
+            swal({
+                title: "Etes vous sure",
+                text: "de vouloir retirer cet element de la liste?",
+                icon: "warning",
+                buttons: ['Non', 'Oui'],
+                dangerMode: true,
+            }).then((a) => {
+                if (a) {
+
+                    $.ajax({
+                        url: "../partials/rooter.php",
+                        method: "POST",
+                        data: {
+                            id_article: id_article,
+                            remove_ajouter_panier_transfert: 1
+                        },
+                        dataType: 'JSON',
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code = 200) {
+                                element.closest('tr').remove();
+                                articleSelected = articleSelected.filter(a => a != id_article);
+                                $.notify(data.message, "success");
+                                loadTotalRow();
+                            } else {
+                                $.notify("Erreur de suppression du produit!")
+                            }
+                        }
+                    });
+                }
+            })
+        });
+    }
+
+    function updateELementTransfert(btn_action,code) {
+    let btn = btn_action.id;
+    swal({
+            title: "Etes vous sure",
+            text: "de vouloir effectuer cette opération?",
+            icon: "warning",
+            buttons: ['Non', 'Oui'],
+            dangerMode: true,
+        }).then((a) => {
+            if (a) {
+
+                $.ajax({
+                    url: "../partials/rooter.php",
+                    method: "POST",
+                    data: {
+                        code: code,
+                        btn_action_transfert: btn
+                    },
+                    dataType: 'JSON',
+                    success: function (data) {
+                        
+                        if (data.success) {
+                            swal("Notification", data.msg, "success")
+                            .then(function () {
+                                history.go(0);
+                            });
+                        }else{
+                            swal("Notification", data.msg, "error");
+                            // .then(function () {
+                            //     history.go(0);
+                            // });
+                        }
+
+                        
+                    }
+                });
+            }
+    });
+}
 
 
     totalRow()
@@ -1650,6 +1805,7 @@ return total_ttc;
 
         });
     }
+
 // rien
     function totalAll() {
         var somme = 0;
@@ -1734,7 +1890,7 @@ return total_ttc;
         });
     }
 
-       btn_modifier_vente();
+    btn_modifier_vente();
 
     function btn_modifier_vente() {
         $('body').on('click','#btn_modifier_vente', function (e) {
@@ -1942,7 +2098,7 @@ return total_ttc;
             <td class="label-price col qte" contenteditable="true"></td>
             <td class="col total"></td>
             
-            <td> <button data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier_vente">
+            <td> <button data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_ajouter_panier_transfert">
                         <i class="fa fa-trash"></i> </button>
             </td>
         </tr>`;
@@ -4741,6 +4897,7 @@ function updateELement(btn_action,code) {
             }
     });
 }
+
 // =====================================================
 // ============== GESTION DES DEPENSES ================
 // =====================================================

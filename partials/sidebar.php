@@ -225,6 +225,12 @@
                 <li class="menu-item  <?= isActive('entrepot'); ?>">
                   <a href="<?= URL; ?>entrepot" class="menu-link">liste entrepots</a>
                 </li>
+                <li class="menu-item  <?= isActive('ajouter_transfert'); ?>">
+                  <a href="<?= URL; ?>ajouter_transfert" class="menu-link">Faire echange</a>
+                </li>
+                <li class="menu-item  <?= isActive('transfert'); ?>">
+                  <a href="<?= URL; ?>transfert" class="menu-link">Liste echanges</a>
+                </li>
               </ul><!-- /child menu -->
             </li><!-- /.menu-item -->
             <!-- .menu-item -->
