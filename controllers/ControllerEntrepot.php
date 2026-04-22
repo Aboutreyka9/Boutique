@@ -74,16 +74,16 @@ class ControllerEntrepot extends Connexion
             if (!empty($entrepot)) {
                 $i = 0;
                 foreach ($entrepot as $row) {
-              $i++;
-              $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
+                    $i++;
+                    $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
                 <i class="bi bi-x-circle"></i> </button>';
-              $etat = '<span class="badge badge-success">Actif</span>';
+                    $etat = '<span class="badge badge-success">Actif</span>';
 
-              if ($row['etat_entrepot'] !== 1) {
-                $etat = '<span class="badge badge-danger">Inactif</span>';
-                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
+                    if ($row['etat_entrepot'] !== 1) {
+                        $etat = '<span class="badge badge-danger">Inactif</span>';
+                        $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
                 <i class="bi bi-check-circle"></i> </button>';
-              }
+                    }
 
               $output .= '
             <tr class="row' . $row['ID_entrepot'] . '" ' . ($row['ID_entrepot'] == $_SESSION['id_entrepot'] ? 'style="background-color: #d4edda;"' : '') . '>
@@ -280,9 +280,41 @@ class ControllerEntrepot extends Connexion
         }
     }
 
-
-
     public static function ajouter_panier_transfert()
+    {
+        if (isset($_POST['btn_ajouter_panier_transfert'])) {
+            $output = '';
+            if (!empty($_POST['article'])) {
+
+                $search = [];
+                $achat = [];
+
+                if (!isset($_SESSION['panier_transfert']))
+                    $_SESSION['panier_transfert'] = [];
+
+                // if (!empty($_POST['article'])) {
+
+                for ($i = 0; $i < count($_POST['article']); $i++) {
+                    $id = $_POST['article'][$i];
+                    if (!in_array($id, $_SESSION['panier_transfert'])) {
+                        $_SESSION['panier_transfert'][] = $id;
+                        $search[] = $id;
+                    }
+                }
+
+                // $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
+                $transfert = Soutra::getPanierTransfert(implode(',', $_SESSION['panier_transfert']));
+                // $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+                // var_dump($transfert);
+
+                // }
+                echo json_encode($transfert);
+            }
+        }
+    }
+
+
+    public static function ajo444uter_panier_transfert()
     {
         if (isset($_POST['btn_ajouter_panier_transfert'])) {
             $output = '';
@@ -327,21 +359,19 @@ class ControllerEntrepot extends Connexion
         if (isset($_POST['set_entrepot'])) {
             $msg = [];
             if (!empty($_POST['id_entrepot'])) {
-                if(Soutra::exite('entrepot', 'ID_entrepot', $_POST['id_entrepot'])) {
+                if (Soutra::exite('entrepot', 'ID_entrepot', $_POST['id_entrepot'])) {
                     // L'entrepôt existe, on peut continuer
                     $_SESSION['id_entrepot'] = $_POST['id_entrepot'];
                     $msg = ['success' => true, 'message' => 'Entrepôt sélectionné avec succès'];
                 } else {
                     $msg = ['success' => false, 'message' => 'Entrepôt non trouvé'];
                 }
-                
-            }else{
+            } else {
                 $msg = ['success' => false, 'message' => 'ID entrepôt manquant'];
             }
             echo json_encode($msg);
         }
     }
-
 }
 
 //fin de la class

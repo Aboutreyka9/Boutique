@@ -1488,8 +1488,8 @@ return total_ttc;
     $('#select_code_achat').select2(); // Select2 pour la recherche de code d'achat
     $('.fournisseur_search').select2(); // Select2 pour la recherche de fournisseur
     $('#select_article_achat').select2(); // Select2 pour la recherche d'article
-    $('#transfert_entrepot_source').select2(); // Select2 pour l'entrepôt source
-    $('#transfert_entrepot_destination').select2(); // Select2 pour l'entrepôt destination
+    $('.transfert_entrepot').select2(); // Select2 pour l'entrepôt source
+    // $('#transfert_entrepot_destination').select2(); // Select2 pour l'entrepôt destination
 
 // console.log('debut');
     selectFournisseurToSearchachat();
@@ -1534,10 +1534,21 @@ return total_ttc;
 
     function selectEntrepotToSearchTransfert() {
 
-        $('body').on('change', '.entrepot_search', function (e) {
+        $('body').on('change', '.transfert_entrepot', function (e) {
             e.preventDefault();
             let id = $(this).val();
+            var input = "";
             let action = $(this).find(':selected').data('action');
+
+            input = $(this).attr('id') == 'transfert_entrepot_source' ?
+                    $('#transfert_entrepot_destination').val() :
+                    $('#transfert_entrepot_source').val();
+            
+            
+            if (input == id) {
+                $.notify("Désolé, choisissez deux entrepots differents!");  
+                return;
+            }
             // console.log(id);
             $.ajax({
                 url: "../partials/rooter.php",
@@ -1553,7 +1564,7 @@ return total_ttc;
 
                         const f = response.entrepot;
                         $("#libelle_entrepot_" + action).val(f.libelle_entrepot);
-                        $("#adresse_entrepot_" + action).val(f.adresse_entrepot);
+                        $("#ville_entrepot_" + action).val(f.ville_entrepot);
                         $("#id_entrepot_" + action).val(id);
                         
 
@@ -1577,16 +1588,17 @@ return total_ttc;
             url: "../partials/rooter.php",
             method: "POST",
             data: transfert,
+            dataType : 'JSON',
             success: function (data) {
             // console.log(data);return;
                 
                 if (data) {
-                    changerMontant();
-                    $('.transfert-table').html(data);
-                    $('.row_montant').show();
-                    $('.panier_transfert_content').show();
+
+                    
+                    AddNewRowTableTransfert(data);
+                    $.notify("Produit ajouté dans la liste", 'success')
                 } else {
-                    notify("Veuillez choisir au moins un article svp!", "", "", "warning")
+                    $.notify("Veuillez choisir au moins un article svp!")
                 }
             }
         });
@@ -1901,6 +1913,36 @@ return total_ttc;
             <td class="col total">0</td>
             
             <td> <button data-vente="${article.vente_id}" data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier_vente">
+                        <i class="fa fa-trash"></i> </button>
+            </td>
+        </tr>`;
+
+        articleSelected.push(article.ID_article);
+        });
+
+        $('.table_commande tbody').append(html);
+    }
+
+      function AddNewRowTableTransfert(dataArticles) {
+        let html = '';
+
+        dataArticles.forEach(article => {
+
+        if (articleSelected.includes(article.ID_article)) return;
+
+        let index = $('.table_commande tbody tr').length + 1;
+
+        html += `
+        <tr data-code="${article.ID_article}">
+            <td>${index}</td>
+            <td>${article.libelle_article}</td>
+            <td>${article.famille}</td>
+            <td>${article.mark}</td>
+            <td class="label-price col pu" contenteditable="true"></td>
+            <td class="label-price col qte" contenteditable="true"></td>
+            <td class="col total"></td>
+            
+            <td> <button data-id="${article.ID_article}" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_modifier_panier_vente">
                         <i class="fa fa-trash"></i> </button>
             </td>
         </tr>`;
@@ -3936,8 +3978,8 @@ return total_ttc;
                     getCanvasMontantByArticle: 1
                 },
                 dataType: 'JSON',
-                success: function (data) {
-                    var vente = JSON.parse(data);
+                success: function (vente) {
+                    // var vente = JSON.parse(data);
                     const total = vente.map(function (val) {
                         return val.total;
                     })
