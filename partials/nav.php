@@ -149,17 +149,16 @@
           <?php
           $entrepots = Soutra::getAllTable('entrepot',"etat_entrepot");
           $styles = [
-  ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
-  ["color" => "bg-success", "icon" => "fa fa-box"],
-  ["color" => "bg-warning", "icon" => "fa fa-building"],
-  ["color" => "bg-danger", "icon" => "fa fa-archive"],
-];
+            ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
+            ["color" => "bg-success", "icon" => "fa fa-box"],
+            ["color" => "bg-warning", "icon" => "fa fa-building"],
+            ["color" => "bg-danger", "icon" => "fa fa-archive"],
+          ];
           ?>
-
             <!-- .nav-item -->
             <li class="nav-item dropdown header-nav-dropdown">
               <a class="nav-link" href="#!" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
-                  class="bi bi-box-seam "></span></a>
+                  class="bi bi-bank fa-lg"></span></a>
               <div class="dropdown-arrow"></div><!-- .dropdown-menu -->
               <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right">
                 <!-- .dropdown-sheets -->
@@ -167,7 +166,7 @@
                   <?php foreach ($entrepots as $index => $row): 
                     $style = $styles[$index % count($styles)];
                     $isActive = ($row['ID_entrepot'] == ($_SESSION['id_entrepot'] ?? null));
-              ?>
+                  ?>
 
                 <div class="dropdown-sheet-item">
                   <a href="#" 
@@ -193,6 +192,8 @@
 
               <?php endforeach; ?>
                 </div>
+                <!-- Voir plus button a  droite de la zone des entrepots -->
+                <a href="<?= URL ?>entrepot" class="dropdown-sheets-link text-right btn btn-sm btn-primary my-2 mx-2 d-block justify-content-end" >Voir plus</a>
                 <!-- .dropdown-sheets -->
               </div><!-- .dropdown-menu -->
             </li><!-- /.nav-item -->

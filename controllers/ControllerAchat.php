@@ -375,7 +375,7 @@ class ControllerAchat extends Connexion
       $data = array(
         'code_achat' => $code,
         'employe_id' => $employe_id,
-        'fournisseur_id' => $fournisseur ?? 1,
+        'fournisseur_id' => empty($fournisseur) ? $fournisseur : 1,
         'created_at' => $date_emission ?? $date,
         'date_echeance' => $date_echeance ?? $date,
         'entrepot_id' => $entrepot_id

@@ -17,7 +17,8 @@
   $totalAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
   $totalRegler = Soutra::getTotauxAchatRegler(); // méthode adaptée que l'on a créée
   $totalBenefice = Soutra::getTotauxAchatBenefice(); // méthode adaptée que l'on a créée
-  $reste = $totaux['total'] - $totalRegler['total'];
+  $reste = Soutra::getTotalDetteClientDashboard($start, $end,'achat',$_SESSION['id_entrepot']);
+  
   ?>
 
  <header class="page-title-bar">
@@ -74,7 +75,7 @@
        <div class="card custom-card-detail">
          <div class="card-body">
            <div class="d-flex align-items-center">
-             <div class="icon bg-success mr-2">
+             <div class="icon bg-primary mr-2">
                <i class="bi bi-cash-stack"></i>
              </div>
              <h6><span class="text-muted text-uppercase">Montant Achat</span> </h6>
@@ -85,22 +86,22 @@
        </div>
      </div>
 
-     <div class="col-md-4">
+     <div class="col-md-6">
        <div class="card custom-card-detail">
          <div class="card-body">
            <div class="d-flex align-items-center">
-             <div class="icon bg-primary mr-2">
+             <div class="icon bg-success mr-2">
                <i class="bi bi-cash-stack"></i>
              </div>
              <h6><span class="text-muted text-uppercase">Facture reglée</span> </h6>
            </div>
-           <h5><span class="tester" id="total_montant_regler"><?= number_format($total_regler['total'] ?? 0, 0, ',', ' ') ?>
+           <h5><span class="tester" id="total_montant_regler"><?= number_format($totaux['total']-$reste['montant_total'] ?? 0, 0, ',', ' ') ?>
              </span> FCFA</h5>
          </div>
        </div>
      </div>
 
-     <div class="col-md-4">
+     <div class="col-md-6">
        <div class="card custom-card-detail">
          <div class="card-body">
            <div class="d-flex align-items-center">
@@ -109,27 +110,11 @@
              </div>
              <h6><span class="text-muted text-uppercase">Reste à payer</span> </h6>
            </div>
-           <h5><span class="tester" id="total_montant_reste"><?= number_format($reste ?? 0, 0, ',', ' ') ?>
+           <h5><span class="tester" id="total_montant_reste"><?= number_format($reste['montant_total'] ?? 0, 0, ',', ' ') ?>
              </span> FCFA</h5>
          </div>
        </div>
      </div>
-
-     <div class="col-md-4">
-       <div class="card custom-card-detail">
-         <div class="card-body">
-           <div class="d-flex align-items-center">
-             <div class="icon bg-danger mr-2">
-               <i class="bi bi-cash-stack"></i>
-             </div>
-             <h6><span class="text-muted text-uppercase">Benefice</span> </h6>
-           </div>
-           <h5><span class="tester" id="total_montant_reste"><?= number_format($reste ?? 0, 0, ',', ' ') ?>
-             </span> FCFA</h5>
-         </div>
-       </div>
-     </div>
-
 
    </div>
 
@@ -168,7 +153,6 @@
        <?php
         // Récupérer les achats du mois courant
         $achat = Soutra::getAllListeBonCommandeFournisseur($start, $end);
-
         $output = '';
         if (!empty($achat)) {
           $i = 0;

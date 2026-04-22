@@ -129,13 +129,14 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
     <tr>
       <th> # </th>
       <th class="text-right"> Article </th>
-      <th class="text-right"> Depenses (FCFA)</th>
-      <th class="text-right"> Ventes (FCFA)</th>
-      <th class="text-right">Qte Initiale </th>
+      <th class="text-right">Montant </th>
       <th class="text-right">Qte Reste </th>
-      <th class="text-right">Qte Vendue </th>
+      <!-- <th class="text-right"> Depenses (FCFA)</th> -->
+      <!-- <th class="text-right"> Ventes (FCFA)</th> -->
+      <!-- <th class="text-right">Qte Initiale </th> -->
+      <!-- <th class="text-right">Qte Vendue </th> -->
       <!-- <th class="text-right"> Mtt Reste (FCFA)</th> -->
-      <th class="text-right"> Gain (FCFA) </th>
+      <!-- <th class="text-right"> Gain (FCFA) </th> -->
     </tr>
   </thead><!-- /thead -->
   <!-- tbody -->
@@ -144,22 +145,23 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
 
   <?php
   $i = 0;
-//   $comptabilite = Soutra::getComptabiliteBilant();
-  $comptabilite = [];
-  if(!empty($comptabilite)){
-      foreach ($comptabilite as $key => $value) {
+  $stock = Soutra::getAllByElement('view_stock_produit','ID_entrepot',$_SESSION['id_entrepot']);
+//   $comptabilite = [];
+  if(!empty($stock)){
+      foreach ($stock as $key => $value) {
     $i++;
     ?>
         <tr>
             <td><?= $i ?></td>
-            <td class="text-right"><?= $value['article'] ?></td>
-            <td class="text-right"><?= number_format($value['depenses'],0,","," ") ?></td>
-            <td class="text-right"><?= number_format($value['ventes'],0,","," ") ?></td>
-            <td class="text-right"><?= $value['qte_initiale']?> </td>
-            <td class="text-right"><?= $value['qte_reste']?> </td>
-            <td class="text-right"><?= $value['qte_vendue']?> </td>
-            <!-- <td class="text-right"><?=  number_format($value['mt_reste'],0,","," ")  ?> </td> -->
-            <td class="text-right"><?= number_format($value['gain'],0,","," ") ?> </td>
+            <td class="text-right"><?= $value['libelle_article'] ?? '...' ?></td>
+            <td class="text-right"><?= number_format($value['montant_total_stock'] ?? 0,0,","," ") ?> FCFA</td>
+            <td class="text-right"><?= $value['quantite_disponible'] ?? 0?> </td>
+            <!-- <td class="text-right"><?= number_format($value['depenses'] ?? 0,0,","," ") ?></td> -->
+            <!-- <td class="text-right"><?= number_format($value['ventes'] ?? 0,0,","," ") ?></td> -->
+            <!-- <td class="text-right"><?= $value['quantite_initiale'] ?? 0?> </td> -->
+            <!-- <td class="text-right"><?= $value['quantite_vendue'] ?? 0?> </td> -->
+            <!-- <td class="text-right"><?=  number_format($value['mt_reste'] ?? 0,0,","," ")  ?> </td> -->
+            <!-- <td class="text-right"><?= number_format($value['gain'] ?? 0,0,","," ") ?> </td> -->
 
         </tr>
     <?php
