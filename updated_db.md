@@ -13,3 +13,5 @@ ALTER TABLE `depense` CHANGE `statut_depense` `statut_depense` ENUM('en attente'
 
 
 removed client_id & fournisseur_id in table versement
+
+UPDATE versement SET pay_mode = 'espèces' WHERE pay_mode = 'espèce';
