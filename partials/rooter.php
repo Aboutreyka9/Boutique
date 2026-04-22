@@ -78,6 +78,7 @@ ControllerFournisseur::getFournisseurForAchat();
 ControllerEntrepot::ajouter_entrepot();
 ControllerEntrepot::ajouter_panier_transfert();
 ControllerEntrepot::ajouter_transfert();
+ControllerEntrepot::btn_remove_ajouter_panier_transfert();
 ControllerEntrepot::getEntrepot();
 ControllerEntrepot::liste_entrepot();
 ControllerEntrepot::modifier_entrepot();
