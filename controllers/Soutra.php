@@ -3167,6 +3167,27 @@ $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v
         return $data['nb_alert'] ?? 0;
     }
 
+    public static function getTotauxTresorerie()
+    {
+
+    $sql = "SELECT *
+    FROM vue_tresorerie_par_entrepot
+    WHERE entrepot_id = :entrepot";
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot' => $_SESSION['id_entrepot']
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+
+        $query->closeCursor();
+
+        return $data?? [];
+    }
+
     public static function getStockAlerts()
     {
         $data = [];

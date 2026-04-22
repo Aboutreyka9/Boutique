@@ -2936,9 +2936,15 @@ return total_ttc;
                     
                     $("#nombre_stock_dispo").text(money(data.stockDispo.total_quantite));
                     $("#montant_stock_dispo").text(money(data.stockDispo.total_montant));
-
+                    
                     $("#nombre_stock_alert").text(money(data.stockAlert));
-                    // $("#montant_stock_alert").text(money(data.stockAlert.montant_stock_alert));
+                    let tresorerie = data.tresorerie.solde_tresorerie;
+                    if(tresorerie >= 0){
+                        $('#montant_tresorerie').addClass('text-success');
+                    }else{
+                        $('#montant_tresorerie').addClass('text-danger');
+                    }
+                    $("#montant_tresorerie").text(money(tresorerie) + ' FCFA');
 
                 }
             });
