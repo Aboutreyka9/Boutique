@@ -50,13 +50,19 @@ $(function () {
 
         } else {
             STARDATE = st;
-
-
-
         }
 
     }
 
+    function isEmpty(value) {
+    return (
+        value === undefined ||
+        value === null ||
+        value === '' ||
+        (Array.isArray(value) && value.length === 0) ||
+        (typeof value === 'object' && Object.keys(value).length === 0)
+    );
+}
 
     function getDateInterval() {
         var dateDebut = new Date(STARDATE).getFullYear();
@@ -1584,6 +1590,12 @@ return total_ttc;
         $('body').delegate('#btn_ajouter_panier_transfert', 'submit', function (e) {
             e.preventDefault();
             var transfert = $(this).serialize();
+            
+            if (!transfert.includes('article')) {
+                $.notify("Désolé, Veuiller choisir au moins un article");  
+                return;
+            }
+
             $.ajax({
             url: "../partials/rooter.php",
             method: "POST",
@@ -1602,6 +1614,70 @@ return total_ttc;
                 }
             }
         });
+        });
+    }
+
+    btn_ajouter_transfert();
+
+    function btn_ajouter_transfert() {
+        $('body').on('click','#btn_ajouter_transfert', function (e) {
+            e.preventDefault();
+
+            var source = $('#transfert_entrepot_source').val();
+            var destination = $('#transfert_entrepot_destination').val();
+
+            if (source == ""  || destination == "") {
+                $.notify("Veuiller choisir l'entrepot!");  
+                return;
+            }else if (source == destination) {
+                $.notify("Désolé, choisissez deux entrepots differents!");  
+                return;
+            }
+            else if (!articleSelected || articleSelected.length === 0) {
+                $.notify("Désolé, Veuiller choisir au moins un article");  
+                return;
+            }
+
+            var data = {
+                id: articleSelected,
+                qte: pushData("qte"),
+                pu: pushData("pu"),
+                total:pushData("total"),
+                code_achat: $(this).data('code'),
+                source: source,
+                destination: destination,
+                btn_ajouter_transfert: 1
+            };
+
+            ajouter_transfert(data);
+
+        });
+    }
+
+      function ajouter_transfert(data) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data,
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+                
+                if (data.code == 200) {
+                     swal({
+                        title: "Succès",
+                        text: data.messages,
+                        icon: "success",
+                        button: true,
+
+                    }).then(() =>
+                        window.history.go(0)
+                    );
+
+                } else {
+                    $.notify(data.message);
+                }
+            }
         });
     }
 
@@ -1650,6 +1726,7 @@ return total_ttc;
 
         });
     }
+
 // rien
     function totalAll() {
         var somme = 0;
@@ -1734,7 +1811,7 @@ return total_ttc;
         });
     }
 
-       btn_modifier_vente();
+    btn_modifier_vente();
 
     function btn_modifier_vente() {
         $('body').on('click','#btn_modifier_vente', function (e) {

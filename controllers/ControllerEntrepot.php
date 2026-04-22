@@ -315,43 +315,72 @@ class ControllerEntrepot extends Connexion
     }
 
 
-    public static function ajo444uter_panier_transfert()
+    public static function ajouter_transfert()
     {
-        if (isset($_POST['btn_ajouter_panier_transfert'])) {
-            $output = '';
-            if (!empty($_POST['article'])) {
-                $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
-                var_dump($_POST);
-                return;
-                if (!empty($transfert)) {
-                    $i = 0;
-                    foreach ($transfert as $row) {
-                        $i++;
+        if (isset($_POST['btn_ajouter_transfert'])) {
 
-                        $output .= '
-              <tr class="row' . $row['ID_article'] . '">
-                 <td class="col id d_none">' . $row['ID_article'] . '</td>
-                 <td>' . $i . '</td>
-                 <td>' . $row['libelle_article'] . '</td>
-                 <td>' . $row['famille'] . '</td>
-                 <td>' . $row['mark'] . '</td>
-                <td class="label-price col pu" contenteditable="true">' . $row['prix_achat'] . '</td>
-                <td class="label-price col qte" contenteditable="true">0</td>
-                <td class="col total">0</td>
-                 ';
+            extract($_POST);
+            $verifEmpty = false;
+            $verifType = false;
+            $msg['code'] = 400;
 
-                        $output .= '
-                 <td> 
-                     <button data-id="' . $row['ID_article'] . '" title="Supprimer l\'article de la liste" class="btn btn-danger btn-sm btn_remove_data_panier">
-                     <i class="fa fa-trash"></i> </button>
-                 
-               </td>
-                  </tr>
-                  ';
-                    }
+            for ($i = 0; $i < count($pu); $i++) {
+                if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
+                    $verifEmpty = true;
+                } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
+                    $verifType = true;
                 }
-                echo $output;
             }
+
+            $msg = "";
+
+            if ($verifEmpty) {
+                $msg['message'] =  'Veuillez Entrer toutes les valeurs !';
+            } elseif ($verifType) {
+                $msg['message'] = 'Verifier les valeurs renseignées';
+            } else {
+
+                $date = date('Y-m-d');
+                $code = strtoupper(self::checkCode());
+                $employe_id = $_SESSION['id_employe'];
+                // $entrepot_source = $_POST['source'];
+                // $entrepot_destination = $_POST['destination'];
+
+                $data = array(
+                    'code_transfert' => $code,
+                    'employe_id' => $employe_id,
+                    'entrepot_source_id' => $source,
+                    'entrepot_destination_id' => $destination,
+                    'date_transfert' => $date,
+                    'created_at' => $date,
+                    'statut_transfert' => STATUT_COMMANDE[0]
+                );
+
+                $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
+                    Soutra::inserted("transfert", $data);
+                    for ($i = 0; $i < count($pu); $i++) {
+                        $transfert = array(
+                            'transfert_id' => $code,
+                            'article_id' => $id[$i],
+                            'prix_transfert' => $pu[$i],
+                            'qte' => $qte[$i]
+                        );
+
+                        Soutra::inserted("ligne_transfert", $transfert);
+                    }
+                });
+
+                if ($results) {
+                    unset($_SESSION['transfert']);
+                    unset($_SESSION['panier_transfert']);
+                    $msg['code'] = 200;
+                    $msg['message'] = "Echange effectué avec succès.";
+                } else {
+                    $msg['message'] = 'Une erreur est survenue! ';
+                }
+            }
+
+            echo json_encode($msg);
         }
     }
 
@@ -372,6 +401,15 @@ class ControllerEntrepot extends Connexion
             }
             echo json_encode($msg);
         }
+    }
+
+    public static function checkCode()
+    {
+        $code = "TR" . date('y') . date('d') . rand(10, 999);
+        if (!empty(Soutra::libelleExiste('transfert', 'code_transfert', $code))) {
+            self::checkCode();
+        }
+        return $code;
     }
 }
 
