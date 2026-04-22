@@ -26,6 +26,7 @@ class ControllerDashboard extends Connexion
       $stockAlert = Soutra::getCountStockAlert();
       $totalAchatAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
       $totalVenteAttente = Soutra::getTotauxVenteEnAttente(); // méthode adaptée que l'on a créée
+      $tresorerie = Soutra::getTotauxTresorerie(); // méthode adaptée que l'on a créée
       // $stockAlert = Soutra::getTotauxViewStockProduit();
 // var_dump($detteClient);return;
       // $data = [
@@ -43,7 +44,8 @@ class ControllerDashboard extends Connexion
         'stockDispo',
         'stockAlert',
         'totalAchatAttente',
-        'totalVenteAttente'
+        'totalVenteAttente',
+        'tresorerie'
         ));
     }
   }

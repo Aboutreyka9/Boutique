@@ -153,9 +153,9 @@ if (strtolower($_SESSION['role']) == ADMIN):
               <div class="icon bg-success mr-2">
                 <i class="bi bi-currency-exchange"></i>
               </div>
-              <h6><span class="text-muted text-uppercase">BÉNÉFICES</span> (<span id="nombre_benefice"> 0 </span>)</h6>
+              <h6><span class="text-muted text-uppercase">TRESORERIE</span> </h6>
             </div>
-            <h5><span id="montant_benefice"> 0 </span> FCFA</h5>
+            <h5><span id="montant_tresorerie"> 0 </span> </h5>
           </div>
         </div>
       </div>

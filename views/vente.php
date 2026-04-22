@@ -59,19 +59,19 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
       </div>
     </div> -->
 
- <div class="col-md-6">
-       <div class="card custom-card-detail">
-         <div class="card-body">
-           <div class="d-flex align-items-center">
-             <div class="icon bg-success mr-2">
-               <i class="bi bi-cash-coin"></i>
-             </div>
-             <h6><span class="text-muted text-uppercase">Montant Ventes</span></h6>
-           </div>
-           <h3 class="text-success" id="total_montant"><?= number_format($totaux['total_montant'] ?? 0, 0, ',', ' ') ?> FCFA</h3>
-         </div>
-       </div>
-     </div>
+<div class="col-md-6">
+      <div class="card custom-card-detail">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon bg-success mr-2">
+              <i class="bi bi-cash-coin"></i>
+            </div>
+            <h6><span class="text-muted text-uppercase">Montant Ventes</span></h6>
+          </div>
+          <h3 class="text-success" id="total_montant"><?= number_format($totaux['total_montant'] ?? 0, 0, ',', ' ') ?> FCFA</h3>
+        </div>
+      </div>
+    </div>
 
 
   </div>
