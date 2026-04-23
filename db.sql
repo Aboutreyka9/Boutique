@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : ven. 03 avr. 2026 à 21:42
+-- Généré le : jeu. 23 avr. 2026 à 11:42
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -34,18 +34,15 @@ CREATE TABLE IF NOT EXISTS `achat` (
   `employe_id` int NOT NULL,
   `fournisseur_id` int NOT NULL,
   `etat_achat` int DEFAULT '1',
+  `pay_mode` enum('espèce','mobile money','credit','virement','chèque','autre') NOT NULL,
+  `entrepot_id` int NOT NULL,
+  `statut_achat` enum('en attente','validé','encaissé','retourné','annulé') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `created_at` date NOT NULL,
+  `date_echeance` date DEFAULT NULL,
   PRIMARY KEY (`ID_achat`),
   KEY `employe_id` (`employe_id`),
   KEY `fournisseur_id` (`fournisseur_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
-
---
--- Déchargement des données de la table `achat`
---
-
-INSERT INTO `achat` (`ID_achat`, `code_achat`, `employe_id`, `fournisseur_id`, `etat_achat`, `created_at`) VALUES
-(1, 'AC260393', 1, 4, 1, '2026-04-03');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -57,63 +54,28 @@ DROP TABLE IF EXISTS `article`;
 CREATE TABLE IF NOT EXISTS `article` (
   `ID_article` int NOT NULL AUTO_INCREMENT,
   `libelle_article` varchar(100) NOT NULL,
-  `prix_article` int NOT NULL,
-  `famille_id` int NOT NULL,
-  `mark_id` int NOT NULL,
-  `unite_id` int NOT NULL DEFAULT '1',
-  `etat_article` int NOT NULL,
-  `created_at` date NOT NULL,
-  `slug` varchar(50) NOT NULL,
+  `famille_id` int DEFAULT NULL,
+  `mark_id` int DEFAULT NULL,
+  `unite_id` int DEFAULT NULL,
+  `etat_article` int DEFAULT NULL,
+  `created_at` date DEFAULT NULL,
+  `slug` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `code_article` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `stock_alert` int NOT NULL,
   `date_peramption` date DEFAULT NULL,
-  `garantie_article` int NOT NULL,
-  `prix_achat` int NOT NULL,
-  `prix_vente` int NOT NULL,
-  `entrepot_id` int DEFAULT NULL,
   PRIMARY KEY (`ID_article`),
   KEY `famille_article` (`famille_id`),
   KEY `mark_id` (`mark_id`),
   KEY `unite_id` (`unite_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `article`
 --
 
-INSERT INTO `article` (`ID_article`, `libelle_article`, `prix_article`, `famille_id`, `mark_id`, `unite_id`, `etat_article`, `created_at`, `slug`, `code_article`, `stock_alert`, `date_peramption`, `garantie_article`, `prix_achat`, `prix_vente`, `entrepot_id`) VALUES
-(1, 'VELIT REPREHENDERIT', 0, 1, 2, 3, 1, '2026-03-29', 'TEMPOR NOSTRUM TEMPO', '', 10, NULL, 0, 200, 500, 6),
-(2, 'MOLLITIA UT MOLESTIA', 0, 2, 2, 3, 1, '2026-03-29', 'Vel fugiat elit rep', '', 20, NULL, 1, 500, 1000, 6),
-(7, 'QUIS CONSEQUATUR DO', 0, 1, 1, 5, 1, '2026-04-01', 'SIT POSSIMUS VELIT ', '', 2, NULL, 1, 500, 1000, 6),
-(8, 'MOLESTIAE ITAQUE AUT', 0, 2, 1, 1, 1, '2026-04-01', 'Occaecat rerum facer', '', 20, NULL, 2, 100, 20, 6);
-
--- --------------------------------------------------------
-
---
--- Doublure de structure pour la vue `bilan_entree`
--- (Voir ci-dessous la vue réelle)
---
-DROP VIEW IF EXISTS `bilan_entree`;
-CREATE TABLE IF NOT EXISTS `bilan_entree` (
-`ID_article` int
-,`article` varchar(100)
-,`en_qte` decimal(32,0)
-,`en_montant` decimal(42,0)
-);
-
--- --------------------------------------------------------
-
---
--- Doublure de structure pour la vue `bilan_sortie`
--- (Voir ci-dessous la vue réelle)
---
-DROP VIEW IF EXISTS `bilan_sortie`;
-CREATE TABLE IF NOT EXISTS `bilan_sortie` (
-`ID_article` int
-,`article` varchar(100)
-,`so_qte` decimal(32,0)
-,`so_montant` decimal(42,0)
-);
+INSERT INTO `article` (`ID_article`, `libelle_article`, `famille_id`, `mark_id`, `unite_id`, `etat_article`, `created_at`, `slug`, `code_article`, `date_peramption`) VALUES
+(1, 'BOîTE DE CLOUS 100G', 1, 1, 1, 1, NULL, 'BT', NULL, NULL),
+(2, 'PEINTURE', 1, 1, 1, 1, NULL, '', NULL, NULL),
+(3, 'MACHINE LABOUREUSE', 1, 2, 2, 1, NULL, '', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -160,33 +122,20 @@ CREATE TABLE IF NOT EXISTS `client` (
   `adresse_client` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`ID_client`),
   KEY `employe_id` (`employe_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `client`
 --
 
 INSERT INTO `client` (`ID_client`, `nom_client`, `prenom_client`, `telephone_client`, `code_client`, `solde_client`, `created_at`, `etat_client`, `employe_id`, `updated_at`, `email_client`, `adresse_client`) VALUES
-(1, 'CLIENT 3', '', '0102030405', 'CL2629365', 0, '2026-03-29', 1, 1, '2026-03-29 16:29:37', 'abasanogo9@gmail.com', ''),
+(1, 'CLIENT 3', 'Colman', '0102030405', 'CL2629365', 0, '2026-03-29', 1, 1, '2026-03-29 16:29:37', 'abasanogo9@gmail.com', ''),
 (2, 'EAQUE ID AB AD DOLOR', '', '656565646', 'CL2630972', 0, '2026-03-30', 1, 1, '2026-03-30 01:11:45', 'pubat@mailinator.com', 'Molestiae '),
-(3, 'CLIENT 9', '', '6565', 'CL2630584', 0, '2026-03-30', 1, 1, '2026-03-30 02:46:13', '', '');
-
--- --------------------------------------------------------
-
---
--- Doublure de structure pour la vue `comptabilite`
--- (Voir ci-dessous la vue réelle)
---
-DROP VIEW IF EXISTS `comptabilite`;
-CREATE TABLE IF NOT EXISTS `comptabilite` (
-`id_article` int
-,`article` varchar(100)
-,`depenses` decimal(42,0)
-,`ventes` decimal(42,0)
-,`qte_reste` decimal(33,0)
-,`mt_reste` decimal(43,0)
-,`gain` decimal(45,0)
-);
+(3, 'CLIENT 9', '', '6565', 'CL2630584', 0, '2026-03-30', 1, 1, '2026-03-30 02:46:13', '', ''),
+(4, 'KONE PATRICE', '', '0566015517', 'CL2608208', 0, '2026-04-08', 1, 1, '2026-04-08 09:35:58', 'lespros13131@gmail.com', 'Zone'),
+(5, 'ASSUMENDA QUO AB REP', '', '05040305', 'CL2619981', 0, '2026-04-19', 1, 1, '2026-04-19 13:09:04', 'wavylo@mailinator.com', 'At laborio'),
+(6, 'CLIENT TEST', '', '0588990022', 'CL2622648', 0, '2026-04-22', 1, 15, '2026-04-22 20:01:50', 'lespros1313@gmail.com', 'Zone'),
+(7, 'CLIENT FIDEL', '', '0589002662', 'CL2622593', 0, '2026-04-22', 1, 15, '2026-04-22 20:02:42', 'lespros1313@gmail.com', 'Zone');
 
 -- --------------------------------------------------------
 
@@ -207,6 +156,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `client` int DEFAULT NULL,
   `fournisseur` int DEFAULT NULL,
   `supprimer` int DEFAULT NULL,
+  `taxe` int DEFAULT NULL,
   PRIMARY KEY (`ID_config`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
@@ -214,8 +164,8 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Déchargement des données de la table `config`
 --
 
-INSERT INTO `config` (`ID_config`, `nom`, `adresse`, `contact1`, `contact2`, `email`, `image`, `crreated_at`, `client`, `fournisseur`, `supprimer`) VALUES
-(1, 'BOUTIQUE PROMAX', 'BOUAKE,ZONE TERMINUS', '0504030201', '0102030406', 'exemple@nom.com', 'https://boutique.kassanngroup.com/assets/images/1244890654.jpeg', '2020-01-01', 1, 1, 0);
+INSERT INTO `config` (`ID_config`, `nom`, `adresse`, `contact1`, `contact2`, `email`, `image`, `crreated_at`, `client`, `fournisseur`, `supprimer`, `taxe`) VALUES
+(1, 'BOUTIQUE PROMAX', 'BOUAKE,ZONE TERMINUS', '0504030201', '0102030406', 'exemple@nom.com', 'https://boutique.kassanngroup.com/assets/images/1244890654.jpeg', '2020-01-01', 1, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -225,7 +175,7 @@ INSERT INTO `config` (`ID_config`, `nom`, `adresse`, `contact1`, `contact2`, `em
 
 DROP TABLE IF EXISTS `depense`;
 CREATE TABLE IF NOT EXISTS `depense` (
-  `id_depense` int NOT NULL AUTO_INCREMENT,
+  `ID_depense` int NOT NULL AUTO_INCREMENT,
   `type_id` int NOT NULL,
   `employe_id` int NOT NULL,
   `montant` float NOT NULL,
@@ -233,18 +183,14 @@ CREATE TABLE IF NOT EXISTS `depense` (
   `periode` datetime NOT NULL,
   `date_created` datetime NOT NULL,
   `etat_depense` int NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_depense`),
+  `statut_depense` varchar(50) NOT NULL,
+  `employe_confirm` int DEFAULT NULL,
+  `date_confirm` datetime DEFAULT NULL,
+  `entrepot_id` int NOT NULL,
+  PRIMARY KEY (`ID_depense`),
   KEY `type_id` (`type_id`),
   KEY `employe_id` (`employe_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
---
--- Déchargement des données de la table `depense`
---
-
-INSERT INTO `depense` (`id_depense`, `type_id`, `employe_id`, `montant`, `description`, `periode`, `date_created`, `etat_depense`) VALUES
-(1, 4, 1, 25000, '', '2026-03-30 00:00:00', '2026-03-30 00:00:00', 1),
-(2, 1, 1, 50000, '', '2026-03-30 00:00:00', '2026-03-30 00:00:00', 1);
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -259,25 +205,28 @@ CREATE TABLE IF NOT EXISTS `employe` (
   `nom_employe` varchar(50) NOT NULL,
   `prenom_employe` varchar(50) NOT NULL,
   `telephone_employe` varchar(15) NOT NULL,
+  `email_employe` varchar(100) DEFAULT NULL,
   `password_employe` varchar(100) NOT NULL,
   `etat_employe` int NOT NULL,
   `role_id` int NOT NULL,
   `login` datetime DEFAULT NULL,
   `service` int DEFAULT NULL,
+  `entrepot` int DEFAULT NULL,
   PRIMARY KEY (`ID_employe`),
   KEY `role_id` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `employe`
 --
 
-INSERT INTO `employe` (`ID_employe`, `code_employe`, `nom_employe`, `prenom_employe`, `telephone_employe`, `password_employe`, `etat_employe`, `role_id`, `login`, `service`) VALUES
-(1, 'EM00000', 'Admin', 'Admin', '0102030405', '202cb962ac59075b964b07152d234b70', 1, 1, '2026-04-03 09:41:56', 0),
-(11, 'EM25051188', 'CAMARA', 'Georges', '0566015516', '202cb962ac59075b964b07152d234b70', 1, 2, '2026-03-28 08:23:41', 0),
-(12, 'EM25093690', 'KOFFI', 'AndrÃ©', '0166749966', '6ac91f0ed946885e7573b4f2a2ee8075', 1, 1, NULL, 0),
-(13, 'EM25095215', 'AYA', 'Sanogo', '0699331122', 'de4ea80ff5c195340cd6666d7223a3e7', 0, 2, NULL, 0),
-(14, 'EM250979', 'CAMARA', 'Blaise', '0122334455', '720131d06307e753ba4f1cca86d66043', 0, 1, NULL, 0);
+INSERT INTO `employe` (`ID_employe`, `code_employe`, `nom_employe`, `prenom_employe`, `telephone_employe`, `email_employe`, `password_employe`, `etat_employe`, `role_id`, `login`, `service`, `entrepot`) VALUES
+(1, 'EM00000', 'Admin', 'Admin', '0102030405', NULL, '202cb962ac59075b964b07152d234b70', 1, 1, '2026-04-22 07:01:21', 0, 1),
+(11, 'EM25051188', 'CAMARA', 'Georges', '0566015516', NULL, '202cb962ac59075b964b07152d234b70', 1, 2, '2026-03-28 08:23:41', 0, 1),
+(12, 'EM25093690', 'KOFFI', 'André', '0166749966', NULL, '6ac91f0ed946885e7573b4f2a2ee8075', 1, 1, NULL, 0, 1),
+(13, 'EM25095215', 'AYA', 'Sanogo', '0699331122', NULL, 'de4ea80ff5c195340cd6666d7223a3e7', 1, 2, NULL, 0, 1),
+(14, 'EM250979', 'CAMARA', 'Blaise', '0122334455', NULL, '53e6086284353cb73d4979f08537d950', 1, 2, '2026-04-23 09:54:04', 0, 1),
+(15, 'EM26084111', 'Test Moi', 'Moi', '0566015517', 'realitecrue13@gmail.com', '53e6086284353cb73d4979f08537d950', 1, 1, '2026-04-22 08:36:34', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -295,16 +244,9 @@ CREATE TABLE IF NOT EXISTS `entree` (
   `qte` int NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID_entree`),
+  UNIQUE KEY `unique_achat_article` (`achat_id`,`article_id`),
   KEY `article_id` (`article_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
-
---
--- Déchargement des données de la table `entree`
---
-
-INSERT INTO `entree` (`ID_entree`, `article_id`, `achat_id`, `etat_entree`, `prix_achat`, `qte`, `updated_at`) VALUES
-(1, 7, 'AC260393', 1, 500, 10, '2026-04-03 17:49:54'),
-(2, 2, 'AC260393', 1, 500, 10, '2026-04-03 17:49:54');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -321,15 +263,46 @@ CREATE TABLE IF NOT EXISTS `entrepot` (
   `etat_entrepot` int NOT NULL,
   `created_at_entrepot` date NOT NULL,
   PRIMARY KEY (`ID_entrepot`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `entrepot`
 --
 
 INSERT INTO `entrepot` (`ID_entrepot`, `libelle_entrepot`, `ville_entrepot`, `adresse_entrepot`, `etat_entrepot`, `created_at_entrepot`) VALUES
-(6, 'Sunt ea aut voluptat', 'Sequi expedita tempo', '', 1, '2026-03-31'),
-(7, 'Ad natus Nam incidun', 'Sequi impedit cillu', '', 1, '2026-03-31');
+(1, 'Ma Boutique Bio', 'Bouake', 'Zone,terminus', 1, '2026-04-17'),
+(2, 'Boutik golfd', 'Yakro', '', 1, '2026-04-23'),
+(3, 'LMagasin Heintein', 'OUmé', '', 1, '2026-04-23');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `entrepot_article`
+--
+
+DROP TABLE IF EXISTS `entrepot_article`;
+CREATE TABLE IF NOT EXISTS `entrepot_article` (
+  `ID_entrepot_article` int NOT NULL AUTO_INCREMENT,
+  `code_entrepot_article` varchar(50) NOT NULL,
+  `etat_article` int NOT NULL,
+  `created_at` date NOT NULL,
+  `stock_alert` int NOT NULL,
+  `date_peramption` date DEFAULT NULL,
+  `garantie_article` int NOT NULL,
+  `prix_achat` int NOT NULL,
+  `prix_vente` int NOT NULL,
+  `entrepot_id` int DEFAULT NULL,
+  `article_id` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  PRIMARY KEY (`ID_entrepot_article`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+
+--
+-- Déchargement des données de la table `entrepot_article`
+--
+
+INSERT INTO `entrepot_article` (`ID_entrepot_article`, `code_entrepot_article`, `etat_article`, `created_at`, `stock_alert`, `date_peramption`, `garantie_article`, `prix_achat`, `prix_vente`, `entrepot_id`, `article_id`) VALUES
+(1, '', 1, '2026-04-22', 5, NULL, 1, 3000, 5000, 1, '1'),
+(2, '', 1, '2026-04-22', 2, NULL, 0, 2000, 3000, 1, '2');
 
 -- --------------------------------------------------------
 
@@ -374,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `fournisseur` (
   `email_fournisseur` varchar(50) DEFAULT NULL,
   `adresse_fournisseur` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`ID_fournisseur`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `fournisseur`
@@ -385,7 +358,27 @@ INSERT INTO `fournisseur` (`ID_fournisseur`, `code_fournisseur`, `nom_fournisseu
 (2, 'FS26296647', 'IN ET EA CUPIDATAT N', '657655356477', 1, '2026-03-29', 'abasao9@gmail.com', 'Illo mollitia deleni'),
 (3, 'FS26291050', 'FOURNISSEUR C', '545344354545', 1, '2026-03-29', 'abasanogo9@gmail.com', NULL),
 (4, 'FS26304057', 'EST RERUM LIBERO VO', '56454564646465', 1, '2026-03-30', NULL, 'Recusandae Odit ut '),
-(5, 'FS26301126', 'OFFICIIS VENIAM SED', '768767555', 1, '2026-03-30', 'leliweli@mailinator.com', 'Mollit eligendi duci');
+(5, 'FS26301126', 'OFFICIIS VENIAM SED', '768767555', 1, '2026-03-30', 'leliweli@mailinator.com', 'Mollit eligendi duci'),
+(6, 'FS26086726', 'KONE PATRICE', '0566015517', 1, '2026-04-08', 'lespros13131@gmail.com', 'Zone'),
+(7, 'FS26081422', 'KOUAME MASCO', '0566015533', 1, '2026-04-08', 'lespros1313@gmail.com', 'Zone');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ligne_transfert`
+--
+
+DROP TABLE IF EXISTS `ligne_transfert`;
+CREATE TABLE IF NOT EXISTS `ligne_transfert` (
+  `ID_ligne_transfert` int NOT NULL AUTO_INCREMENT,
+  `transfert_id` varchar(50) NOT NULL,
+  `article_id` int NOT NULL,
+  `etat_transfert` int NOT NULL DEFAULT '1',
+  `prix_transfert` int NOT NULL,
+  `qte` int NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID_ligne_transfert`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -420,7 +413,7 @@ DROP TABLE IF EXISTS `mouvement_stock`;
 CREATE TABLE IF NOT EXISTS `mouvement_stock` (
   `ID_mouvement_stock` int NOT NULL AUTO_INCREMENT,
   `article_id` int NOT NULL,
-  `type_mouvement` enum('ENTREE','RETOUR_CLIENT','INVENTAIRE','AJUSTEMENT_NEGATIF','DEF_CONSTATED','RETOUR_FOURNISSEUR','SORTIE') NOT NULL,
+  `type_mouvement` enum('ENTREE','RETOUR_CLIENT','INVENTAIRE','AJUSTEMENT_NEGATIF','RETOUR_FOURNISSEUR','SORTIE','TRANSFERT_IN','TRANSFERT_OUT','AJUSTEMENT_POSITIF') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `quantite` int DEFAULT NULL,
   `date_mouvement` datetime NOT NULL,
   `reference_document` varchar(100) DEFAULT NULL,
@@ -429,16 +422,7 @@ CREATE TABLE IF NOT EXISTS `mouvement_stock` (
   `prix_vente` decimal(10,0) DEFAULT NULL,
   `entrepot_id` int NOT NULL,
   PRIMARY KEY (`ID_mouvement_stock`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `mouvement_stock`
---
-
-INSERT INTO `mouvement_stock` (`ID_mouvement_stock`, `article_id`, `type_mouvement`, `quantite`, `date_mouvement`, `reference_document`, `employe_id`, `prix_achat`, `prix_vente`, `entrepot_id`) VALUES
-(1, 7, 'ENTREE', 10, '2026-04-03 00:00:00', NULL, 1, 500, NULL, 6),
-(2, 2, 'ENTREE', 10, '2026-04-03 00:00:00', NULL, 1, 500, NULL, 6),
-(3, 2, 'SORTIE', 3, '2026-04-03 18:00:00', 'ref-2026-2125500', 1, NULL, 1500, 6);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -479,18 +463,7 @@ CREATE TABLE IF NOT EXISTS `service` (
   `created_at_service` date NOT NULL,
   `responsable` int DEFAULT NULL,
   PRIMARY KEY (`ID_service`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `service`
---
-
-INSERT INTO `service` (`ID_service`, `entrepot_id`, `employe_id`, `etat_service`, `created_at_service`, `responsable`) VALUES
-(3, 6, 12, 0, '2026-03-31', 0),
-(6, 6, 1, 0, '2026-03-31', 0),
-(9, 6, 12, 0, '2026-03-31', 0),
-(10, 7, 1, 0, '2026-03-31', 1),
-(11, 6, 1, 0, '2026-03-31', 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -509,17 +482,29 @@ CREATE TABLE IF NOT EXISTS `sortie` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID_sortie`),
   KEY `article_id` (`article_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
 
 --
--- Déchargement des données de la table `sortie`
+-- Structure de la table `transfert`
 --
 
-INSERT INTO `sortie` (`ID_sortie`, `article_id`, `vente_id`, `prix_vente`, `qte`, `etat_sortie`, `updated_at`) VALUES
-(1, 7, 'VT26027237', 1000, 5, 1, '2026-04-02 00:20:20'),
-(2, 7, 'VT260236', 1000, 5, 1, '2026-04-02 01:41:11'),
-(3, 1, 'VT260236', 500, 3, 1, '2026-04-02 01:41:11'),
-(4, 1, 'VT26036330', 500, 3, 1, '2026-04-03 18:16:51');
+DROP TABLE IF EXISTS `transfert`;
+CREATE TABLE IF NOT EXISTS `transfert` (
+  `ID_transfert` int NOT NULL AUTO_INCREMENT,
+  `code_transfert` varchar(50) NOT NULL,
+  `entrepot_source_id` int NOT NULL,
+  `entrepot_destination_id` int NOT NULL,
+  `date_transfert` datetime NOT NULL,
+  `employe_id` int DEFAULT NULL,
+  `pay_mode` enum('espèce','mobile money','credit','virement','chèque','autre') NOT NULL,
+  `statut_transfert` enum('en attente','validé','encaissé','retourné','annulé') NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID_transfert`),
+  UNIQUE KEY `code_transfert` (`code_transfert`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -529,16 +514,16 @@ INSERT INTO `sortie` (`ID_sortie`, `article_id`, `vente_id`, `prix_vente`, `qte`
 
 DROP TABLE IF EXISTS `type_depense`;
 CREATE TABLE IF NOT EXISTS `type_depense` (
-  `id_type` int NOT NULL AUTO_INCREMENT,
+  `ID_type` int NOT NULL AUTO_INCREMENT,
   `libelle_type` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_type`)
+  PRIMARY KEY (`ID_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `type_depense`
 --
 
-INSERT INTO `type_depense` (`id_type`, `libelle_type`) VALUES
+INSERT INTO `type_depense` (`ID_type`, `libelle_type`) VALUES
 (1, 'Loyer'),
 (2, 'Electricite'),
 (3, 'Eau'),
@@ -594,24 +579,16 @@ CREATE TABLE IF NOT EXISTS `vente` (
   `client_id` int NOT NULL,
   `employe_id` int NOT NULL,
   `etat_vente` int NOT NULL DEFAULT '1',
-  `statut_vente` varchar(50) DEFAULT NULL,
+  `statut_vente` enum('en attente','validé','encaissé','retourné','annulé') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'en attente',
   `pay_mode` varchar(100) DEFAULT NULL,
   `entrepot_id` int NOT NULL,
-  `created_at` date NOT NULL,
+  `created_at` datetime NOT NULL,
+  `date_echeance` datetime DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID_vente`),
   KEY `employe_id` (`employe_id`),
   KEY `client_id` (`client_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
-
---
--- Déchargement des données de la table `vente`
---
-
-INSERT INTO `vente` (`ID_vente`, `code_vente`, `client_id`, `employe_id`, `etat_vente`, `statut_vente`, `pay_mode`, `entrepot_id`, `created_at`, `updated_at`) VALUES
-(1, 'VT26027237', 3, 1, 1, 'en attente', 'espèce', 6, '2026-04-02', '2026-04-02 00:20:20'),
-(2, 'VT260236', 2, 1, 1, 'en attente', 'espèce', 6, '2026-04-02', '2026-04-02 01:41:11'),
-(3, 'VT26036330', 2, 1, 1, 'en attente', 'espèce', 6, '2026-04-03', '2026-04-03 18:16:51');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -624,8 +601,12 @@ CREATE TABLE IF NOT EXISTS `versement` (
   `ID_versement` int NOT NULL AUTO_INCREMENT,
   `code_versement` varchar(50) NOT NULL,
   `montant_versement` int NOT NULL,
-  `client_id` int NOT NULL,
-  `employe_id` int NOT NULL,
+  `type_versement` enum('achat','vente','','') NOT NULL,
+  `pay_mode` enum('espèces','mobile money','chèque','crédit','autre') NOT NULL,
+  `transaction_code` varchar(50) NOT NULL,
+  `client_id` int DEFAULT NULL,
+  `fournisseur_id` int DEFAULT NULL,
+  `employe_id` int DEFAULT NULL,
   `created_at` date NOT NULL,
   `etat_versement` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID_versement`),
@@ -636,102 +617,309 @@ CREATE TABLE IF NOT EXISTS `versement` (
 -- --------------------------------------------------------
 
 --
--- Structure de la vue `bilan_entree`
+-- Doublure de structure pour la vue `view_stock_produit`
+-- (Voir ci-dessous la vue réelle)
 --
-DROP TABLE IF EXISTS `bilan_entree`;
-
-DROP VIEW IF EXISTS `bilan_entree`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `bilan_entree`  AS SELECT `ar`.`ID_article` AS `ID_article`, `ar`.`libelle_article` AS `article`, sum(`en`.`qte`) AS `en_qte`, sum((`en`.`prix_achat` * `en`.`qte`)) AS `en_montant` FROM (`article` `ar` join `entree` `en` on((`en`.`article_id` = `ar`.`ID_article`))) WHERE (`en`.`etat_entree` = 1) GROUP BY `ar`.`ID_article` ;
-
--- --------------------------------------------------------
-
---
--- Structure de la vue `bilan_sortie`
---
-DROP TABLE IF EXISTS `bilan_sortie`;
-
-DROP VIEW IF EXISTS `bilan_sortie`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `bilan_sortie`  AS SELECT `ar`.`ID_article` AS `ID_article`, `ar`.`libelle_article` AS `article`, sum(`so`.`qte`) AS `so_qte`, sum((`so`.`prix_vente` * `so`.`qte`)) AS `so_montant` FROM (`article` `ar` join `sortie` `so` on((`so`.`article_id` = `ar`.`ID_article`))) WHERE (`so`.`etat_sortie` = 1) GROUP BY `ar`.`ID_article` ;
+DROP VIEW IF EXISTS `view_stock_produit`;
+CREATE TABLE IF NOT EXISTS `view_stock_produit` (
+`ID_article` int
+,`libelle_article` varchar(100)
+,`ID_entrepot` int
+,`libelle_entrepot` varchar(100)
+,`quantite_disponible` decimal(33,0)
+,`montant_total_stock` decimal(43,0)
+);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la vue `comptabilite`
+-- Doublure de structure pour la vue `vue_bilan_articles`
+-- (Voir ci-dessous la vue réelle)
 --
-DROP TABLE IF EXISTS `comptabilite`;
+DROP VIEW IF EXISTS `vue_bilan_articles`;
+CREATE TABLE IF NOT EXISTS `vue_bilan_articles` (
+`entrepot_id` int
+,`libelle_entrepot` varchar(100)
+,`article_id` int
+,`libelle_article` varchar(100)
+,`qte_approvisionnement` decimal(33,0)
+,`cout_achat` decimal(43,0)
+,`qte_vendue` decimal(32,0)
+,`montant_vendu` decimal(42,0)
+,`benefice` decimal(43,0)
+,`qte_restante` decimal(33,0)
+,`montant_quantite_restant` decimal(43,0)
+);
 
-DROP VIEW IF EXISTS `comptabilite`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `comptabilite`  AS SELECT `be`.`ID_article` AS `id_article`, `be`.`article` AS `article`, `be`.`en_montant` AS `depenses`, if((`bs`.`so_montant` is null),0,`bs`.`so_montant`) AS `ventes`, (`be`.`en_qte` - if((`bs`.`so_qte` is null),0,`bs`.`so_qte`)) AS `qte_reste`, ((`be`.`en_qte` - if((`bs`.`so_qte` is null),0,`bs`.`so_qte`)) * `ar`.`prix_article`) AS `mt_reste`, ((if((`bs`.`so_montant` is null),0,`bs`.`so_montant`) + ((`be`.`en_qte` - if((`bs`.`so_qte` is null),0,`bs`.`so_qte`)) * `ar`.`prix_article`)) - `be`.`en_montant`) AS `gain` FROM ((`bilan_entree` `be` left join `bilan_sortie` `bs` on((`be`.`ID_article` = `bs`.`ID_article`))) join `article` `ar` on((`ar`.`ID_article` = `be`.`ID_article`))) ;
-
---
--- Contraintes pour les tables déchargées
---
-
---
--- Contraintes pour la table `achat`
---
-ALTER TABLE `achat`
-  ADD CONSTRAINT `achat_ibfk_1` FOREIGN KEY (`employe_id`) REFERENCES `employe` (`ID_employe`) ON DELETE CASCADE,
-  ADD CONSTRAINT `achat_ibfk_2` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseur` (`ID_fournisseur`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `article`
---
-ALTER TABLE `article`
-  ADD CONSTRAINT `article_ibfk_1` FOREIGN KEY (`famille_id`) REFERENCES `famille` (`ID_famille`) ON DELETE CASCADE,
-  ADD CONSTRAINT `article_ibfk_2` FOREIGN KEY (`mark_id`) REFERENCES `mark` (`ID_mark`) ON DELETE CASCADE,
-  ADD CONSTRAINT `article_ibfk_3` FOREIGN KEY (`unite_id`) REFERENCES `unite` (`ID_unite`) ON DELETE CASCADE;
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `client`
+-- Doublure de structure pour la vue `vue_caisse_mode_paiement`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `client`
-  ADD CONSTRAINT `client_ibfk_1` FOREIGN KEY (`employe_id`) REFERENCES `employe` (`ID_employe`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_caisse_mode_paiement`;
+CREATE TABLE IF NOT EXISTS `vue_caisse_mode_paiement` (
+`entrepot_id` int
+,`mode_paiement` varchar(12)
+,`total_entree` decimal(41,0)
+,`total_sortie_achat` decimal(41,0)
+,`total_depense` double
+,`solde` double
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `depense`
+-- Doublure de structure pour la vue `vue_dernier_inventaire_entrepot`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `depense`
-  ADD CONSTRAINT `depense_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `type_depense` (`id_type`),
-  ADD CONSTRAINT `depense_ibfk_2` FOREIGN KEY (`employe_id`) REFERENCES `employe` (`ID_employe`);
+DROP VIEW IF EXISTS `vue_dernier_inventaire_entrepot`;
+CREATE TABLE IF NOT EXISTS `vue_dernier_inventaire_entrepot` (
+`article_id` int
+,`entrepot_id` int
+,`last_inv_id` int
+,`quantite_inv` int
+,`prix_achat` decimal(10,0)
+,`prix_vente` decimal(10,0)
+,`date_inventaire` datetime
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `employe`
+-- Doublure de structure pour la vue `vue_etat_paiements`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `employe`
-  ADD CONSTRAINT `employe_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`ID_role`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_etat_paiements`;
+CREATE TABLE IF NOT EXISTS `vue_etat_paiements` (
+`nature` varchar(5)
+,`entrepot` int
+,`code_transaction` varchar(50)
+,`pay_mode` varchar(12)
+,`date_facture` datetime
+,`statut_commande` varchar(10)
+,`montant_facture` decimal(42,0)
+,`total_paye` decimal(32,0)
+,`reste_a_payer` decimal(43,0)
+,`statut_paiement` varchar(8)
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `entree`
+-- Doublure de structure pour la vue `vue_flux_post_inventaire`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `entree`
-  ADD CONSTRAINT `entree_ibfk_1` FOREIGN KEY (`article_id`) REFERENCES `article` (`ID_article`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_flux_post_inventaire`;
+CREATE TABLE IF NOT EXISTS `vue_flux_post_inventaire` (
+`article_id` int
+,`entrepot_id` int
+,`total_flux` decimal(32,0)
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `famille`
+-- Doublure de structure pour la vue `vue_montant_achats`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `famille`
-  ADD CONSTRAINT `famille_ibfk_1` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`ID_categorie`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_montant_achats`;
+CREATE TABLE IF NOT EXISTS `vue_montant_achats` (
+`ID_achat` int
+,`code_achat` varchar(50)
+,`employe_id` int
+,`fournisseur_id` int
+,`etat_achat` int
+,`pay_mode` enum('espèce','mobile money','credit','virement','chèque','autre')
+,`entrepot_id` int
+,`statut_achat` enum('en attente','validé','encaissé','retourné','annulé')
+,`created_at` date
+,`date_echeance` date
+,`libelle_entrepot` varchar(100)
+,`nom_fournisseur` varchar(100)
+,`montant_total` decimal(42,0)
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `sortie`
+-- Doublure de structure pour la vue `vue_montant_ventes`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `sortie`
-  ADD CONSTRAINT `sortie_ibfk_1` FOREIGN KEY (`article_id`) REFERENCES `article` (`ID_article`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_montant_ventes`;
+CREATE TABLE IF NOT EXISTS `vue_montant_ventes` (
+`ID_vente` int
+,`code_vente` varchar(50)
+,`client_id` int
+,`employe_id` int
+,`etat_vente` int
+,`statut_vente` enum('en attente','validé','encaissé','retourné','annulé')
+,`pay_mode` varchar(100)
+,`entrepot_id` int
+,`created_at` datetime
+,`date_echeance` datetime
+,`updated_at` timestamp
+,`libelle_entrepot` varchar(100)
+,`nom_client` varchar(101)
+,`montant_total` decimal(42,0)
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `vente`
+-- Doublure de structure pour la vue `vue_tresorerie_par_entrepot`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `vente`
-  ADD CONSTRAINT `vente_ibfk_1` FOREIGN KEY (`employe_id`) REFERENCES `employe` (`ID_employe`) ON DELETE CASCADE,
-  ADD CONSTRAINT `vente_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `client` (`ID_client`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_tresorerie_par_entrepot`;
+CREATE TABLE IF NOT EXISTS `vue_tresorerie_par_entrepot` (
+`entrepot_id` int
+,`total_entree` decimal(41,0)
+,`total_sortie_achat` decimal(41,0)
+,`total_depense` double
+,`solde_tresorerie` double
+);
+
+-- --------------------------------------------------------
 
 --
--- Contraintes pour la table `versement`
+-- Doublure de structure pour la vue `vue_versement_achat`
+-- (Voir ci-dessous la vue réelle)
 --
-ALTER TABLE `versement`
-  ADD CONSTRAINT `versement_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`ID_client`) ON DELETE CASCADE,
-  ADD CONSTRAINT `versement_ibfk_2` FOREIGN KEY (`employe_id`) REFERENCES `employe` (`ID_employe`) ON DELETE CASCADE;
+DROP VIEW IF EXISTS `vue_versement_achat`;
+CREATE TABLE IF NOT EXISTS `vue_versement_achat` (
+`fournisseur_id` int
+,`code_achat` varchar(50)
+,`entrepot_id` int
+,`created_at` date
+,`date_echeance` date
+,`montant_total` decimal(32,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `vue_versement_vente`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `vue_versement_vente`;
+CREATE TABLE IF NOT EXISTS `vue_versement_vente` (
+`client_id` int
+,`code_vente` varchar(50)
+,`entrepot_id` int
+,`created_at` datetime
+,`date_echeance` datetime
+,`montant_total` decimal(32,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `view_stock_produit`
+--
+DROP TABLE IF EXISTS `view_stock_produit`;
+
+DROP VIEW IF EXISTS `view_stock_produit`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_stock_produit`  AS SELECT `a`.`ID_article` AS `ID_article`, `a`.`libelle_article` AS `libelle_article`, `e`.`ID_entrepot` AS `ID_entrepot`, `e`.`libelle_entrepot` AS `libelle_entrepot`, (coalesce(`vdi`.`quantite_inv`,0) + coalesce(`vfp`.`total_flux`,0)) AS `quantite_disponible`, ((coalesce(`vdi`.`quantite_inv`,0) + coalesce(`vfp`.`total_flux`,0)) * (select `mouvement_stock`.`prix_achat` from `mouvement_stock` where ((`mouvement_stock`.`article_id` = `a`.`ID_article`) and (`mouvement_stock`.`prix_achat` > 0)) order by `mouvement_stock`.`date_mouvement` desc,`mouvement_stock`.`ID_mouvement_stock` desc limit 1)) AS `montant_total_stock` FROM ((((`article` `a` join `entrepot_article` `ea` on((`a`.`ID_article` = `ea`.`article_id`))) join `entrepot` `e` on((`e`.`ID_entrepot` = `ea`.`entrepot_id`))) left join `vue_dernier_inventaire_entrepot` `vdi` on(((`a`.`ID_article` = `vdi`.`article_id`) and (`e`.`ID_entrepot` = `vdi`.`entrepot_id`)))) left join `vue_flux_post_inventaire` `vfp` on(((`a`.`ID_article` = `vfp`.`article_id`) and (`e`.`ID_entrepot` = `vfp`.`entrepot_id`)))) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_bilan_articles`
+--
+DROP TABLE IF EXISTS `vue_bilan_articles`;
+
+DROP VIEW IF EXISTS `vue_bilan_articles`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_bilan_articles`  AS SELECT `ea`.`entrepot_id` AS `entrepot_id`, `e`.`libelle_entrepot` AS `libelle_entrepot`, `a`.`ID_article` AS `article_id`, `a`.`libelle_article` AS `libelle_article`, (coalesce(`vdi`.`quantite_inv`,0) + coalesce((select sum(`m`.`quantite`) from `mouvement_stock` `m` where ((`m`.`article_id` = `a`.`ID_article`) and (`m`.`entrepot_id` = `ea`.`entrepot_id`) and (`m`.`type_mouvement` in ('ENTREE','TRANSFERT_IN','AJUSTEMENT_POSITIF')) and (`m`.`ID_mouvement_stock` > `vdi`.`last_inv_id`))),0)) AS `qte_approvisionnement`, (coalesce((`vdi`.`quantite_inv` * `ea`.`prix_achat`),0) + coalesce((select sum((`m`.`quantite` * `ea`.`prix_achat`)) from `mouvement_stock` `m` where ((`m`.`article_id` = `a`.`ID_article`) and (`m`.`entrepot_id` = `ea`.`entrepot_id`) and (`m`.`type_mouvement` in ('ENTREE','TRANSFERT_IN','AJUSTEMENT_POSITIF')) and (`m`.`ID_mouvement_stock` > `vdi`.`last_inv_id`))),0)) AS `cout_achat`, coalesce((select sum((case when (`m`.`type_mouvement` = 'SORTIE') then `m`.`quantite` when (`m`.`type_mouvement` = 'RETOUR_CLIENT') then -(`m`.`quantite`) else 0 end)) from `mouvement_stock` `m` where ((`m`.`article_id` = `a`.`ID_article`) and (`m`.`entrepot_id` = `ea`.`entrepot_id`) and (`m`.`ID_mouvement_stock` > `vdi`.`last_inv_id`))),0) AS `qte_vendue`, coalesce((select sum((case when (`m`.`type_mouvement` = 'SORTIE') then (`m`.`quantite` * `m`.`prix_vente`) when (`m`.`type_mouvement` = 'RETOUR_CLIENT') then -((`m`.`quantite` * `m`.`prix_vente`)) else 0 end)) from `mouvement_stock` `m` where ((`m`.`article_id` = `a`.`ID_article`) and (`m`.`entrepot_id` = `ea`.`entrepot_id`) and (`m`.`ID_mouvement_stock` > `vdi`.`last_inv_id`))),0) AS `montant_vendu`, coalesce((select sum((case when (`m`.`type_mouvement` = 'SORTIE') then (`m`.`quantite` * (`m`.`prix_vente` - `ea`.`prix_achat`)) when (`m`.`type_mouvement` = 'RETOUR_CLIENT') then -((`m`.`quantite` * (`m`.`prix_vente` - `ea`.`prix_achat`))) else 0 end)) from `mouvement_stock` `m` where ((`m`.`article_id` = `a`.`ID_article`) and (`m`.`entrepot_id` = `ea`.`entrepot_id`) and (`m`.`ID_mouvement_stock` > `vdi`.`last_inv_id`))),0) AS `benefice`, coalesce(`vs`.`quantite_disponible`,0) AS `qte_restante`, (coalesce(`vs`.`quantite_disponible`,0) * `ea`.`prix_achat`) AS `montant_quantite_restant` FROM ((((`entrepot_article` `ea` join `article` `a` on((`ea`.`article_id` = `a`.`ID_article`))) join `entrepot` `e` on((`ea`.`entrepot_id` = `e`.`ID_entrepot`))) left join `vue_dernier_inventaire_entrepot` `vdi` on(((`a`.`ID_article` = `vdi`.`article_id`) and (`e`.`ID_entrepot` = `vdi`.`entrepot_id`)))) left join `view_stock_produit` `vs` on(((`a`.`ID_article` = `vs`.`ID_article`) and (`e`.`ID_entrepot` = `vs`.`ID_entrepot`)))) ORDER BY `e`.`libelle_entrepot` ASC, `a`.`libelle_article` ASC ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_caisse_mode_paiement`
+--
+DROP TABLE IF EXISTS `vue_caisse_mode_paiement`;
+
+DROP VIEW IF EXISTS `vue_caisse_mode_paiement`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_caisse_mode_paiement`  AS SELECT `t`.`entrepot_id` AS `entrepot_id`, `t`.`mode_paiement` AS `mode_paiement`, sum(`t`.`entree`) AS `total_entree`, sum(`t`.`sortie_achat`) AS `total_sortie_achat`, sum(`t`.`depense`) AS `total_depense`, ((sum(`t`.`entree`) - sum(`t`.`sortie_achat`)) - sum(`t`.`depense`)) AS `solde` FROM (select `ve`.`entrepot_id` AS `entrepot_id`,coalesce(`v`.`pay_mode`,'inconnu') AS `mode_paiement`,`v`.`montant_versement` AS `entree`,0 AS `sortie_achat`,0 AS `depense` from (`versement` `v` join `vente` `ve` on((`ve`.`code_vente` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'vente') and (`v`.`etat_versement` = 1)) union all select `ac`.`entrepot_id` AS `entrepot_id`,coalesce(`v`.`pay_mode`,'inconnu') AS `COALESCE(v.pay_mode, 'inconnu')`,0 AS `0`,`v`.`montant_versement` AS `montant_versement`,0 AS `0` from (`versement` `v` join `achat` `ac` on((`ac`.`code_achat` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'achat') and (`v`.`etat_versement` = 1)) union all select `d`.`entrepot_id` AS `entrepot_id`,'espèces' AS `mode_paiement`,0 AS `0`,0 AS `0`,`d`.`montant` AS `montant` from `depense` `d` where (`d`.`etat_depense` = 0)) AS `t` GROUP BY `t`.`entrepot_id`, `t`.`mode_paiement` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_dernier_inventaire_entrepot`
+--
+DROP TABLE IF EXISTS `vue_dernier_inventaire_entrepot`;
+
+DROP VIEW IF EXISTS `vue_dernier_inventaire_entrepot`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_dernier_inventaire_entrepot`  AS SELECT `st`.`article_id` AS `article_id`, `st`.`entrepot_id` AS `entrepot_id`, max(`st`.`ID_mouvement_stock`) AS `last_inv_id`, `st`.`quantite` AS `quantite_inv`, `st`.`prix_achat` AS `prix_achat`, `st`.`prix_vente` AS `prix_vente`, `st`.`date_mouvement` AS `date_inventaire` FROM `mouvement_stock` AS `st` WHERE (`st`.`type_mouvement` = 'INVENTAIRE') GROUP BY `st`.`article_id`, `st`.`entrepot_id`, `st`.`quantite` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_etat_paiements`
+--
+DROP TABLE IF EXISTS `vue_etat_paiements`;
+
+DROP VIEW IF EXISTS `vue_etat_paiements`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_etat_paiements`  AS SELECT `ver`.`type_versement` AS `nature`, `v`.`entrepot_id` AS `entrepot`, `v`.`code_vente` AS `code_transaction`, ifnull(`ver`.`pay_mode`,'...') AS `pay_mode`, `v`.`created_at` AS `date_facture`, `v`.`statut_vente` AS `statut_commande`, `vmt`.`montant_total` AS `montant_facture`, coalesce(sum(`ver`.`montant_versement`),0) AS `total_paye`, (`vmt`.`montant_total` - coalesce(sum(`ver`.`montant_versement`),0)) AS `reste_a_payer`, (case when (coalesce(sum(`ver`.`montant_versement`),0) <= 0) then 'Non payé' when (coalesce(sum(`ver`.`montant_versement`),0) < `vmt`.`montant_total`) then 'Partiel' else 'Soldé' end) AS `statut_paiement` FROM (((`vente` `v` join `vue_montant_ventes` `vmt` on((`vmt`.`code_vente` = `v`.`code_vente`))) join `sortie` `so` on((`so`.`vente_id` = `v`.`code_vente`))) left join `versement` `ver` on(((`v`.`code_vente` = `ver`.`transaction_code`) and (`ver`.`type_versement` = 'vente') and (`ver`.`etat_versement` = 1)))) WHERE (`v`.`statut_vente` in ('validé','encaissé')) GROUP BY `v`.`ID_vente`union all select `ver`.`type_versement` AS `nature`,`a`.`entrepot_id` AS `entrepot`,`a`.`code_achat` AS `code_transaction`,`ver`.`pay_mode` AS `pay_mode`,`a`.`created_at` AS `date_facture`,`a`.`statut_achat` AS `statut_commande`,`vma`.`montant_total` AS `montant_facture`,coalesce(sum(`ver`.`montant_versement`),0) AS `total_paye`,(`vma`.`montant_total` - coalesce(sum(`ver`.`montant_versement`),0)) AS `reste_a_payer`,(case when (coalesce(sum(`ver`.`montant_versement`),0) <= 0) then 'Non payé' when (coalesce(sum(`ver`.`montant_versement`),0) < `vma`.`montant_total`) then 'Partiel' else 'Soldé' end) AS `statut_paiement` from (((`achat` `a` join `vue_montant_achats` `vma` on((`vma`.`code_achat` = `a`.`code_achat`))) join `entree` `en` on((`en`.`achat_id` = `a`.`code_achat`))) left join `versement` `ver` on(((`a`.`code_achat` = `ver`.`transaction_code`) and (`ver`.`type_versement` = 'achat') and (`ver`.`etat_versement` = 1)))) where (`a`.`statut_achat` in ('validé','encaissé')) group by `a`.`ID_achat`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_flux_post_inventaire`
+--
+DROP TABLE IF EXISTS `vue_flux_post_inventaire`;
+
+DROP VIEW IF EXISTS `vue_flux_post_inventaire`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_flux_post_inventaire`  AS SELECT `m`.`article_id` AS `article_id`, `m`.`entrepot_id` AS `entrepot_id`, sum((case when (`m`.`type_mouvement` in ('ENTREE','RETOUR_CLIENT','TRANSFERT_IN','AJUSTEMENT_POSITIF')) then `m`.`quantite` when (`m`.`type_mouvement` in ('SORTIE','RETOUR_FOURNISSEUR','TRANSFERT_OUT','AJUSTEMENT_NEGATIF')) then -(`m`.`quantite`) else 0 end)) AS `total_flux` FROM (`mouvement_stock` `m` join `vue_dernier_inventaire_entrepot` `vdi` on(((`m`.`article_id` = `vdi`.`article_id`) and (`m`.`entrepot_id` = `vdi`.`entrepot_id`)))) WHERE (`m`.`ID_mouvement_stock` > `vdi`.`last_inv_id`) GROUP BY `m`.`article_id`, `m`.`entrepot_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_montant_achats`
+--
+DROP TABLE IF EXISTS `vue_montant_achats`;
+
+DROP VIEW IF EXISTS `vue_montant_achats`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_montant_achats`  AS SELECT `ac`.`ID_achat` AS `ID_achat`, `ac`.`code_achat` AS `code_achat`, `ac`.`employe_id` AS `employe_id`, `ac`.`fournisseur_id` AS `fournisseur_id`, `ac`.`etat_achat` AS `etat_achat`, `ac`.`pay_mode` AS `pay_mode`, `ac`.`entrepot_id` AS `entrepot_id`, `ac`.`statut_achat` AS `statut_achat`, `ac`.`created_at` AS `created_at`, `ac`.`date_echeance` AS `date_echeance`, `ent`.`libelle_entrepot` AS `libelle_entrepot`, `fn`.`nom_fournisseur` AS `nom_fournisseur`, coalesce(sum((`la`.`qte` * `la`.`prix_achat`)),0) AS `montant_total` FROM (((`achat` `ac` join `entree` `la` on((`ac`.`code_achat` = `la`.`achat_id`))) join `fournisseur` `fn` on((`ac`.`fournisseur_id` = `fn`.`ID_fournisseur`))) join `entrepot` `ent` on((`ac`.`entrepot_id` = `ent`.`ID_entrepot`))) GROUP BY `la`.`achat_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_montant_ventes`
+--
+DROP TABLE IF EXISTS `vue_montant_ventes`;
+
+DROP VIEW IF EXISTS `vue_montant_ventes`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_montant_ventes`  AS SELECT `v`.`ID_vente` AS `ID_vente`, `v`.`code_vente` AS `code_vente`, `v`.`client_id` AS `client_id`, `v`.`employe_id` AS `employe_id`, `v`.`etat_vente` AS `etat_vente`, `v`.`statut_vente` AS `statut_vente`, `v`.`pay_mode` AS `pay_mode`, `v`.`entrepot_id` AS `entrepot_id`, `v`.`created_at` AS `created_at`, `v`.`date_echeance` AS `date_echeance`, `v`.`updated_at` AS `updated_at`, `ent`.`libelle_entrepot` AS `libelle_entrepot`, concat(`c`.`nom_client`,' ',`c`.`prenom_client`) AS `nom_client`, coalesce(sum((`lv`.`qte` * `lv`.`prix_vente`)),0) AS `montant_total` FROM (((`vente` `v` join `sortie` `lv` on((`v`.`code_vente` = `lv`.`vente_id`))) join `client` `c` on((`v`.`client_id` = `c`.`ID_client`))) join `entrepot` `ent` on((`v`.`entrepot_id` = `ent`.`ID_entrepot`))) GROUP BY `lv`.`vente_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_tresorerie_par_entrepot`
+--
+DROP TABLE IF EXISTS `vue_tresorerie_par_entrepot`;
+
+DROP VIEW IF EXISTS `vue_tresorerie_par_entrepot`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_tresorerie_par_entrepot`  AS SELECT `t`.`entrepot_id` AS `entrepot_id`, sum(`t`.`entree`) AS `total_entree`, sum(`t`.`sortie_achat`) AS `total_sortie_achat`, sum(`t`.`depense`) AS `total_depense`, ((sum(`t`.`entree`) - sum(`t`.`sortie_achat`)) - sum(`t`.`depense`)) AS `solde_tresorerie` FROM (select `ve`.`entrepot_id` AS `entrepot_id`,`v`.`montant_versement` AS `entree`,0 AS `sortie_achat`,0 AS `depense` from (`versement` `v` join `vente` `ve` on((`ve`.`code_vente` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'vente') and (`v`.`etat_versement` = 1)) union all select `ac`.`entrepot_id` AS `entrepot_id`,0 AS `0`,`v`.`montant_versement` AS `montant_versement`,0 AS `0` from (`versement` `v` join `achat` `ac` on((`ac`.`code_achat` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'achat') and (`v`.`etat_versement` = 1)) union all select `d`.`entrepot_id` AS `entrepot_id`,0 AS `0`,0 AS `0`,`d`.`montant` AS `montant` from `depense` `d` where (`d`.`statut_depense` = 'approuvé')) AS `t` GROUP BY `t`.`entrepot_id` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_versement_achat`
+--
+DROP TABLE IF EXISTS `vue_versement_achat`;
+
+DROP VIEW IF EXISTS `vue_versement_achat`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_versement_achat`  AS SELECT `ac`.`fournisseur_id` AS `fournisseur_id`, `ac`.`code_achat` AS `code_achat`, `ac`.`entrepot_id` AS `entrepot_id`, `ac`.`created_at` AS `created_at`, `ac`.`date_echeance` AS `date_echeance`, coalesce(sum(`vs`.`montant_versement`),0) AS `montant_total` FROM (`versement` `vs` join `achat` `ac` on(((`ac`.`code_achat` = `vs`.`transaction_code`) and (`ac`.`statut_achat` in ('validé','encaissé'))))) WHERE ((`vs`.`type_versement` = 'achat') AND (`vs`.`etat_versement` = 1)) GROUP BY `ac`.`code_achat` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `vue_versement_vente`
+--
+DROP TABLE IF EXISTS `vue_versement_vente`;
+
+DROP VIEW IF EXISTS `vue_versement_vente`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_versement_vente`  AS SELECT `ve`.`client_id` AS `client_id`, `ve`.`code_vente` AS `code_vente`, `ve`.`entrepot_id` AS `entrepot_id`, `ve`.`created_at` AS `created_at`, `ve`.`date_echeance` AS `date_echeance`, coalesce(sum(`vs`.`montant_versement`),0) AS `montant_total` FROM (`versement` `vs` join `vente` `ve` on(((`ve`.`code_vente` = `vs`.`transaction_code`) and (`ve`.`statut_vente` in ('validé','encaissé'))))) WHERE ((`vs`.`type_versement` = 'vente') AND (`vs`.`etat_versement` = 1)) GROUP BY `ve`.`code_vente` ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -113,9 +113,6 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
-
-
-
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
