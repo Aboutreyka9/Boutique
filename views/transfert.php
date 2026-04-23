@@ -14,7 +14,6 @@
 
   $data_transfert = Soutra::getAllListeBonCommandeTransfert($start, $end, $_SESSION['id_entrepot']);
 
-  var_dump($data_transfert);
 
   // Récupérer les achats du mois courant
   $totaux = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
@@ -27,7 +26,7 @@
  <header class="page-title-bar">
    <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
      <div class="title">
-       <h1 class="page-title">Espace Achats</h1>
+       <h1 class="page-title">Espace echange</h1>
      </div>
      <div class="activity">
        <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF ?> </b>
@@ -51,7 +50,7 @@
              <div class="icon bg-warning mr-2">
                <i class="bi bi-alarm"></i>
              </div>
-             <h6><span class="text-muted text-uppercase">Achat en attente</span> (<?= $totalAttente['article'] ?? 0 ?>)</h6>
+             <h6><span class="text-muted text-uppercase">Echange en attente</span> (<?= $totalAttente['article'] ?? 0 ?>)</h6>
            </div>
            <h5><span id=""><?= number_format($totalAttente['total'] ?? 0, 0, ',', ' ') ?>
              </span> FCFA</h5>
@@ -66,7 +65,7 @@
              <div class="icon bg-success mr-2">
                <i class="bi bi-check2-circle"></i>
              </div>
-             <h6><span class="text-muted text-uppercase">Quantité Achat</span> </h6>
+             <h6><span class="text-muted text-uppercase">Quantité d'echange</span> </h6>
            </div>
            <h5><span id="nb_achats"><?= $totaux['article'] ?? 0 ?>
              </span></h5>
@@ -81,7 +80,7 @@
              <div class="icon bg-success mr-2">
                <i class="bi bi-cash-stack"></i>
              </div>
-             <h6><span class="text-muted text-uppercase">Montant Achat</span> </h6>
+             <h6><span class="text-muted text-uppercase">Montant d'echange</span> </h6>
            </div>
            <h5><span class="tester" id="total_montant"><?= number_format($totaux['total'] ?? 0, 0, ',', ' ') ?>
              </span> FCFA</h5>
@@ -138,7 +137,7 @@
    </div>
 
    <!-- floating action -->
-   <a href="<?= URL ?>ajouter_achat" class="btn btn-success btn-floated" title="Ajouter vente">
+   <a href="<?= URL ?>ajouter_transfert" class="btn btn-success btn-floated" title="Ajouter vente">
      <span style="line-height: 45px" class="fa fa-plus"></span>
    </a>
 

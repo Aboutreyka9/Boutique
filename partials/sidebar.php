@@ -98,7 +98,7 @@
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('achat'); ?> <?= isActive('ajouter_achat'); ?>">
               <a href="#" class="menu-link"><span class="menu-icon oi oi-puzzle-piece"></span> <span class="menu-text">Approvisionner</span>
-                <?php $cl = Soutra::getCountNew('achat');
+                <?php $cl = Soutra::getCountNewForEntrepot('achat');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
                     +<?= $cl; ?>
@@ -117,7 +117,7 @@
             <!-- .menu-item -->
             <li class="menu-item has-child  <?= isActive('vente'); ?> <?= isActive('ajouter_vente'); ?>">
               <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Vente</span>
-                <?php $cl = Soutra::getCountNew('vente');
+                <?php $cl = Soutra::getCountNewForEntrepot('vente');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
                     +<?= $cl; ?>

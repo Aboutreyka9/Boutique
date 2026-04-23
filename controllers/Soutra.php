@@ -593,7 +593,7 @@ class Soutra extends Connexion
         return $tab;
     }
 
-    
+
     public static function getTotalReapprovisionnementValideDashboard($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -668,7 +668,7 @@ class Soutra extends Connexion
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
+
     public static function getTotalVenteDashboard($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -744,7 +744,7 @@ class Soutra extends Connexion
         }
     }
 
-    public static function getTotalDetteClientDashboard($startDate, $endDate,$nature, $entrepot = null)
+    public static function getTotalDetteClientDashboard($startDate, $endDate, $nature, $entrepot = null)
     {
         try {
 
@@ -1244,7 +1244,7 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data;
     }
-    
+
     public static function getComptabiliteBilant()
     {
         $data = [];
@@ -1772,6 +1772,21 @@ class Soutra extends Connexion
         $sql = "SELECT COUNT(*) AS nbr FROM $table WHERE created_at = ?";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([$date]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+        $query->closeCursor();
+        return $data["nbr"];
+    }
+
+    public static function getCountNewForEntrepot($table)
+    {
+        $data = [];
+        $date = date('Y-m-d');
+        $sql = "SELECT COUNT(*) AS nbr FROM $table WHERE entrepot_id = :entrepot_id AND created_at = :date_created";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['entrepot_id' => $_SESSION['id_entrepot'], 'date_created' => $date]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetch();
@@ -2571,6 +2586,20 @@ class Soutra extends Connexion
         return $data;
     }
 
+    // get all table by 2 elements 
+    public static function getNiveauStockArticle($table, $id_article, $entrepot, $val1, $val2)
+    {
+        $data = [];
+        $sql = "SELECT * FROM $table WHERE $id_article =:val1 AND $entrepot =:val2";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['val1' => $val1, 'val2' => $val2]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
 
 
 
@@ -3200,8 +3229,8 @@ class Soutra extends Connexion
     public static function getCountStockAlert()
     {
 
-// Compter le nombre d'articles en alerte
-$sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v 
+        // Compter le nombre d'articles en alerte
+        $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v 
         JOIN article a ON v.ID_article = a.ID_article 
         JOIN entrepot_article le ON le.article_id = a.ID_article AND le.entrepot_id = :entrepot
         WHERE v.ID_entrepot = :entrepot AND v.quantite_disponible <= le.stock_alert AND le.stock_alert > 0";
@@ -3223,7 +3252,7 @@ $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v
     public static function getTotauxTresorerie()
     {
 
-    $sql = "SELECT *
+        $sql = "SELECT *
     FROM vue_tresorerie_par_entrepot
     WHERE entrepot_id = :entrepot";
 
@@ -3238,7 +3267,7 @@ $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v
 
         $query->closeCursor();
 
-        return $data?? [];
+        return $data ?? [];
     }
 
     public static function getStockAlerts()

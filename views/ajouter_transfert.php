@@ -127,6 +127,8 @@ if (isset($_SESSION['panier_transfert']) && !empty($_SESSION['panier_transfert']
             </select>
           </div>
           <input type="hidden" name="btn_ajouter_panier_transfert">
+
+          <input type="hidden" id="page_transfert" value="123">
         </div>
         <div class="col-md-2">
           <div class="form-group">
