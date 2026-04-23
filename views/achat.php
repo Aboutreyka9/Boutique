@@ -1,7 +1,8 @@
- <?php
-  if (notAdmin()) {
-    return;
-  }
+<?php 
+ if(!isAdminGestionnaire()){
+   return;
+ }
+
   ?>
 
  <?php
@@ -175,6 +176,7 @@
           <a href="' . URL . 'detail_achat&id=' . $row['code_achat'] . '" data-toggle="tooltip" title="" data-original-title="Voir les détails de la commande" class="btn btn-link btn-primary btn-sm">
             <i class="fa fa-eye text-icon-primary"></i> </a> ';
 
+            
             // btn validation la commande
             if ($row['statut_achat'] == STATUT_COMMANDE[0]):
               $output .= '
@@ -222,8 +224,8 @@
             $output .= '<a href="' . RACINE . 'views/print_achat.php?id=' . $row['code_achat'] . '&statut=' . $row['statut_achat'] . '" target="_blank" data-toggle="tooltip" title="" class="btn btn-link btn-dark btn-sm" data-original-title="Imprimer la facture de la commande"> <i class="fa fa-print text-icon-dark"></i> </a>';
 
             $output .= '
-            </td>
-            </tr>';
+            </td>';
+            '</tr>';
           }
         }
         echo $output; ?>

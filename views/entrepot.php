@@ -1,7 +1,7 @@
 <?php
-if (notAdmin()) {
-  return;
-}
+ if (!isAdminGestionnaire()) {
+     return;
+ }
 ?>
 <header class="page-title-bar">
   <h1 class="page-title"> Espace entrepot</h1>

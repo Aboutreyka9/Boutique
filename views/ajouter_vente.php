@@ -1,7 +1,7 @@
  <?php 
-if(notAdmin()){
-  return;
-}
+// if(!isAdminGestionnaire()){
+//   return;
+// }
 
 $info = Soutra::getInfoBoutique();
 $taxe = $info['taxe'];
@@ -198,7 +198,7 @@ $taxe = $info['taxe'];
            <div class="mb-3">
              <label class="form-label">Mode de paiement :</label>
              <select name="pay_mode" class="form-control pay_mode">
-               <option value=""></option>
+               <!-- <option value=""></option> -->
                <?= payement() ?>
 
              </select>

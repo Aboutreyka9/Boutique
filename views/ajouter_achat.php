@@ -1,10 +1,9 @@
-<?php
-if (notAdmin()) {
-  return;
-}
-$_SESSION['id_entrepot']= 1;
+<?php 
+ if(!isAdminGestionnaire()){
+   return;
+ }
 
-?>
+  ?>
 <header class="page-title-bar">
   <h1 class="page-title mb-3"> Espace réapprovisionement</h1>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->

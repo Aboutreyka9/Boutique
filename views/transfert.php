@@ -1,3 +1,93 @@
+<?php
+ if (!isAdminGestionnaire()) {
+     return;
+ }
+?>
+<header class="page-title-bar">
+  <h1 class="page-title mb-3"> Espace Transfert</h1>
+  <!-- <p class="text-muted"> Ajouter un achat</p> -->
+  <!-- floating action -->
+  <button type="button"  id="btn_ajouter_transfert" class="btn btn-success btn-floated" title="Effectuer Transfert"><span style="line-height: 45px" class="fa fa-plus"></span></button> 
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <form method="post">
+              <!-- entrepot source -->
+              <div class="row my-3">
+                <div class="col-md-4">
+                  <div style="position: relative;" class="form-group">
+                    <label for="transfert_entrepot">Entrepôt source</label>
+                    <input type="hidden" name="id_entrepot_source" id="id_entrepot_source">
+                    <input type="hidden" name="id_entrepot_destination" id="id_entrepot_destination">
+                    <select name="transfert_entrepot" class="form-control entrepot_search" id="transfert_entrepot_source">
+                      <option value="--- CHOISIR ---"></option>
+                      <?php
+                      $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot');
+                      $output = "";
+                      foreach ($entrepot as $row) {
+                        $output .= '
+                  <option data-action="source" value="' . $row['ID_entrepot'] . '">' . $row['libelle_entrepot'] . '</option>
+                  ';
+                      }
+                      echo $output;
+                      ?>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Libellé</label>
+                    <input readonly type="text" id="libelle_entrepot_source" class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Adresse</label>
+                    <input readonly type="text" id="adresse_entrepot_source" class="form-control">
+                    <input readonly type="text" id="adresse_entrepot_destination" class="form-control">
+                  </div>
+                </div>
+              </div>
+              <!-- entrepot destination -->
+              <div class="row my-3">
+                <div class="col-md-4">
+                  <div style="position: relative;" class="form-group">
+                    <label for="transfert_entrepot">Entrepôt destination</label>
+                    <select name="transfert_entrepot" class="form-control entrepot_search" id="transfert_entrepot_destination">
+                      <option value="--- CHOISIR ---"></option>
+                      <?php
+                      $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot');
+                      $output = "";
+                      foreach ($entrepot as $row) {
+                        $output .= '
+                  <option data-action="destination" value="' . $row['ID_entrepot'] . '">' . $row['libelle_entrepot'] . '</option>
+                  ';
+                      }
+                      echo $output;
+                      ?>
+                    </select>
+                   
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Libellé</label>
+                    <input readonly type="text" id="libelle_entrepot_destination" class="form-control">
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Adresse</label>
+                    <input readonly type="text" id="adresse_entrepot_destination" class="form-control">
+                  </div>
+                </div>
+              </div>
  <?php
   if (notAdmin()) {
     return;
@@ -14,7 +104,6 @@
 
   $data_transfert = Soutra::getAllListeBonCommandeTransfert($start, $end, $_SESSION['id_entrepot']);
 
-  var_dump($data_transfert);
 
   // Récupérer les achats du mois courant
   $totaux = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
@@ -27,7 +116,7 @@
  <header class="page-title-bar">
    <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
      <div class="title">
-       <h1 class="page-title">Espace Achats</h1>
+       <h1 class="page-title">Espace echange</h1>
      </div>
      <div class="activity">
        <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF ?> </b>
@@ -51,7 +140,7 @@
              <div class="icon bg-warning mr-2">
                <i class="bi bi-alarm"></i>
              </div>
-             <h6><span class="text-muted text-uppercase">Achat en attente</span> (<?= $totalAttente['article'] ?? 0 ?>)</h6>
+             <h6><span class="text-muted text-uppercase">Echange en attente</span> (<?= $totalAttente['article'] ?? 0 ?>)</h6>
            </div>
            <h5><span id=""><?= number_format($totalAttente['total'] ?? 0, 0, ',', ' ') ?>
              </span> FCFA</h5>
@@ -66,7 +155,7 @@
              <div class="icon bg-success mr-2">
                <i class="bi bi-check2-circle"></i>
              </div>
-             <h6><span class="text-muted text-uppercase">Quantité Achat</span> </h6>
+             <h6><span class="text-muted text-uppercase">Quantité d'echange</span> </h6>
            </div>
            <h5><span id="nb_achats"><?= $totaux['article'] ?? 0 ?>
              </span></h5>
@@ -81,7 +170,7 @@
              <div class="icon bg-success mr-2">
                <i class="bi bi-cash-stack"></i>
              </div>
-             <h6><span class="text-muted text-uppercase">Montant Achat</span> </h6>
+             <h6><span class="text-muted text-uppercase">Montant d'echange</span> </h6>
            </div>
            <h5><span class="tester" id="total_montant"><?= number_format($totaux['total'] ?? 0, 0, ',', ' ') ?>
              </span> FCFA</h5>
@@ -138,7 +227,7 @@
    </div>
 
    <!-- floating action -->
-   <a href="<?= URL ?>ajouter_achat" class="btn btn-success btn-floated" title="Ajouter vente">
+   <a href="<?= URL ?>ajouter_transfert" class="btn btn-success btn-floated" title="Ajouter vente">
      <span style="line-height: 45px" class="fa fa-plus"></span>
    </a>
 

@@ -594,7 +594,33 @@ class Soutra extends Connexion
     }
 
     
-    public static function getTotalReapprovisionnementValideDashboard($startDate, $endDate, $entrepot = null)
+    public static function getTotalReapprovisionnementValideDashboardNotAdmin($startDate, $endDate, $entrepot = null)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(montant_total),0) as montant_total, COUNT(vmt.ID_achat) as nombre_achats FROM vue_montant_achats vmt 
+            WHERE vmt.entrepot_id = :id AND vmt.employe_id = :employe AND vmt.statut_achat IN(:s1,:s2) AND DATE(vmt.created_at) BETWEEN :startDate AND :endDate
+        ";
+            $params = [
+                ':id' => $entrepot,
+                ':employe' => $_SESSION['id_employe'],
+                ':startDate' => $startDate,
+                ':endDate'   => $endDate,
+                ':s1' => STATUT_COMMANDE[1],
+                ':s2' => STATUT_COMMANDE[2]
+
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+    
+    public static function getTotalReapprovisionnementValideDashboardAdmin($startDate, $endDate, $entrepot = null)
     {
         try {
 
@@ -668,7 +694,7 @@ class Soutra extends Connexion
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
+
     public static function getTotalVenteDashboard($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -719,7 +745,33 @@ class Soutra extends Connexion
         }
     }
 
-    public static function getTotalVenteValideDashboard($startDate, $endDate, $entrepot = null)
+    public static function getTotalVenteValideDashboardNotAdmin($startDate, $endDate, $entrepot = null)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(montant_total),0) as montant_total, COUNT(vmt.ID_vente) as nombre_ventes FROM vue_montant_ventes vmt 
+            WHERE vmt.entrepot_id = :id AND vmt.employe_id = :employe AND vmt.statut_vente IN(:s1,:s2) AND DATE(vmt.created_at) BETWEEN :startDate AND :endDate
+        ";
+            $params = [
+                'id' => $entrepot,
+                'employe' => $_SESSION['id_employe'],
+                'startDate' => $startDate,
+                'endDate'   => $endDate,
+                's1' => STATUT_COMMANDE[1],
+                's2' => STATUT_COMMANDE[2]
+
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
+    public static function getTotalVenteValideDashboardAdmin($startDate, $endDate, $entrepot = null)
     {
         try {
 
@@ -744,7 +796,7 @@ class Soutra extends Connexion
         }
     }
 
-    public static function getTotalDetteClientDashboard($startDate, $endDate,$nature, $entrepot = null)
+    public static function getTotalDetteClientDashboard($startDate, $endDate, $nature, $entrepot = null)
     {
         try {
 
@@ -971,12 +1023,12 @@ class Soutra extends Connexion
     public static function getAllEmployer($id, $etat = 1)
     {
         $data = [];
-        $sql = "SELECT emp.*, r.libelle_role role FROM employe emp INNER JOIN role r ON r.ID_role = emp.role_id WHERE etat_employe = ? AND ID_employe != ?  ORDER BY ID_employe DESC";
+        $sql = "SELECT emp.*, r.libelle_role role FROM employe emp INNER JOIN role r ON r.ID_role = emp.role_id WHERE etat_employe = :etat AND ID_employe != :id AND entrepot = :entrepot  ORDER BY ID_employe DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$etat, $id]);
+        $query->execute(['etat' => $etat,'id' => $id,'entrepot' => $_SESSION['id_entrepot']]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -1014,9 +1066,10 @@ class Soutra extends Connexion
     public static function getAllClient($etat = 1)
     {
         $data = [];
-        $sql = "SELECT * FROM client WHERE etat_client = ?  ORDER BY ID_client DESC";
+        $sql = "SELECT c.* FROM client c JOIN vente v ON c.ID_client = v.client_id
+        WHERE  v.entrepot_id = :entrepot AND etat_client = :etat  ORDER BY ID_client DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([$etat]);
+        $query->execute(['entrepot' => $_SESSION['id_entrepot'],'etat' => $etat]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1244,7 +1297,7 @@ class Soutra extends Connexion
         $query->closeCursor();
         return $data;
     }
-    
+
     public static function getComptabiliteBilant()
     {
         $data = [];
@@ -1772,6 +1825,21 @@ class Soutra extends Connexion
         $sql = "SELECT COUNT(*) AS nbr FROM $table WHERE created_at = ?";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([$date]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+        $query->closeCursor();
+        return $data["nbr"];
+    }
+
+    public static function getCountNewForEntrepot($table)
+    {
+        $data = [];
+        $date = date('Y-m-d');
+        $sql = "SELECT COUNT(*) AS nbr FROM $table WHERE entrepot_id = :entrepot_id AND created_at = :date_created";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['entrepot_id' => $_SESSION['id_entrepot'], 'date_created' => $date]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetch();
@@ -2571,6 +2639,20 @@ class Soutra extends Connexion
         return $data;
     }
 
+    // get all table by 2 elements 
+    public static function getNiveauStockArticle($table, $id_article, $entrepot, $val1, $val2)
+    {
+        $data = [];
+        $sql = "SELECT * FROM $table WHERE $id_article =:val1 AND $entrepot =:val2";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['val1' => $val1, 'val2' => $val2]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
 
 
 
@@ -3200,8 +3282,8 @@ class Soutra extends Connexion
     public static function getCountStockAlert()
     {
 
-// Compter le nombre d'articles en alerte
-$sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v 
+        // Compter le nombre d'articles en alerte
+        $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v 
         JOIN article a ON v.ID_article = a.ID_article 
         JOIN entrepot_article le ON le.article_id = a.ID_article AND le.entrepot_id = :entrepot
         WHERE v.ID_entrepot = :entrepot AND v.quantite_disponible <= le.stock_alert AND le.stock_alert > 0";
@@ -3223,7 +3305,7 @@ $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v
     public static function getTotauxTresorerie()
     {
 
-    $sql = "SELECT *
+        $sql = "SELECT *
     FROM vue_tresorerie_par_entrepot
     WHERE entrepot_id = :entrepot";
 
@@ -3238,7 +3320,7 @@ $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v
 
         $query->closeCursor();
 
-        return $data?? [];
+        return $data ?? [];
     }
 
     public static function getStockAlerts()
@@ -3305,7 +3387,34 @@ $sql = "SELECT COUNT(*) as nb_alert FROM view_stock_produit v
     //     return $data;
     // }
 
-    public static function getTotauxVenteEnAttente($etat = 1)
+    public static function getTotauxVenteEnAttenteNotAdmin($etat = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(SUM(so.qte),0) article, COALESCE(SUM(so.prix_vente * so.qte),0) total
+            FROM vente ve
+            JOIN sortie so ON so.vente_id = ve.code_vente
+            LEFT JOIN client cl ON cl.ID_client = ve.client_id
+            WHERE ve.entrepot_id = :entrepot_id AND ve.employe_id = :employe AND ve.statut_vente = :statut_en_attente
+            AND so.etat_sortie = :etat_sortie ';
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'employe' => $_SESSION['id_employe'],
+            'statut_en_attente' => STATUT_COMMANDE[0],
+            'etat_sortie' => $etat,
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getTotauxVenteEnAttenteAdmin($etat = 1)
     {
         $data = [];
 

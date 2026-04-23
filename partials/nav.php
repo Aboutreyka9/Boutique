@@ -42,7 +42,7 @@
 
       <div class="top-bar-item top-bar-item-right px-0 d-sm-flex">
         <!-- .nav -->
-        <?php if (strtolower($_SESSION['role']) == ADMIN): ?>
+        <?php if (strtolower($_SESSION['role']) == ADMIN || strtolower($_SESSION['role']) == GESTIONNAIRE): ?>
 
           <ul class="header-nav nav">
             <li class="nav-item dropdown header-nav-dropdown has-notified">
@@ -147,6 +147,8 @@
 
 
           <?php
+          // var_dump($_SESSION);
+          if (isAdmin()):
           $entrepots = Soutra::getAllTable('entrepot',"etat_entrepot");
           $styles = [
             ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
@@ -197,15 +199,15 @@
                 <!-- .dropdown-sheets -->
               </div><!-- .dropdown-menu -->
             </li><!-- /.nav-item -->
-
+<?php endif; ?>
             
           </ul><!-- /.nav -->
         <?php endif; ?>
 
         <?php
         if (strtolower($_SESSION['role']) != ADMIN):
-          $limit = Soutra::getStockLimitAlert();
-
+          // $limit = Soutra::getStockLimitAlert();
+          $limit = [];
           if (count($limit) > 0): ?>
 
             <ul class="header-nav nav">
@@ -265,9 +267,9 @@
             <?php endif; ?>
 
             <div class="dropdown-divider"></div>
-            <button class="dropdown-item btn_deconnexion">
+            <button class="dropdown-item btn_deconnexion" style="cursor: pointer;" >
               <span class="dropdown-icon oi oi-account-logout"></span>
-              Deconnexion
+              Déconnexion
             </button>
           </div><!-- /.dropdown-menu -->
         </div><!-- /.btn-account -->
