@@ -85,7 +85,7 @@ class ControllerEntrepot extends Connexion
                 <i class="bi bi-check-circle"></i> </button>';
                     }
 
-              $output .= '
+                    $output .= '
             <tr class="row' . $row['ID_entrepot'] . '" ' . ($row['ID_entrepot'] == $_SESSION['id_entrepot'] ? 'style="background-color: #d4edda;"' : '') . '>
                <td>' . $i . '</td>
                <td>' . $row['libelle_entrepot'] . '</td>
@@ -97,7 +97,7 @@ class ControllerEntrepot extends Connexion
                ';
 
 
-              $output .= '
+                    $output .= '
               
               <td style="display: flex; flex-direction: row; align-items: center;"> 
             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article mr-2" data-action="entrepot">
@@ -112,7 +112,7 @@ class ControllerEntrepot extends Connexion
           </td>
             </tr>
             ';
-            }
+                }
             }
             echo $output;
         }
@@ -299,6 +299,29 @@ class ControllerEntrepot extends Connexion
         }
     }
 
+    public static function verifQteArticleTransfert()
+    {
+        if (isset($_POST['btn_verifQteArticleTransfert'])) {
+            $stock = Soutra::getNiveauStockArticle('view_stock_produit', 'ID_article', 'ID_entrepot', $_POST['id'], $_SESSION['id_entrepot']);
+
+            // $entree = Soutra::getCompterSum('entree', 'qte', 'article_id', $_POST['id']);
+            // $sortie = Soutra::getCompterSum('sortie', 'qte', 'article_id', $_POST['id']);
+            // $stock = abs($entree - $sortie);
+            var_dump($stock);
+            // echo json_encode();
+            if (!empty($stock)) {
+
+                if ($stock['quantite_disponible'] >= $_POST['qte']) {
+                    echo 'ok';
+                } else {
+                    echo $stock['quantite_disponible'];
+                }
+            } else {
+                echo "stock indisponible";
+            }
+        }
+    }
+
     public static function ajouter_panier_transfert()
     {
         if (isset($_POST['btn_ajouter_panier_transfert'])) {
@@ -400,7 +423,7 @@ class ControllerEntrepot extends Connexion
         }
     }
 
-    public static function validation_achat()
+    public static function validation_transfert()
     {
         if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_validation_transfert") {
             extract($_POST);
@@ -449,7 +472,7 @@ class ControllerEntrepot extends Connexion
         }
     }
 
-    public static function encaissement_achat()
+    public static function encaissement_transfert()
     {
         if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_encaisser_transfer") {
             extract($_POST);
@@ -468,7 +491,7 @@ class ControllerEntrepot extends Connexion
         }
     }
 
-    public static function retourner_achat()
+    public static function retourner_transfert()
     {
         if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_retourner_transfer") {
             extract($_POST);
@@ -514,7 +537,7 @@ class ControllerEntrepot extends Connexion
             echo json_encode($msg);
         }
     }
-    public static function annulation_achat()
+    public static function annulation_transfert()
     {
         if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_annuler_transfer") {
             extract($_POST);

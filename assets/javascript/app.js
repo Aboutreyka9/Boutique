@@ -1761,50 +1761,7 @@ return total_ttc;
 }
 
 
-    totalRow()
-
-    function totalRow() {
-        $('.table_total').on('keyup', '.col', function () {
-
-            var currow = $(this).closest('tr');
-            total = 0
-            var pu = currow.find('.pu').text();
-            var qte = currow.find('.qte').text();
-
-
-            var page_transfert = $('#page_transfert').val();
-            if (page_transfert != undefined) {
-                var id_article = Number(currow.find('.d_none').text());
-
-                $.ajax({
-                    url: "../partials/rooter.php",
-                    method: "POST",
-                    data: {
-                        id: id_article,
-                        qte: qte,
-                        btn_verifQteArticleVente: 1
-                    },
-                    success: function (data) {
-
-                        // return;
-                        if (data != 'ok') {
-                            notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
-                            currow.find('.qte').text(data);
-                            qte = data;
-                        }
-                    }
-                });
-            }
-
-
-            var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
-            // // 
-            currow.find('.total').text(total);
-
-            totalAll();
-
-        });
-    }
+  
 
 // rien
     function totalAll() {
@@ -2185,6 +2142,7 @@ return total_ttc;
             var page_vente = $('#page_vente').val();
             if (page_vente != undefined) {
                 var id_article = Number(currow.find('.d_none').text());
+              
 
                 $.ajax({
                     url: "../partials/rooter.php",
@@ -2195,8 +2153,8 @@ return total_ttc;
                         btn_verifQteArticleVente: 1
                     },
                     success: function (data) {
-
-                        // return;
+                        console.log(data);
+                        
                         if (data != 'ok') {
                             notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
                             currow.find('.qte').text(data);
@@ -2206,6 +2164,33 @@ return total_ttc;
                 });
             }
 
+            var page_transfert = $('#page_transfert').val();
+            if (page_transfert != undefined) {
+                var id_article = Number(currow.find('.d_none').text());
+
+                // $.ajax({
+                //     url: "../partials/rooter.php",
+                //     method: "POST",
+                //     data: {
+                //         id: id_article,
+                //         qte: qte,
+                //         btn_verifQteArticleTransfert: 1
+                //     },
+                //     success: function (data) {
+                //         console.log(data);
+                        
+                     
+                //         if (data != 'ok') {
+                //             // notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
+                //                notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
+                //             currow.find('.qte').text('');
+                //             // currow.find('.qte').text(data);
+                //             qte = null;
+                //             // qte = data;
+                //         }
+                //     }
+                // });
+            }
 
             var total = (!isNaN(pu) && !isNaN(qte)) ? Number(pu) * Number(qte) : 0;
             // // 
@@ -2902,7 +2887,8 @@ return total_ttc;
             if (qte <= 0 || isNaN(qte)) {
                 return false;
             }
-
+            console.log(qte);
+            
             $.ajax({
                 url: "../partials/rooter.php",
                 method: "POST",
@@ -2912,6 +2898,9 @@ return total_ttc;
                     btn_verifQteArticleVente: 1
                 },
                 success: function (data) {
+                    console.log(data);
+                    return
+                    
                     if (data != 'ok') {
                         notify('Desolé,sotock insuffisant à la quatité demandé, il reste ' + data, '', 'alert', 'warning');
                         qte_fiel.val(data);

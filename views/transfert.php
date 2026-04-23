@@ -137,7 +137,7 @@
    </div>
 
    <!-- floating action -->
-   <a href="<?= URL ?>ajouter_achat" class="btn btn-success btn-floated" title="Ajouter vente">
+   <a href="<?= URL ?>ajouter_transfert" class="btn btn-success btn-floated" title="Ajouter vente">
      <span style="line-height: 45px" class="fa fa-plus"></span>
    </a>
 

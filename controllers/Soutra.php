@@ -2586,6 +2586,20 @@ class Soutra extends Connexion
         return $data;
     }
 
+    // get all table by 2 elements 
+    public static function getNiveauStockArticle($table, $id_article, $entrepot, $val1, $val2)
+    {
+        $data = [];
+        $sql = "SELECT * FROM $table WHERE $id_article =:val1 AND $entrepot =:val2";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['val1' => $val1, 'val2' => $val2]);
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
 
 
 
