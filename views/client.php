@@ -56,7 +56,7 @@
             <i class="fa fa-edit"></i> 
     
 </button> ';
-            if (strtolower($_SESSION['role']) == ADMIN) {
+            if (isAdminGestionnaire()) {
               $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_client'] . '" class="btn btn-warning btn-sm btn_remove_client">
                 <i class="fa fa-trash"></i> </button>

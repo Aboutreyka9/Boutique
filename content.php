@@ -79,6 +79,9 @@ switch (@$_GET['pg']) {
 	case 'detail_depense':
 		include 'views/detail_depense.php';
 		break;
+	case 'tresorerie':
+		include 'views/tresorerie.php';
+		break;
 
 	// VENTE
 	case 'vente':

@@ -22,7 +22,7 @@
             <span class="dropdown-icon oi oi-person"></span>
             Profile
           </a>
-          <?php if (strtolower($_SESSION['role']) == ADMIN): ?>
+          <?php if (isAdmin()): ?>
             <a class="dropdown-item" href="<?= URL; ?>configuration">
               <span class="dropdown-icon oi oi-person"></span>
               Configuration
@@ -49,12 +49,12 @@
             <a href="<?= RACINE; ?>" class="menu-link"><span class="menu-icon fa fa-home"></span> <span class="menu-text">Dashboard</span></a>
           </li><!-- /.menu-item -->
 
-          <?php if (strtolower($_SESSION['role']) == ADMIN): ?>
+          <?php if (isAdminGestionnaire()): ?>
             <!-- SI ADMINTRATEUR -->
 
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('employe'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-person"></span> <span class="menu-text">Employé</span></a> <!-- child menu -->
+              <a href="#" class="menu-link"><i class=" menu-icon bi bi-people-fill"></i> <span class="menu-text">Employé</span></a> <!-- child menu -->
               <ul class="menu">
                 <li class="menu-item <?= isActive('employe'); ?>">
                   <a href="<?= URL; ?>employe" class="menu-link">Liste employés </a>
@@ -64,7 +64,7 @@
             <?php if (Soutra::getState('fournisseur') == 1) { ?>
               <!-- .menu-item -->
               <li class="menu-item has-child  <?= isActive('fournisseur'); ?>">
-                <a href="#" class="menu-link"><span class="menu-icon oi oi-person"></span> <span class="menu-text">Fourniseur</span></a> <!-- child menu -->
+                <a href="#" class="menu-link"><span class="menu-icon bi bi-people-fill"></span> <span class="menu-text">Fourniseur</span></a> <!-- child menu -->
                 <ul class="menu">
                   <li class="menu-item <?= isActive('fournisseur'); ?>">
                     <a href="<?= URL; ?>fournisseur" class="menu-link">Liste fournisseur</a>
@@ -76,7 +76,7 @@
             <?php if (Soutra::getState('client') == 1) { ?>
               <!-- .menu-item -->
               <li class="menu-item has-child <?= isActive('client'); ?>">
-                <a href="#" class="menu-link"><span class="menu-icon oi oi-person"></span> <span class="menu-text">Client</span>
+                <a href="#" class="menu-link"><i class=" menu-icon bi bi-people-fill"></i>  <span class="menu-text">Client</span>
                   <?php $cl = Soutra::getCountNew('client');
                   if ($cl > 0) : ?>
                     <span class="badge badge-subtle badge-success">
@@ -97,7 +97,7 @@
             <li class="menu-header">Stock </li><!-- /.menu-header -->
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('achat'); ?> <?= isActive('ajouter_achat'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-puzzle-piece"></span> <span class="menu-text">Approvisionner</span>
+              <a href="#" class="menu-link"><span class="menu-icon bi bi-cart-plus-fill"></span> <span class="menu-text">Approvisionner</span>
                 <?php $cl = Soutra::getCountNew('achat');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
@@ -116,7 +116,7 @@
             </li><!-- /.menu-item -->
             <!-- .menu-item -->
             <li class="menu-item has-child  <?= isActive('vente'); ?> <?= isActive('ajouter_vente'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Vente</span>
+              <a href="#" class="menu-link"><span class="menu-icon bi bi-cart4"></span> <span class="menu-text">Vente</span>
                 <?php $cl = Soutra::getCountNew('vente');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
@@ -136,7 +136,7 @@
 
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('retour'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Retour</span></a> <!-- child menu -->
+              <a href="#" class="menu-link"><i class=" menu-icon bi bi-arrow-repeat"></i> <span class="menu-text">Retour</span></a> <!-- child menu -->
               <ul class="menu">
                 <li class="menu-item <?= isActive('retour'); ?>">
                   <a href="<?= URL; ?>retour" class="menu-link"> Detail</a>
@@ -172,7 +172,7 @@
             <li class="menu-header">Comptabilité </li><!-- /.menu-header -->
             <!-- .menu-item -->
             <li class="menu-item has-child  <?= isActive('depense'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Depense</span>
+              <a href="#" class="menu-link"><i class=" menu-icon bi bi-cash-stack"></i> <span class="menu-text">Depense</span>
 
               </a> <!-- child menu -->
               <ul class="menu">
@@ -183,7 +183,7 @@
             </li><!-- /.menu-item -->
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('inventaire'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon fa fa-table"></span> <span class="menu-text">Inventaire</span></a> <!-- child menu -->
+              <a href="#" class="menu-link"><i class="menu-icon bi bi-box-seam"></i> <span class="menu-text">Inventaire</span></a> <!-- child menu -->
               <ul class="menu">
                 <li class="menu-item  <?= isActive('inventaire'); ?>">
                   <a href="<?= URL; ?>inventaire" class="menu-link">liste</a>
@@ -195,7 +195,7 @@
             <li class="menu-header">produit </li><!-- /.menu-header -->
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('categorie'); ?> <?= isActive('mark'); ?> <?= isActive('famille'); ?> <?= isActive('unite'); ?> <?= isActive('article'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Catalogue article</span></a> <!-- child menu -->
+              <a href="#" class="menu-link"><span class="menu-icon bi bi-folder2-open"></span> <span class="menu-text">Catalogue article</span></a> <!-- child menu -->
               <ul class="menu">
                 <li class="menu-item <?= isActive('categorie'); ?>">
                   <a href="<?= URL; ?>categorie" class="menu-link">liste categories</a>
@@ -218,7 +218,7 @@
             <div class="dropdown-divider">Configuration</div>
             <!-- .menu-item -->
             <li class="menu-item has-child  <?= isActive('entrepot'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Entrepot</span>
+              <a href="#" class="menu-link"><i class=" menu-icon bi bi-bank"></i><span class="menu-text">Entrepot</span>
 
               </a> <!-- child menu -->
               <ul class="menu">
@@ -228,7 +228,12 @@
               </ul><!-- /child menu -->
             </li><!-- /.menu-item -->
             <!-- .menu-item -->
-            <li class="menu-header">Archive </li><!-- /.menu-header -->
+            <li class="menu-header">Tresorerie</li><!-- /.menu-header -->
+            <li class="menu-item <?= isActive('tresorerie'); ?>">
+              <a href="<?= URL; ?>tresorerie" class="menu-link"><i class=" menu-icon bi bi-cash-coin"></i> <span class="menu-text">Tresorerie</span></a>
+            </li>
+
+            <li class="menu-header">Archive</li><!-- /.menu-header -->
             <!-- .menu-item -->
             <li class="menu-item has-child">
               <a href="#" class="menu-link"><span class="menu-icon fa fa-trash"></span> <span class="menu-text">Corbeille</span></a> <!-- child menu -->
@@ -259,7 +264,7 @@
                     </li>
                     <li class="menu-item">
                       <a href="<?= URL; ?>arc_vente" class="menu-link">Vente</a>
-                    </li>-->
+                    </li> -->
               </ul><!-- /child menu -->
             </li><!-- /.menu-item -->
 
@@ -310,7 +315,7 @@
             </li><!-- /.menu-item -->
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('retour'); ?>">
-              <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Retour</span></a> <!-- child menu -->
+              <a href="#" class="menu-link"><i class=" menu-icon bi bi-arrow-return-left"></i> <span class="menu-text">Retour</span></a> <!-- child menu -->
               <ul class="menu">
                 <li class="menu-item <?= isActive('retour'); ?>">
                   <a href="<?= URL; ?>retour" class="menu-link"> Detail</a>

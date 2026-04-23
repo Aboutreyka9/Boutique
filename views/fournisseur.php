@@ -1,8 +1,7 @@
 <?php
-if (notAdmin()) {
-  return;
-}
-
+ if(!isAdminGestionnaire()){
+   return;
+ }
 if (Soutra::getState('fournisseur') != 1) {
   include('views/not_found.php');
   return;
@@ -61,7 +60,7 @@ if (Soutra::getState('fournisseur') != 1) {
             <i class="fa fa-edit"></i> 
     
 </button> ';
-          if (strtolower($_SESSION['role']) == ADMIN) {
+          if (isAdminGestionnaire()) {
             $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-warning btn-sm btn_remove_fournisseur">
                 <i class="fa fa-trash"></i> </button>

@@ -1,5 +1,5 @@
 <?php
- if (notAdmin()) {
+ if (!isAdminGestionnaire()) {
      return;
  }
   ?>

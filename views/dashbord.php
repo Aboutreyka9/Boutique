@@ -219,13 +219,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
 
     </div>
 
-
     <!-- CARD -->
-
-
-
-
-
 
   </div>
 
