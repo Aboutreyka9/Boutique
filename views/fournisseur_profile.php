@@ -1,9 +1,8 @@
 <?php
 
-if(notAdmin()){
-    return;
-  }
-
+ if (!isAdminGestionnaire()) {
+     return;
+ }
   if (Soutra::getState('fournisseur') != 1) {
     include('views/not_found.php');
     return ;

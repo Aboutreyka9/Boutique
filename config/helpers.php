@@ -39,6 +39,35 @@ function notAdmin()
   }
 }
 
+function isAdmin()
+{
+  if (isset($_SESSION['role']) && strtolower($_SESSION['role']) == ADMIN ) {
+    return true;
+  }
+}
+
+function isGestionnaire()
+{
+  if (isset($_SESSION['role']) && strtolower($_SESSION['role']) == GESTIONNAIRE) {
+    return true;
+  }
+}
+
+function isGestionnaireCommercial()
+{
+  if (isset($_SESSION['role']) && strtolower($_SESSION['role']) == COMMERCIAL || strtolower($_SESSION['role']) == GESTIONNAIRE) {
+    return true;
+  }
+}
+function isAdminGestionnaire()
+{
+  if (isset($_SESSION['role']) && strtolower($_SESSION['role']) == ADMIN || strtolower($_SESSION['role']) == GESTIONNAIRE) {
+    return true;
+  }
+}
+
+
+
 function notAccessPage($val)
 {
   if ($val) {

@@ -1,8 +1,8 @@
 <?php
-if (notAdmin()) {
-  return;
-}
-?>
+ if (!isAdminGestionnaire()) {
+     return;
+ }
+  ?>
 
 <?php
 // Dates par défaut

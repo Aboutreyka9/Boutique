@@ -5067,7 +5067,7 @@ function modalEncaissementAchat(selector) {
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    console.log(data);
+                    
                     
                     $(".menu-modal-encaissement").html(data);
                     $("#encaisser-modal").modal('show');
