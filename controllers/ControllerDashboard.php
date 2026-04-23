@@ -32,7 +32,7 @@ class ControllerDashboard extends Connexion
 
       $totalAchatAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
 
-      $totalVenteAttente = Soutra::getTotauxVenteEnAttente(); // méthode adaptée que l'on a créée
+      $totalVenteAttente = (isGestionnaireCommercial())? Soutra::getTotauxVenteEnAttenteNotAdmin() : Soutra::getTotauxVenteEnAttenteAdmin(); // méthode adaptée que l'on a créée
 
       $tresorerie = Soutra::getTotauxTresorerie(); // méthode adaptée que l'on a créée
 
