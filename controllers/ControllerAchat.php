@@ -278,10 +278,6 @@ class ControllerAchat extends Connexion
     }
   }
 
-
-
-
-
   public static function retourner_achat()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_retourner_achat") {
@@ -1186,7 +1182,7 @@ class ControllerAchat extends Connexion
   }
 
 
-  
+
   public static function getEncaissementAchat()
   {
     if (isset($_POST["frm_encaissement_achat"])) {
@@ -1197,7 +1193,7 @@ class ControllerAchat extends Connexion
       $output = '
             <form id="form_encaisser_achat" method="POST">
             <div class="row">
-            <input type="hidden" name="code_achat" value="'.$code.'">
+            <input type="hidden" name="code_achat" value="' . $code . '">
             <input type="hidden" name="btn_encaisser_achat" class="form-control">
                 <div class="col-md-12">
                 <div class="form-group">
@@ -1211,7 +1207,7 @@ class ControllerAchat extends Connexion
               <div class="col-md-12">
                 <div class="form-group">
                   <label for="montant_total">Montant à regler</label>
-                  <input readOnly type="text" class="form-control" id="montant_total_achat" value="'.$_POST['reste_a_payer'].'">
+                  <input readOnly type="text" class="form-control" id="montant_total_achat" value="' . $_POST['reste_a_payer'] . '">
                 </div>
 
               </div>

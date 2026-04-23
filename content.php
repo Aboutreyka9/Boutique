@@ -132,7 +132,12 @@ switch (@$_GET['pg']) {
 	case 'detail_entrepot':
 		include 'views/detail_entrepot.php';
 		break;
-
+	case 'ajouter_transfert':
+		include 'views/ajouter_transfert.php';
+		break;
+	case 'transfert':
+		include 'views/transfert.php';
+		break;
 	// HISTARIQUE
 	case 'hist_vente':
 		include 'views/hist_vente.php';
@@ -178,9 +183,7 @@ switch (@$_GET['pg']) {
 	case '/':
 		include 'views/dashbord.php';
 		break;
-	case 'transfert':
-		include 'views/transfert.php';
-		break;
+
 
 
 	default:
