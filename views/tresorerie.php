@@ -31,7 +31,7 @@ if (isAdminGestionnaire()):
               </div>
               <h6><span class="text-muted text-uppercase">ACHAT REGLE</span></h6>
             </div>
-            <h5><span id=""> <?= $tresorerie['total_entree'] ?> </span> FCFA</h5>
+            <h5><span id=""> <?= $tresorerie['total_entree'] ?? 0 ?> </span> FCFA</h5>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ if (isAdminGestionnaire()):
               </div>
               <h6><span class="text-muted text-uppercase">DÉPENSES QUOTIDIENT</span> </h6>
             </div>
-            <h5><span id="montant_depense"> <?= $tresorerie['total_depense'] ?> </span> FCFA</h5>
+            <h5><span id="montant_depense"> <?= $tresorerie['total_depense'] ?? 0 ?> </span> FCFA</h5>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@ if (isAdminGestionnaire()):
               </div>
               <h6><span class="text-muted text-uppercase">VENTES REGLE</span> </h6>
             </div>
-            <h5><span id=""> <?= $tresorerie['total_sortie_achat'] ?> </span> FCFA</h5>
+            <h5><span id=""> <?= $tresorerie['total_sortie_achat'] ?? 0 ?> </span> FCFA</h5>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ if (isAdminGestionnaire()):
               </div>
               <h6><span class="text-muted text-uppercase">CAISSE </span> </h6>
             </div>
-            <h5><span id="montant_reapprovisionnement"> <?= $tresorerie['solde_tresorerie'] ?> </span> FCFA</h5>
+            <h5><span id="montant_reapprovisionnement"> <?= $tresorerie['solde_tresorerie'] ?? 0 ?> </span> FCFA</h5>
           </div>
         </div>
       </div>

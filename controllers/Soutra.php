@@ -1221,18 +1221,19 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getAllArticleFamilleMark($etat = 1)
+    public static function getAllArticleFamilleMark($entrepot = null,$etat = 1)
     {
         $data = [];
-        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark 
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite
         FROM article ar 
         JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id AND ent.etat_article = :etat_entrepot_article
         JOIN famille fa ON fa.ID_famille = ar.famille_id 
         JOIN mark ma ON ma.ID_mark = ar.mark_id  
+        JOIN unite un ON un.ID_unite = ar.unite_id  
         WHERE ar.etat_article = :etat  ORDER BY ID_article DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
-            'entrepot_id' => $_SESSION['id_entrepot'],
+            'entrepot_id' => $entrepot ?? $_SESSION['id_entrepot'],
             'etat_entrepot_article' => STATUT[1],
             'etat' => STATUT[1]
         ]);
@@ -1317,9 +1318,9 @@ class Soutra extends Connexion
     {
         $data = [];
 
-        $sql = "SELECT SUM(montant_total_stock) as total_montant, SUM(quantite_disponible) as total_quantite FROM view_stock_produit";
+        $sql = "SELECT SUM(montant_total_stock) as total_montant, SUM(quantite_disponible) as total_quantite FROM view_stock_produit WHERE entrepot_id = :entrepot";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute();
+        $query->execute(['entrepot' => $_SESSION['entrepot_id']]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetch(PDO::FETCH_ASSOC);

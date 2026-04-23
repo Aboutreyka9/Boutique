@@ -33,7 +33,7 @@
         <thead class="thead-light">
           <tr>
             <th style="width: 2%;">#</th>
-            <th style="width: 20%;">Nom</th>
+            <th style="width: 20%;">Libelle</th>
             <th style="width: 17%;">Ville</th>
             <th style="width: 15%;">Adresse</th>
             <th style="width: 20%;">Responsable</th>
@@ -77,6 +77,10 @@
               $output .= '
               
               <td style="display: flex; flex-direction: row; align-items: center;"> 
+              
+              <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm mr-2">
+            <i class="fa fa-eye"></i></a>
+
             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article mr-2" data-action="entrepot">
             <i class="fa fa-link"></i></button>
 

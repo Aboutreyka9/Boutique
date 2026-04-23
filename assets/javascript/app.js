@@ -4798,11 +4798,11 @@ return total_ttc;
                     dateFin: dateFin,
                     btn_filter_inventaire: 1
                 },
-                //typeData :"JSON",
+                dataType: "JSON",
                 success: function (data) {
-                    let res = JSON.parse(data);
+                    let res = data;
 
-                    console.log('res', res);
+                    // console.log('res', res);return
                     $("#total_caisse").addClass(res.type)
                     $('#total_achat').text(res.achat_mois);
                     $('#total_depense').text(res.depenses_mois);
