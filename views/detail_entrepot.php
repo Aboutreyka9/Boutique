@@ -46,7 +46,7 @@
 
 <!-- STATS -->
 <h5>STATISTIQUES</h5>
-    <div class="row g-3 mb-1">
+    <div class="row g-3 mb-1 dashboard_admin">
 
       <div class="col-md-4">
         <div class="card custom-card-detail">

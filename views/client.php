@@ -33,7 +33,7 @@
      <tbody class="client-table">
        <?php
         $output = '';
-        $client = Soutra::getAllClient();
+        $client = Soutra::getAllClientEntrepot();
         if (!empty($client)) {
           $i = 0;
           foreach ($client as $row) {

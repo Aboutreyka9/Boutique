@@ -1063,13 +1063,28 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getAllClient($etat = 1)
+    public static function getAllClientEntrepot($etat = 1)
     {
         $data = [];
         $sql = "SELECT c.* FROM client c JOIN vente v ON c.ID_client = v.client_id
         WHERE  v.entrepot_id = :entrepot AND etat_client = :etat  ORDER BY ID_client DESC";
         $query = self::getConnexion()->prepare($sql);
         $query->execute(['entrepot' => $_SESSION['id_entrepot'],'etat' => $etat]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getAllClient($etat = 1)
+    {
+        $data = [];
+        $sql = "SELECT c.* FROM client c
+        WHERE  etat_client = :etat  ORDER BY ID_client DESC";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['etat' => $etat]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1318,9 +1333,9 @@ class Soutra extends Connexion
     {
         $data = [];
 
-        $sql = "SELECT SUM(montant_total_stock) as total_montant, SUM(quantite_disponible) as total_quantite FROM view_stock_produit WHERE entrepot_id = :entrepot";
+        $sql = "SELECT SUM(montant_total_stock) as total_montant, SUM(quantite_disponible) as total_quantite FROM view_stock_produit WHERE ID_entrepot = :entrepot";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['entrepot' => $_SESSION['entrepot_id']]);
+        $query->execute(['entrepot' => $_SESSION['id_entrepot']]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetch(PDO::FETCH_ASSOC);

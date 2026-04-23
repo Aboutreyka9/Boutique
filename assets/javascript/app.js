@@ -1798,6 +1798,8 @@ return total_ttc;
         $('body').delegate('#btn_ajouter_panier_vente', 'submit', function (e) {
             e.preventDefault();
             var vente = $(this).serialize();
+            console.log(vente);
+            
             ajouter_panier_vente(vente);
         });
     }
@@ -2138,6 +2140,7 @@ return total_ttc;
             var pu = currow.find('.pu').text();
             var qte = currow.find('.qte').text();
 
+console.log(qte);
 
             var page_vente = $('#page_vente').val();
             if (page_vente != undefined) {
@@ -2153,7 +2156,7 @@ return total_ttc;
                         btn_verifQteArticleVente: 1
                     },
                     success: function (data) {
-                        console.log(data);
+                        console.log(data);return
                         
                         if (data != 'ok') {
                             notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
@@ -3102,7 +3105,7 @@ return total_ttc;
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     // return
                     $("#achat_attente").text(data.totalAchatAttente.total);
                     $("#vente_attente").text(data.totalVenteAttente.total);
