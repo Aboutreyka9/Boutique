@@ -1773,18 +1773,23 @@ GROUP BY e.ID_entrepot;";
             END 
             AS
              mois,YEAR(ve.created_at) annee, SUM(so.prix_vente * qte)  AS total 
-            FROM sortie so INNER JOIN vente ve ON ve.code_vente = so.vente_id WHERE ve.etat_vente = 1
-            GROUP BY YEAR(ve.created_at),  MONTH(ve.created_at) ";;
+            FROM sortie so JOIN vente ve ON ve.code_vente = so.vente_id WHERE ve.entrepot_id = :entrepot_id AND ve.statut_vente IN(:st1, :st2)
+            GROUP BY YEAR(ve.created_at),  MONTH(ve.created_at) ";
 
         if (!empty($annee)) {
             $sql .= " HAVING annee = $annee ";
         }
+
         $sql .= "ORDER BY YEAR(ve.created_at) DESC, MONTH(ve.created_at) ASC  LIMIT 12";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([]);
+        $query->execute([
+            ':entrepot_id' => $_SESSION['id_entrepot'],
+            ':st1' => STATUT_COMMANDE[1],
+            ':st2' => STATUT_COMMANDE[2]
+        ]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -1810,7 +1815,7 @@ GROUP BY e.ID_entrepot;";
         END 
         AS
          mois,YEAR(ac.created_at) annee, SUM(en.prix_achat * qte)  AS total ,SUM(qte) AS qte
-        FROM entree en INNER JOIN achat ac ON ac.code_achat = en.achat_id WHERE ac.etat_achat = 1
+        FROM entree en INNER JOIN achat ac ON ac.code_achat = en.achat_id WHERE  ac.entrepot_id = :entrepot_id AND ac.statut_achat IN(:st1, :st2)
         GROUP BY YEAR(ac.created_at), MONTH(ac.created_at) ";;
 
         if (!empty($annee)) {
@@ -1818,10 +1823,14 @@ GROUP BY e.ID_entrepot;";
         }
         $sql .= "ORDER BY YEAR(ac.created_at) DESC, MONTH(ac.created_at) ASC  LIMIT 12";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([]);
+        $query->execute([
+            ':entrepot_id' => $_SESSION['id_entrepot'],
+            ':st1' => STATUT_COMMANDE[1],
+            ':st2' => STATUT_COMMANDE[2]
+        ]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -1916,7 +1925,7 @@ GROUP BY e.ID_entrepot;";
         MONTH(ve.created_at) mois, WEEK(ve.created_at) periode, DAYNAME(ve.created_at) jour
         FROM sortie so 
         INNER JOIN vente ve ON ve.code_vente = so.vente_id
-        WHERE (ve.etat_vente = 1 AND so.etat_sortie = 1)
+        WHERE ve.entrepot_id = :entrepot_id AND (ve.statut_vente IN(:st1, :st2) AND so.etat_sortie = 1)
         GROUP BY YEAR(ve.created_at),MONTH(ve.created_at),WEEK(ve.created_at),DAY(ve.created_at)
         HAVING WEEK(ve.created_at) = (SELECT MAX(WEEK(vente.created_at)) FROM vente WHERE YEAR(vente.created_at) = (SELECT MAX(YEAR(created_at)) FROM vente ))
         ORDER BY DAY(ve.created_at) ASC, ve.created_at DESC";
@@ -1926,10 +1935,14 @@ GROUP BY e.ID_entrepot;";
         // GROUP BY DAY(ve.created_at) HAVING  periode = (select MAX(WEEK(created_at)) semaine FROM vente)
         // ORDER BY DAY(ve.created_at) ASC LIMIT 7";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute([]);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'st1' => STATUT_COMMANDE[1],
+            'st2' => STATUT_COMMANDE[2]
+        ]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
