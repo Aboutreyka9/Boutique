@@ -67,7 +67,7 @@
             <button data-id="' . $row['ID_article'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article"  data-action="article">
             <i class="fa fa-link"></i></button>
             
-            <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_articlek">
+            <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_article">
             <i class="fa fa-trash"></i></button>
           </td>
              </tr>
