@@ -12,9 +12,13 @@ if (strtolower($_SESSION['role']) == ADMIN):
 
   $dateD = (new DateTime('first day of this month'))->format('d-m-Y');
   $dateF = (new DateTime('today'))->format('d-m-Y');
-  $entrepot = $_SESSION['entrepot'] ?? null;
+  $entrepot = $_SESSION['id_entrepot'] ?? null;
   $reapprovisionnements = Soutra::getTotalReapprovisionnementDashboard($start, $end, $entrepot);
   $ventes = Soutra::getTotalVenteDashboard($start, $end, $entrepot);
+
+  // $detteFournisseur = Soutra::getTotalDetteFournisseurDashboard($start, $end, 'achat', $entrepot);
+
+  // var_dump($detteFournisseur);
 
   // $getTotauxViewStockProduit = Soutra::getTotauxViewStockProduit();
   // var_dump($getTotauxViewStockProduit);

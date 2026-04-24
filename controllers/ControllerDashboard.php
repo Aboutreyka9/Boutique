@@ -16,13 +16,13 @@ class ControllerDashboard extends Connexion
 
       $entrepot = $_SESSION['id_entrepot'] ?? null;
 
-      $reapprovisionnements = (isGestionnaire())?Soutra::getTotalReapprovisionnementValideDashboardNotAdmin($start, $end, $entrepot):Soutra::getTotalReapprovisionnementValideDashboardAdmin($start, $end, $entrepot);
-      
-      $ventes = (isGestionnaireCommercial())? Soutra::getTotalVenteValideDashboardNotAdmin($start, $end, $entrepot): Soutra::getTotalVenteValideDashboardAdmin($start, $end, $entrepot);
+      $reapprovisionnements = (isGestionnaire()) ? Soutra::getTotalReapprovisionnementValideDashboardNotAdmin($start, $end, $entrepot) : Soutra::getTotalReapprovisionnementValideDashboardAdmin($start, $end, $entrepot);
 
-      $detteFournisseur = Soutra::getTotalDetteClientDashboard($start, $end,'achat',$entrepot);
+      $ventes = (isGestionnaireCommercial()) ? Soutra::getTotalVenteValideDashboardNotAdmin($start, $end, $entrepot) : Soutra::getTotalVenteValideDashboardAdmin($start, $end, $entrepot);
 
-      $detteClient = Soutra::getTotalDetteClientDashboard($start, $end,'vente',$entrepot);
+      $detteFournisseur = Soutra::getTotalDetteFournisseurDashboard($start, $end, 'achat', $entrepot);
+
+      $detteClient = Soutra::getTotalDetteClientDashboard($start, $end, 'vente', $entrepot);
 
       $depenses = Soutra::getTotalDepenseDAshboard($start, $end, $entrepot);
 
@@ -32,7 +32,7 @@ class ControllerDashboard extends Connexion
 
       $totalAchatAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
 
-      $totalVenteAttente = (isGestionnaireCommercial())? Soutra::getTotauxVenteEnAttenteNotAdmin() : Soutra::getTotauxVenteEnAttenteAdmin(); // méthode adaptée que l'on a créée
+      $totalVenteAttente = (isGestionnaireCommercial()) ? Soutra::getTotauxVenteEnAttenteNotAdmin() : Soutra::getTotauxVenteEnAttenteAdmin(); // méthode adaptée que l'on a créée
 
       $tresorerie = Soutra::getTotauxTresorerie(); // méthode adaptée que l'on a créée
 
@@ -48,8 +48,7 @@ class ControllerDashboard extends Connexion
         'totalAchatAttente',
         'totalVenteAttente',
         'tresorerie'
-        ));
+      ));
     }
   }
-
 } //fin de la class
