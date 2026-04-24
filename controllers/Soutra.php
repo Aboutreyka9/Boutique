@@ -593,7 +593,7 @@ class Soutra extends Connexion
         return $tab;
     }
 
-    
+
     public static function getTotalReapprovisionnementValideDashboardNotAdmin($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -619,7 +619,7 @@ class Soutra extends Connexion
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
+
     public static function getTotalReapprovisionnementValideDashboardAdmin($startDate, $endDate, $entrepot = null)
     {
         try {
@@ -869,6 +869,62 @@ class Soutra extends Connexion
         return $tab;
     }
 
+    /**
+     * Compte le nombre de clients ayant acheté dans un entrepôt spécifique
+     * @param int $entrepot_id ID de l'entrepôt
+     * @return int
+     */
+    public static function getCompterClientEntrepot($entrepot_id)
+    {
+        $sql = "SELECT COALESCE(COUNT(DISTINCT client_id),0) as total 
+            FROM vente 
+            WHERE entrepot_id = :id_entrepot";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        $stmt->execute(['id_entrepot' => $entrepot_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['total'] : 0;
+    }
+
+    /**
+     * Compte le nombre de clients ayant acheté dans un entrepôt spécifique
+     * @param int $entrepot_id ID de l'entrepôt
+     * @return int
+     */
+    public static function getCompterFournisseurEntrepot($entrepot_id)
+    {
+        $sql = "SELECT COALESCE(COUNT(DISTINCT fournisseur_id),0) as total 
+            FROM achat 
+            WHERE entrepot_id = :id_entrepot";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        $stmt->execute(['id_entrepot' => $entrepot_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['total'] : 0;
+    }
+
+    /**
+     * Compte le nombre de clients ayant acheté dans un entrepôt spécifique
+     * @param int $entrepot_id ID de l'entrepôt
+     * @return int
+     */
+    public static function getCompterEmployeEntrepot($entrepot_id)
+    {
+        $sql = "SELECT COUNT(DISTINCT s.employe_id) AS total
+FROM entrepot e
+LEFT JOIN service s ON e.ID_entrepot = s.entrepot_id
+WHERE s.entrepot_id = :id_entrepot AND (s.etat_service = 1 OR s.responsable = 1)
+GROUP BY e.ID_entrepot;";
+
+        $stmt = self::getConnexion()->prepare($sql);
+        $stmt->execute(['id_entrepot' => $entrepot_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['total'] : 0;
+    }
+
     public static function getCompter($table, $id, $etat, $val)
     {
         $sql = "SELECT COUNT($id) AS nb FROM $table WHERE $etat=?";
@@ -1025,7 +1081,7 @@ class Soutra extends Connexion
         $data = [];
         $sql = "SELECT emp.*, r.libelle_role role FROM employe emp INNER JOIN role r ON r.ID_role = emp.role_id WHERE etat_employe = :etat AND ID_employe != :id AND entrepot = :entrepot  ORDER BY ID_employe DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['etat' => $etat,'id' => $id,'entrepot' => $_SESSION['id_entrepot']]);
+        $query->execute(['etat' => $etat, 'id' => $id, 'entrepot' => $_SESSION['id_entrepot']]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -1063,13 +1119,29 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getAllClientEntrepot($etat = 1)
+    public static function getAllFournisseurEntrepot()
+    {
+        $data = [];
+        $sql = "SELECT fn.* FROM fournisseur fn 
+        JOIN achat ac ON fn.ID_fournisseur = ac.fournisseur_id
+        WHERE  ac.entrepot_id = :entrepot GROUP BY ac.entrepot_id, ac.fournisseur_id ORDER BY fn.nom_fournisseur";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute(['entrepot' => $_SESSION['id_entrepot']]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getAllClientEntrepot()
     {
         $data = [];
         $sql = "SELECT c.* FROM client c JOIN vente v ON c.ID_client = v.client_id
-        WHERE  v.entrepot_id = :entrepot AND etat_client = :etat  ORDER BY ID_client DESC";
+        WHERE  v.entrepot_id = :entrepot   GROUP BY v.entrepot_id, v.client_id ORDER BY c.nom_client";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['entrepot' => $_SESSION['id_entrepot'],'etat' => $etat]);
+        $query->execute(['entrepot' => $_SESSION['id_entrepot']]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
@@ -1236,7 +1308,7 @@ class Soutra extends Connexion
         return $data;
     }
 
-    public static function getAllArticleFamilleMark($entrepot = null,$etat = 1)
+    public static function getAllArticleFamilleMark($entrepot = null, $etat = 1)
     {
         $data = [];
         $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite

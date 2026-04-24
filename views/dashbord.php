@@ -1,4 +1,4 @@
-<?php 
+<?php
 // session_destroy();
 // var_dump($_SESSION);
 
@@ -36,36 +36,36 @@ if (strtolower($_SESSION['role']) == ADMIN):
   <!-- CARDS -->
   <div class="row g-3 dashboard_admin">
 
-<div class="col-md-12 mb-4 mt-2">
+    <div class="col-md-12 mb-4 mt-2">
 
-  <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+      <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
 
-    <!-- Titre -->
-    <div class="title">
-      <h1 class="page-title mb-1 mb-md-0">Statistiques</h1>
+        <!-- Titre -->
+        <div class="title">
+          <h1 class="page-title mb-1 mb-md-0">Statistiques</h1>
+        </div>
+
+        <!-- Activité -->
+        <div class="activity text-md-center">
+          <b id="activityDateRange">
+            Activité du <?= $dateD . ' au ' . $dateF; ?>
+          </b>
+        </div>
+
+        <!-- Filtre -->
+        <div class="input-group w-100 w-md-auto filter-box">
+          <span class="input-group-text">
+            <i class="fa fa-calendar"></i>
+          </span>
+          <input type="text" id="filterDashboardAdmin" class="form-control" placeholder="Sélectionner la période">
+          <button id="filterBtn" class="btn btn-primary">
+            <i class="fa fa-filter"></i>
+          </button>
+        </div>
+
+      </div>
+
     </div>
-
-    <!-- Activité -->
-    <div class="activity text-md-center">
-      <b id="activityDateRange">
-        Activité du <?= $dateD . ' au ' . $dateF; ?>
-      </b>
-    </div>
-
-    <!-- Filtre -->
-    <div class="input-group w-100 w-md-auto filter-box">
-      <span class="input-group-text">
-        <i class="fa fa-calendar"></i>
-      </span>
-      <input type="text" id="filterDashboardAdmin" class="form-control" placeholder="Sélectionner la période">
-      <button id="filterBtn" class="btn btn-primary">
-        <i class="fa fa-filter"></i>
-      </button>
-    </div>
-
-  </div>
-
-</div>
     <!-- STATS -->
     <div class="row g-3 mb-1">
 
@@ -84,7 +84,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
-      
+
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
@@ -99,7 +99,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
-            <div class="col-md-4">
+      <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
@@ -127,7 +127,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
-      
+
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
@@ -142,7 +142,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
         </div>
       </div>
 
-      
+
       <div class="col-md-4">
         <div class="card custom-card-detail">
           <div class="card-body">
@@ -156,13 +156,13 @@ if (strtolower($_SESSION['role']) == ADMIN):
           </div>
         </div>
       </div>
-      
+
       <div class="col-md-6">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="icon bg-orange mr-2">
-                  <i class="bi bi-alarm"></i>
+                <i class="bi bi-alarm"></i>
               </div>
               <h6><span class="text-muted text-uppercase">ACHAT EN ATTENTE</span> </h6>
             </div>
@@ -184,13 +184,13 @@ if (strtolower($_SESSION['role']) == ADMIN):
           </div>
         </div>
       </div>
-      
+
       <div class="col-md-6">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
               <div class="icon bg-info mr-2">
-                  <i class="bi bi-bell"></i>
+                <i class="bi bi-bell"></i>
               </div>
               <h6><span class="text-muted text-uppercase">STOCK DISPO</span> (<span id="nombre_stock_dispo"> 0 </span>)</h6>
             </div>
@@ -338,7 +338,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-purple"><i class="bi bi-person-plus-fill"></i></div>
         <h6>CLIENTS</h6>
-        <h5> <span> <?= Soutra::getCompter('client', 'ID_client', 'etat_client', 1); ?></span></h5>
+        <h5> <span> <?= Soutra::getCompterClientEntrepot($_SESSION['id_entrepot']); ?></span></h5>
       </div>
     </div>
 
@@ -346,7 +346,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-danger"><i class="bi bi-person-plus-fill"></i></div>
         <h6>FOURNISSEURS</h6>
-        <h5> <span> <?= Soutra::getCompter('fournisseur', 'ID_fournisseur', 'etat_fournisseur', 1); ?></span></h5>
+        <h5> <span> <?= Soutra::getCompterFournisseurEntrepot($_SESSION['id_entrepot']); ?></span></h5>
       </div>
     </div>
 
@@ -354,7 +354,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="card stat-card">
         <div class="icon bg-warning"><i class="bi bi-person"></i></div>
         <h6>EMPLOYERS</h6>
-        <h5><span><?= Soutra::getCompter('employe', 'ID_employe', 'etat_employe', 1); ?></span></h5>
+        <h5><span><?= Soutra::getCompterEmployeEntrepot($_SESSION['id_entrepot']); ?></span></h5>
       </div>
     </div>
 
