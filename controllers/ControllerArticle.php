@@ -251,29 +251,31 @@ class ControllerArticle extends Connexion
             if (!empty($article)) {
                 $i = 0;
                 foreach ($article as $row) {
-                    $i++;
-                    //$etat = $row['etat_article'] == 1 ? "Disponible" : "Non disponible";
+                $i++;
+                //$etat = $row['etat_article'] == 1 ? "Disponible" : "Non disponible";
+                $output .= '
+            <tr class="row' . $row['ID_article'] . '">
+               <td>' . $i . '</td>
+               <td>' . $row['libelle_article'] . '</td>
+               <td>' . $row['famille'] . '</td>
+               <td>' . $row['mark'] . '</td>
+               <td>' . $row['unite'] . '</td>
+               ';
 
-                    $output .= '
-                <tr class="row' . $row['ID_article'] . '">
-                   <td>' . $i . '</td>
-                   <td>' . $row['libelle_article'] ?? '' . '</td>
-                  <td>' . $row['famille'] ?? '' . '</td>
-                  <td>' . $row['mark'] ?? '' . '</td>
-                  <td>' . $row['unite'] ?? '' . '</td>
-                   ';
 
-                    $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="' . $row['ID_article'] . '" title="Modifier article" class="btn btn-primary btn-sm btn_update_article">
-                   <i class="fa fa-edit"></i></button>
-                       <button data-id="' . $row['ID_article'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article"  data-action="article">
-                       <i class="fa fa-link"></i></button>
-                       <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_article">
-                       <i class="fa fa-trash"></i></button>
-                 </td>
-                    </tr>
-                    ';
-                }
+                $output .= '<td style="display: flex; flex-direction: row; align-items: center; gap: 10px;"> 
+            <button data-id="' . $row['ID_article'] . '" title="Modifier article" class="btn btn-primary btn-sm btn_update_article">
+            <i class="fa fa-edit"></i> </button>
+
+            <button data-id="' . $row['ID_article'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article"  data-action="article">
+            <i class="fa fa-link"></i></button>
+            
+            <button data-id="' . $row['ID_article'] . '" title="Supprimer article" class="btn btn-warning btn-sm btn_remove_article">
+            <i class="fa fa-trash"></i></button>
+          </td>
+             </tr>
+             ';
+              }
             }
             echo $output;
         }
