@@ -358,6 +358,7 @@ class ControllerVente extends Connexion
     if (isset($_POST['btn_verifQteArticleVente'])) {
       $stock = Soutra::getNiveauStockArticle('view_stock_produit', 'ID_article', 'ID_entrepot', $_POST['id'], $_SESSION['id_entrepot']);
 
+      var_dump($stock);return;
       // $entree = Soutra::getCompterSum('entree', 'qte', 'article_id', $_POST['id']);
       // $sortie = Soutra::getCompterSum('sortie', 'qte', 'article_id', $_POST['id']);
       // $stock = abs($entree - $sortie);

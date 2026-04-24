@@ -1,7 +1,7 @@
 <?php
- if(!isAdminGestionnaire()){
-   return;
- }
+if (!isAdminGestionnaire()) {
+  return;
+}
 if (Soutra::getState('fournisseur') != 1) {
   include('views/not_found.php');
   return;
@@ -24,6 +24,7 @@ if (Soutra::getState('fournisseur') != 1) {
     <thead class="thead-dark">
       <tr>
         <th> # </th>
+        <th> STATUT </th>
         <th> REF-FR </th>
         <th> NOM</th>
         <th> TELEPHONE </th>
@@ -36,7 +37,7 @@ if (Soutra::getState('fournisseur') != 1) {
     <tbody class="fournisseur-table">
       <?php
       $output = '';
-      $fournisseur = Soutra::getAllFournisseur();
+      $fournisseur = Soutra::getAllFournisseurEntrepot();
       if (!empty($fournisseur)) {
         $i = 0;
         foreach ($fournisseur as $row) {
@@ -44,6 +45,8 @@ if (Soutra::getState('fournisseur') != 1) {
           $output .= '
             <tr class="row' . $row['ID_fournisseur'] . '">
                <td>' . $i . '</td>
+               <td>' . checkEtatData($row['etat_fournisseur']) . '</td>
+
                <td>
                <a href="' . URL . 'fournisseur_profile&id=' . $row['ID_fournisseur'] . '" title="Detail client"> <i class="fa fa-eye"></i>  '
             . $row['code_fournisseur'] .

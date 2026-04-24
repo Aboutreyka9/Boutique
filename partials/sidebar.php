@@ -76,7 +76,7 @@
             <?php if (Soutra::getState('client') == 1) { ?>
               <!-- .menu-item -->
               <li class="menu-item has-child <?= isActive('client'); ?>">
-                <a href="#" class="menu-link"><i class=" menu-icon bi bi-people-fill"></i>  <span class="menu-text">Client</span>
+                <a href="#" class="menu-link"><i class=" menu-icon bi bi-people-fill"></i> <span class="menu-text">Client</span>
                   <?php $cl = Soutra::getCountNew('client');
                   if ($cl > 0) : ?>
                     <span class="badge badge-subtle badge-success">
@@ -98,7 +98,7 @@
             <!-- .menu-item -->
             <li class="menu-item has-child <?= isActive('achat'); ?> <?= isActive('ajouter_achat'); ?>">
               <a href="#" class="menu-link"><span class="menu-icon bi bi-cart-plus-fill"></span> <span class="menu-text">Approvisionner</span>
-                <?php $cl = Soutra::getCountNew('achat');
+                <?php $cl = Soutra::getCountNewForEntrepot('achat');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
                     +<?= $cl; ?>
@@ -117,7 +117,7 @@
             <!-- .menu-item -->
             <li class="menu-item has-child  <?= isActive('vente'); ?> <?= isActive('ajouter_vente'); ?>">
               <a href="#" class="menu-link"><span class="menu-icon bi bi-cart4"></span> <span class="menu-text">Vente</span>
-                <?php $cl = Soutra::getCountNew('vente');
+                <?php $cl = Soutra::getCountNewForEntrepot('vente');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
                     +<?= $cl; ?>
@@ -303,7 +303,7 @@
 
             <li class="menu-item has-child <?= isActive('vente'); ?> <?= isActive('ajouter_vente'); ?>">
               <a href="#" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Vente</span>
-                <?php $cl = Soutra::getCountNew('vente');
+                <?php $cl = Soutra::getCountNewForEntrepot('vente');
                 if ($cl > 0) : ?>
                   <span class="badge badge-subtle badge-success">
                     +<?= $cl; ?>

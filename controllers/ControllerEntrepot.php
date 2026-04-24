@@ -270,6 +270,8 @@ class ControllerEntrepot extends Connexion
                 if (Soutra::exite('entrepot', 'ID_entrepot', $_POST['id_entrepot'])) {
                     // L'entrepôt existe, on peut continuer
                     $_SESSION['id_entrepot'] = $_POST['id_entrepot'];
+                    Soutra::update("employe", ['entrepot' => $_POST['id_entrepot'], 'ID_employe' => $_SESSION['id_employe']]);
+                    // var_dump($_SESSION['id_employe']);::
                     $msg = ['success' => true, 'message' => 'Entrepôt sélectionné avec succès'];
                 } else {
                     $msg = ['success' => false, 'message' => 'Entrepôt non trouvé'];

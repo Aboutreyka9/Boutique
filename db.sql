@@ -816,10 +816,11 @@ CREATE TABLE IF NOT EXISTS `vue_versement_vente` (
 --
 -- Structure de la vue `view_stock_produit`
 --
+
 DROP TABLE IF EXISTS `view_stock_produit`;
 
 DROP VIEW IF EXISTS `view_stock_produit`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_stock_produit`  AS SELECT `a`.`ID_article` AS `ID_article`, `a`.`libelle_article` AS `libelle_article`, `e`.`ID_entrepot` AS `ID_entrepot`, `e`.`libelle_entrepot` AS `libelle_entrepot`, (coalesce(`vdi`.`quantite_inv`,0) + coalesce(`vfp`.`total_flux`,0)) AS `quantite_disponible`, ((coalesce(`vdi`.`quantite_inv`,0) + coalesce(`vfp`.`total_flux`,0)) * (select `mouvement_stock`.`prix_achat` from `mouvement_stock` where ((`mouvement_stock`.`article_id` = `a`.`ID_article`) and (`mouvement_stock`.`prix_achat` > 0)) order by `mouvement_stock`.`date_mouvement` desc,`mouvement_stock`.`ID_mouvement_stock` desc limit 1)) AS `montant_total_stock` FROM ((((`article` `a` join `entrepot_article` `ea` on((`a`.`ID_article` = `ea`.`article_id`))) join `entrepot` `e` on((`e`.`ID_entrepot` = `ea`.`entrepot_id`))) left join `vue_dernier_inventaire_entrepot` `vdi` on(((`a`.`ID_article` = `vdi`.`article_id`) and (`e`.`ID_entrepot` = `vdi`.`entrepot_id`)))) left join `vue_flux_post_inventaire` `vfp` on(((`a`.`ID_article` = `vfp`.`article_id`) and (`e`.`ID_entrepot` = `vfp`.`entrepot_id`)))) ;
+CREATE ALGORITHM=UNDEFINED VIEW `view_stock_produit`  AS SELECT `a`.`ID_article` AS `ID_article`, `a`.`libelle_article` AS `libelle_article`, `e`.`ID_entrepot` AS `ID_entrepot`, `e`.`libelle_entrepot` AS `libelle_entrepot`, (coalesce(`vdi`.`quantite_inv`,0) + coalesce(`vfp`.`total_flux`,0)) AS `quantite_disponible`, ((coalesce(`vdi`.`quantite_inv`,0) + coalesce(`vfp`.`total_flux`,0)) * (select `mouvement_stock`.`prix_achat` from `mouvement_stock` where ((`mouvement_stock`.`article_id` = `a`.`ID_article`) and (`mouvement_stock`.`prix_achat` > 0)) order by `mouvement_stock`.`date_mouvement` desc,`mouvement_stock`.`ID_mouvement_stock` desc limit 1)) AS `montant_total_stock` FROM ((((`article` `a` join `entrepot_article` `ea` on((`a`.`ID_article` = `ea`.`article_id`))) join `entrepot` `e` on((`e`.`ID_entrepot` = `ea`.`entrepot_id`))) left join `vue_dernier_inventaire_entrepot` `vdi` on(((`a`.`ID_article` = `vdi`.`article_id`) and (`e`.`ID_entrepot` = `vdi`.`entrepot_id`)))) left join `vue_flux_post_inventaire` `vfp` on(((`a`.`ID_article` = `vfp`.`article_id`) and (`e`.`ID_entrepot` = `vfp`.`entrepot_id`)))) ;
 
 -- --------------------------------------------------------
 

@@ -33,7 +33,7 @@
      <tbody class="client-table">
        <?php
         $output = '';
-        $client = Soutra::getAllClient();
+        $client = Soutra::getAllClientEntrepot();
         if (!empty($client)) {
           $i = 0;
           foreach ($client as $row) {
@@ -53,9 +53,8 @@
 
             $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="' . $row['ID_client'] . '" class="btn btn-primary btn-sm btn_update_client">
-            <i class="fa fa-edit"></i> 
-    
-</button> ';
+            <i class="fa fa-edit"></i> </button> ';
+
             if (isAdminGestionnaire()) {
               $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_client'] . '" class="btn btn-warning btn-sm btn_remove_client">
