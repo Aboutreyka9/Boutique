@@ -1182,7 +1182,7 @@ return total_ttc;
     btn_attribuer_article();
 
     function btn_attribuer_article() {
-        $('body').delegate('.btn_attribuer_article', 'click', function (e) {
+        $('body').on('click','.btn_attribuer_article', function (e) {
             e.preventDefault();
             let id = $(this).data('id');
             let action = $(this).data('action');
