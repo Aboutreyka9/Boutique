@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (session_status() == PHP_SESSION_NONE)
   session_start();
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_URI'] == "/home.php") {
   header("LOCATION:home.php/");
 }
 // if(isset($_SESSION) && !empty($_SESSION)) {
-//   $_SESSION['entrepot'] = 6;
+//   $_SESSION['id_entrepot'] = 6;
 // }
 // var_dump($_SESSION);return;
 
