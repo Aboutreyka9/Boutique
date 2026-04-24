@@ -3637,10 +3637,12 @@ console.log(qte);
                 data: {
                     getCanvasWeekData: 1
                 },
-                // dataType: 'JSON',
-                success: function (data) {
+                dataType: 'JSON',
+                success: function (vente) {
+                    console.log(vente);
+                    
                     // return
-                    var vente = JSON.parse(data);
+                    // var vente = JSON.parse(data);
                     const total = vente.map(function (val) {
                         return val.total;
                     })
@@ -3723,10 +3725,10 @@ console.log(qte);
                 getCanvasMonthData: 1,
                 year_select: select
             },
-            // dataType: 'JSON',
-            success: function (data) {
-                return
-                var res = JSON.parse(data)
+            dataType: 'JSON',
+            success: function (res) {
+                console.log(res);
+                
 
                 if (res.code == 400) {
                     charts['month_canvas'].destroy();
@@ -3830,10 +3832,10 @@ console.log(qte);
                 getCanvasMonthDataAchat: 1,
                 year_select: select
             },
-            // dataType: 'JSON',
-            success: function (data) {
+            dataType: 'JSON',
+            success: function (res) {
                 // return
-                var res = JSON.parse(data)
+                // var res = JSON.parse(data)
 
                 if (res.code == 400) {
                     charts['month_achat_canvas'].destroy();
@@ -3849,8 +3851,6 @@ console.log(qte);
                 const mois = achat.map(function (val) {
                     return val.mois + " " + val.annee;
                 });
-
-
 
                 monthCanvasAchat('month_achat_canvas', mois, total);
 
@@ -5193,6 +5193,8 @@ function activeEntrepot() {
 $(document).on("click", ".entrepot-item", function(e) {
     e.preventDefault(); // bloque le reload
 
+    // console.log('tttttt');::!
+    
     let id = $(this).data("id");
             $.ajax({
                 url: "../partials/rooter.php",
@@ -5200,9 +5202,16 @@ $(document).on("click", ".entrepot-item", function(e) {
                 data: { set_entrepot: 1, id_entrepot: id },
                 dataType: 'JSON',
                 success: function (data) {
-                    
-                    if(data.success) {
-                        $.notify(data.message, "success");
+                    console.log(data);
+                    // return;
+                    if (data.success) {
+                        swal({
+                            title: "Notification",
+                            text: data.message,
+                            icon: "success"
+                        }).then((a) => { 
+                            history.go(0);
+                        });
                     }else{
                         $.notify(data.message, "error");
                     }
