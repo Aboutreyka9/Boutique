@@ -8,29 +8,29 @@ if (notAdmin()) {
   <!-- floating action -->
   <button type="button" data-toggle="modal" data-target="#employe-modal" class="btn btn-success btn-floated" title="Ajouter Employe" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
   <!-- title and toolbar -->
-</header><!-- /.page-title-bar -->
-<!-- .page-section -->
-<div class="table-responsive">
-  <!-- .table -->
-  <table class="table table-striped table-hover my-table">
-    <!-- thead -->
-    <thead class="thead-dark">
-      <tr>
-        <th> # </th>
-        <th> CODE-EMP </th>
-        <th> NOM </th>
-        <th> PRENOMS </th>
-        <th> TELEPHONE </th>
-        <th> ROLE </th>
-        <th style="width: 19%; text-align: center; "> ACTION </th>
-      </tr>
-    </thead><!-- /thead -->
-    <!-- tbody -->
-    <tbody class="emp-table">
-      <?php
-      $output = '';
-      $emp = Soutra::getAllEmployer($_SESSION['id_entrepot']);
-      if (!empty($emp)) {
+    </header><!-- /.page-title-bar -->
+    <!-- .page-section -->
+    <div class="table-responsive">
+<!-- .table -->
+<table class="table table-striped table-hover my-table">
+  <!-- thead -->
+  <thead class="bg-light">
+    <tr>
+      <th> # </th>
+      <th> CODE-EMP </th>
+      <th> NOM </th>
+      <th> PRENOMS </th>
+      <th> TELEPHONE </th>
+      <th> ROLE </th>
+      <th style="width: 19%; text-align: center; "> ACTION </th>
+    </tr>
+  </thead><!-- /thead -->
+  <!-- tbody -->
+  <tbody class="emp-table">
+   <?php 
+    $output = '';
+    $emp = Soutra::getAllEmployer($_SESSION['id_employe'],0);
+    if (!empty($emp)) {
         $i = 0;
         foreach ($emp as $row) {
           $i++;

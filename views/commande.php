@@ -41,11 +41,11 @@
     <span style="font-size: 20px;">Montant :</span> <span class="mtt" style="font-size: 20px; font-style: italic;">0</span>
   </div>
 </div>
-<div class="table-responsive panier_achat_content d_none">
+<div class="table-responsive bg-light py-3 px-2 border rounded panier_achat_content d_none">
   <!-- .table -->
   <table class="table table-striped table-hover table_total">
     <!-- thead -->
-    <thead class="thead-dark">
+    <thead class="bg-light">
       <tr>
         <th> # </th>
         <th style="width: 25%; "> Article </th>
@@ -63,4 +63,4 @@
     <tbody class="achat-table">
     </tbody><!-- /tbody -->
   </table><!-- /.table -->
-</div><!-- /.table-responsive -->
+</div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->

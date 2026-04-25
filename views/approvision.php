@@ -44,7 +44,7 @@
   <!-- .table -->
   <table class="table table-striped table-hover table_total">
     <!-- thead -->
-    <thead class="thead-dark">
+    <thead class="bg-light">
       <tr>
         <th> # </th>
         <th style="width: 30%;"> Article </th>

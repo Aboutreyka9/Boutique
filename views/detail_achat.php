@@ -221,11 +221,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <h5 class="text-success"> <i class="fa fa-list"></i> Detail des produits commandés </h5>
   </div>
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
       <table class="table table-striped table-hover">
         <!-- thead -->
-        <thead class="thead-dark">
+        <thead class="bg-light">
           <tr>
             <th> # </th>
             <th> Article</th>
@@ -282,7 +282,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 
@@ -294,11 +294,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <h5 class="text-info"> <i class="fa fa-credit-card"></i> Reglement facture </h5>
   </div>
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
       <table class="table table-striped table-hover">
         <!-- thead -->
-        <thead class="thead-dark">
+        <thead class="bg-light">
           <tr>
             <th> # </th>
             <th>REFERENCE</th>
@@ -346,7 +346,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 

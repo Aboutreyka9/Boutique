@@ -4,7 +4,13 @@
  }
 ?>
 <header class="page-title-bar">
-  <h1 class="page-title"> Espace entrepot</h1>
+  <div class="header-entrepot d-flex align-items-center mb-4">
+  <i class="bi bi-building me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Entrepôts</h4>
+    <small>Organisation et gestion des stocks</small>
+  </div>
+</div>
 
 </header><!-- /.page-title-bar -->
 
@@ -26,7 +32,7 @@
 <!-- .page-section -->
 <div class="card">
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
       <table class="table table-hover my-table">
         <!-- thead -->
@@ -100,7 +106,7 @@
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 

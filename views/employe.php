@@ -7,7 +7,13 @@
 
 
  <header class="page-title-bar">
-   <h1 class="page-title"> Espace Employés</h1>
+<div class="header-employe d-flex align-items-center mb-4">
+  <i class="bi bi-people me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Employés</h4>
+    <small>Gestion du personnel</small>
+  </div>
+</div>
 
    <!-- title and toolbar -->
  </header><!-- /.page-title-bar -->
@@ -32,7 +38,7 @@
        <!-- .table -->
        <table class="table table-striped table-hover my-table bg-light">
          <!-- thead -->
-         <thead class="thead-dark">
+         <thead class="bg-light">
            <tr>
              <th> # </th>
              <th> STATUT </th>
@@ -72,8 +78,7 @@
                       <button data-id="' . $row['ID_employe'] . '" class="btn btn-warning btn-link btn-sm btn_remove_employe" data-toggle="tooltip" title="" data-original-title="Changer statut client">
                       <i class="fa fa-trash text-icon-warning"></i> </button>
                 </td>
-                  </tr>
-             ';
+                  </tr> ';
               }
             }
             echo $output; ?>

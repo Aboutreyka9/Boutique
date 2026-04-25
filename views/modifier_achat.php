@@ -166,11 +166,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <span style="font-size: 35px;">Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
       </div>
     </div>
-    <div class="table-responsive panier_achat_content ">
+    <div class="table-responsive bg-light py-3 px-2 border rounded panier_achat_content ">
       <!-- .table -->
       <table class="table table-striped table-hover table_total table_commande">
         <!-- thead -->
-        <thead class="thead-dark">
+        <thead class="bg-light">
           <tr>
             <th style="width: 5%;">#</th>
             <th style="width: 20%;">Article</th>
@@ -215,7 +215,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 <?= modalAchatFournisseur() ?>

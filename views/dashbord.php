@@ -29,9 +29,13 @@ if (strtolower($_SESSION['role']) == ADMIN):
 
   <header class="page-title-bar container">
     <input type="hidden" id="canvas_page_dashbord" value="123">
-    <!-- <p class="lead">
-  <span class="font-weight-bold">Hi, Beni.</span> <span class="d-block text-muted">Here’s what’s happening with your business today.</span>
-</p> -->
+<div class="header-dashboard d-flex align-items-center mb-4">
+  <i class="bi bi-speedometer2 me-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Tableau de bord</h4>
+    <small>Vue globale de l’activité</small>
+  </div>
+</div>
   </header><!-- /.page-title-bar -->
 
 
@@ -45,9 +49,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
 
         <!-- Titre -->
-        <div class="title">
-          <h1 class="page-title mb-1 mb-md-0">Statistiques</h1>
-        </div>
+        
 
         <!-- Activité -->
         <div class="activity text-md-center">
