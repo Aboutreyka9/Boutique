@@ -1105,12 +1105,16 @@ GROUP BY e.ID_entrepot;";
     //     return $data['nb'] ?? 0;
     // }
 
-    public static function getAllEmployer($id, $etat = 1)
+    public static function getAllEmployer($entrepot_id)
     {
         $data = [];
-        $sql = "SELECT emp.*, r.libelle_role role FROM employe emp INNER JOIN role r ON r.ID_role = emp.role_id WHERE etat_employe = :etat AND ID_employe != :id AND entrepot = :entrepot  ORDER BY ID_employe DESC";
+        $sql = "SELECT emp.*, r.libelle_role role FROM employe emp 
+                JOIN role r ON r.ID_role = emp.role_id 
+                JOIN service se ON se.employe_id = emp.ID_employe
+                WHERE se.entrepot_id = :entrepot_id AND (se.etat_service = 1 OR se.responsable = 1) 
+                ORDER BY emp.nom_employe DESC";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['etat' => $etat, 'id' => $id, 'entrepot' => $_SESSION['id_entrepot']]);
+        $query->execute(['entrepot_id' => $entrepot_id]);
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -2168,15 +2172,15 @@ GROUP BY e.ID_entrepot;";
 
 
 
-    public static function loginEmployer($telephone, $password)
+    public static function loginEmployer($telephone)
     {
         $data = [];
-        $sql = "SELECT emp.*, r.libelle_role role FROM employe emp INNER JOIN role r ON r.ID_role = emp.role_id  WHERE emp.telephone_employe = ? AND emp.password_employe = ? AND etat_employe = 1";
+        $sql = "SELECT emp.*, r.libelle_role role FROM employe emp JOIN role r ON r.ID_role = emp.role_id  WHERE emp.telephone_employe = :telephone AND etat_employe = 1";
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(array($telephone, $password));
+        $query->execute(['telephone' => $telephone]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetch();
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;

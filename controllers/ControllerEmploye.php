@@ -16,8 +16,10 @@ class ControllerEmploye extends Connexion
                 $msg['message'] = "Mot de passe requis !";
             } else {
                 $msg['message'] = "Nom utilisateur ou mot de passe incorect !";
-                $emp = Soutra::loginEmployer($telephone, md5($password));
-                if (!empty($emp)) {
+                $emp = Soutra::loginEmployer($telephone);
+
+
+                if (!empty($emp) && password_verify($password, PASSWORD_BCRYPT)) {
                     $_SESSION["id_employe"] = $emp["ID_employe"];
                     $_SESSION["role"] = $emp["role"];
                     $_SESSION["nom"] = $emp["nom_employe"];
@@ -123,7 +125,7 @@ class ControllerEmploye extends Connexion
     {
         if (isset($_POST['btn_liste_employe'])) {
             $output = '';
-            $emp = Soutra::getAllEmployer($_SESSION['id_employe']);
+            $emp = Soutra::getAllEmployer($_SESSION['id_entrepot']);
             if (!empty($emp)) {
                 $i = 0;
                 foreach ($emp as $row) {
@@ -279,14 +281,16 @@ class ControllerEmploye extends Connexion
         } elseif (Soutra::existe("employe", "telephone_employe", $telephone_employe)) {
             $msg = '2&Le téléphone ' . $telephone_employe . ' existe déjà !';
         } else {
-            $role = Soutra::getByItem("role","ID_role",$role_employe);
-            if($role['libelle_role'] == 'Commercial' && $responsable == 1){
+            $role = Soutra::getByItem("role", "ID_role", $role_employe);
+            if ($role['libelle_role'] == 'Commercial' && $responsable == 1) {
                 $msg = '2&Un commercial ne peut pas être responsable !';
-                echo $msg;return;
+                echo $msg;
+                return;
             }
 
             $date = date('Y-m-d H:i:s');
             $code = self::checkCode();
+            $password = "123";
             $data = array(
                 'nom_employe' => strtoupper($nom_employe),
                 'prenom_employe' => ucfirst($prenom_employe),
@@ -295,28 +299,29 @@ class ControllerEmploye extends Connexion
                 'role_id' => $role_employe,
                 'etat_employe' => 1,
                 'code_employe' => $code,
-                'password_employe' => md5("123@123"),
-                
-                
+                'password_employe' => password_hash($password, PASSWORD_BCRYPT),
+
+
             );
             $data_service = [
                 'responsable' => $responsable,
                 'entrepot_id' => $id_entrepot,
+                'etat_service' => 1,
                 'created_at_service' => $date,
             ];
-            $result = Soutra::transactionData(function () use ($data,$data_service) {
-                            Soutra::insert("employe", $data);
-                            $employe_id = Soutra::lastInsertId();
-                            $data_service['employe_id'] = $employe_id;
-                            Soutra::insert("service", $data_service);
-                        });
+            $result = Soutra::transactionData(function () use ($data, $data_service) {
+                Soutra::insert("employe", $data);
+                $employe_id = Soutra::lastInsertId();
+                $data_service['employe_id'] = $employe_id;
+                Soutra::insert("service", $data_service);
+            });
 
             if ($result) {
                 $mail = new ControllerMailer();
                 $nom = $nom_employe . ' ' . $prenom_employe;
                 $email = $email_employe;
                 $tel = $telephone_employe;
-                $pass = '123@123';
+                $pass = $password;
                 $sendMail = $mail->sendUserCredentials($email, $nom, $tel, $pass);
                 if ($sendMail) {
                     $msg = "1&Employé enregistré avec succès";
@@ -393,13 +398,13 @@ class ControllerEmploye extends Connexion
         if (isset($_POST['btn_attribuer_employe_entrepot'])) {
             extract($_POST);
             $msg = [];
-            if(isset($id_employe) && isset($id_entrepot) && is_numeric($id_employe) && is_numeric($id_entrepot) && $id_employe > 0 && $id_entrepot  > 0){
+            if (isset($id_employe) && isset($id_entrepot) && is_numeric($id_employe) && is_numeric($id_entrepot) && $id_employe > 0 && $id_entrepot  > 0) {
                 if (empty($id_employe) || empty($id_entrepot)) {
                     $msg = ['msg' => 'Veuillez remplir tous les champs !'];
                 } else {
-                    
 
-                    if (Soutra::exist2("service","entrepot_id",'employe_id',$id_entrepot,$id_employe)) {
+
+                    if (Soutra::exist2("service", "entrepot_id", 'employe_id', $id_entrepot, $id_employe)) {
                         $msg = ['msg' => 'Employé déjà attribué à un entrepôt !'];
                     } else {
                         $data = array(
@@ -416,7 +421,7 @@ class ControllerEmploye extends Connexion
                         }
                     }
                 }
-            }else{
+            } else {
                 $msg = ['msg' => 'Données invalide !'];
             }
             echo json_encode($msg);
@@ -568,7 +573,7 @@ class ControllerEmploye extends Connexion
     //     }
     // }
 
-    
+
     public static function modalAttributionEmployeEntrepot()
     {
         if (isset($_POST["attribuer_employe_a_entrepot"])) {
@@ -581,10 +586,10 @@ class ControllerEmploye extends Connexion
              <div class="col-md-12">
             <div class="form-group">
            <label for="employe_id">employe</label> <select name="id_employe" id="id_employe" class="form-control employe_search select2"> <option value="default"> --- Choisir un employe ---</option>';
-                foreach ($employes as $row) {
-                    $output .= ' <option value="' . $row['ID_employe'] . '">' . $row['nom_employe'] . '</option>';
-                }
-                $output .= '</select>';
+            foreach ($employes as $row) {
+                $output .= ' <option value="' . $row['ID_employe'] . '">' . $row['nom_employe'] . '</option>';
+            }
+            $output .= '</select>';
             $output .= '
             </div>
             </div>
@@ -592,7 +597,7 @@ class ControllerEmploye extends Connexion
             <div class="col-md-12">
             <div class="form-group">
               <label for="entrepot">Entrepot</label>
-               <input type="text" name="entrepot" min="0" id="entrepot" class="form-control" value="'. $entrepot["libelle_entrepot"] .'" readonly>
+               <input type="text" name="entrepot" min="0" id="entrepot" class="form-control" value="' . $entrepot["libelle_entrepot"] . '" readonly>
             </div>
             </div>
             <div class="col-md-12">
@@ -606,7 +611,7 @@ class ControllerEmploye extends Connexion
             </div>
             <div class="col-md-12 modal_footer">
               <input type="hidden" name="btn_attribuer_employe_entrepot">
-              <input type="hidden" name="id_entrepot" value="'. $entrepot["ID_entrepot"] .'">
+              <input type="hidden" name="id_entrepot" value="' . $entrepot["ID_entrepot"] . '">
 
            <button type="submit" class="btn btn-primary w-25"> <i class="fa fa-save"></i> Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
             </div>
@@ -620,8 +625,6 @@ class ControllerEmploye extends Connexion
             echo json_encode(['html' => $output]);
         }
     }
-
-
 }
 
 //fin de la class
