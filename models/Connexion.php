@@ -18,7 +18,7 @@ class Connexion
 
     public function __construct()
     {
-        $this->dns = "mysql:host=$this->host;dbname=$this->dbase";
+        $this->dns = "mysql:host=$this->host;dbname=$this->dbase;charset=utf8mb4";
         try {
             self::$con = new PDO($this->dns, $this->username, $this->password);
             $sql = self::getConnexion()->query(" SET lc_time_names = 'fr_FR' ;");

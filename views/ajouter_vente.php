@@ -205,7 +205,7 @@ $taxe = $info['taxe'];
            </div>
 
            <div class="mb-3">
-             <label class="form-label">Encaissé :</label>
+             <label class="form-label">encaisse :</label>
              <div class="input-group">
                <input type="number" class="form-control "  id="montant_encaisse" value="0">
                <span class="input-group-text"> FCFA</span>

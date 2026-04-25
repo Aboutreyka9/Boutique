@@ -65,7 +65,7 @@
           </p>
         </div>
       </header><!-- form -->
-      <form class="auth-form">
+      <form class="auth-form" accept-charset="UTF-8">
         <div class="text-center mb-4">
           <!-- .user-avatar -->
           <div class="user-avatar user-avatar-xl mb-2">
