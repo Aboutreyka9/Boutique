@@ -1182,7 +1182,7 @@ return total_ttc;
     btn_attribuer_article();
 
     function btn_attribuer_article() {
-        $('body').delegate('.btn_attribuer_article', 'click', function (e) {
+        $('body').on('click','.btn_attribuer_article', function (e) {
             e.preventDefault();
             let id = $(this).data('id');
             let action = $(this).data('action');
@@ -2140,8 +2140,6 @@ return total_ttc;
             var pu = currow.find('.pu').text();
             var qte = currow.find('.qte').text();
 
-console.log(qte);
-
             var page_vente = $('#page_vente').val();
             if (page_vente != undefined) {
                 var id_article = Number(currow.find('.d_none').text());
@@ -2156,7 +2154,6 @@ console.log(qte);
                         btn_verifQteArticleVente: 1
                     },
                     success: function (data) {
-                        console.log(data);return
                         
                         if (data != 'ok') {
                             notify('Desolé,sotock insuffisant a la quatité demandé il reste ' + data, '', 'alert', 'warning');
@@ -2901,11 +2898,11 @@ console.log(qte);
                     btn_verifQteArticleVente: 1
                 },
                 success: function (data) {
-                    console.log(data);
-                    return
+                    // console.log(data);
                     
                     if (data != 'ok') {
-                        notify('Desolé,sotock insuffisant à la quatité demandé, il reste ' + data, '', 'alert', 'warning');
+                        alert('yy')
+                        swal('Desolé,sotock insuffisant à la quatité demandé, il reste ' + data, '', 'alert', 'warning');
                         qte_fiel.val(data);
                     }
                 }

@@ -106,6 +106,7 @@ class ControllerArticle extends Connexion
             } else {
                 $output_article = "";
             }
+
             // $entrepot = Soutra::getAllTable('entrepot', 'etat_entrepot', 1);
 
             $output = '
@@ -251,9 +252,9 @@ class ControllerArticle extends Connexion
             if (!empty($article)) {
                 $i = 0;
                 foreach ($article as $row) {
-                $i++;
-                //$etat = $row['etat_article'] == 1 ? "Disponible" : "Non disponible";
-                $output .= '
+                    $i++;
+                    //$etat = $row['etat_article'] == 1 ? "Disponible" : "Non disponible";
+                    $output .= '
             <tr class="row' . $row['ID_article'] . '">
                <td>' . $i . '</td>
                <td>' . $row['libelle_article'] . '</td>
@@ -263,7 +264,7 @@ class ControllerArticle extends Connexion
                ';
 
 
-                $output .= '<td style="display: flex; flex-direction: row; align-items: center; gap: 10px;"> 
+                    $output .= '<td style="display: flex; flex-direction: row; align-items: center; gap: 10px;"> 
             <button data-id="' . $row['ID_article'] . '" title="Modifier article" class="btn btn-primary btn-sm btn_update_article">
             <i class="fa fa-edit"></i> </button>
 
@@ -275,7 +276,7 @@ class ControllerArticle extends Connexion
           </td>
              </tr>
              ';
-              }
+                }
             }
             echo $output;
         }

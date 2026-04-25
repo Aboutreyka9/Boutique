@@ -1,6 +1,6 @@
 <header class="page-title-bar">
         <h1 class="page-title">  Espace Retour</h1>
-    <p class="text-muted"> Gérer les articles retournés </p>
+    <p class="text-muted"> Gérer les articles retournes </p>
    <!-- floating action -->
    <!-- <button type="button" id="btn_ajouter_vente" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button> -->
     <!-- /floating action -->
