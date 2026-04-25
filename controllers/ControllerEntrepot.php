@@ -304,7 +304,7 @@ class ControllerEntrepot extends Connexion
     public static function verifQteArticleTransfert()
     {
         if (isset($_POST['btn_verifQteArticleTransfert'])) {
-            $stock = Soutra::getNiveauStockArticle('view_stock_produit', 'ID_article', 'ID_entrepot', $_POST['id'], $_SESSION['id_entrepot']);
+            $stock = Soutra::getNiveauStockArticle('vue_stock_produit', 'article_id', 'entrepot_id', $_POST['id'], $_SESSION['id_entrepot']);
 
             // $entree = Soutra::getCompterSum('entree', 'qte', 'article_id', $_POST['id']);
             // $sortie = Soutra::getCompterSum('sortie', 'qte', 'article_id', $_POST['id']);
