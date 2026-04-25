@@ -89,40 +89,40 @@ class ControllerClient extends Connexion
     {
         if (isset($_POST['btn_liste_client'])) {
             $output = '';
-            $client = Soutra::getAllclient();
-            if (!empty($client)) {
-                $i = 0;
-                foreach ($client as $row) {
-                    $i++;
-                    $output .= '
-                <tr class="row' . $row['ID_client'] . '">
-                   <td>' . $i . '</td>
-                   <td>  <a href="' . URL . 'client_profile&id=' . $row['ID_client'] . '" title="Detail client"> <i class="fa fa-eye fa-lg"></i> '
-                        . $row['code_client'] .
-                        '</a> </td>
-                   <td>' . $row['nom_client'] . '</td>
-                    <td>' . $row['telephone_client'] . '</td>
-                   <td>' . $row['email_client'] . '</td>
-                   <td>' . Soutra::date_format($row['created_at']) . '</td>
-                   ';
+            $client = Soutra::getAllClientEntrepot();
+        if (!empty($client)) {
+          $i = 0;
+          foreach ($client as $row) {
+            $i++;
 
-                    $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+            $output .= '
+            <tr class="row' . $row['ID_client'] . '">
+               <td>' . $i . '</td>
+               <td>' . checkEtatData($row['etat_client']) . '</td>
+               <td>' . $row['code_client'] . '</td>
+               <td>' . $row['nom_client'] . '</td>
+               <td>' . $row['telephone_client'] . '</td>
+               <td>' . $row['email_client'] . '</td>
+               <td>' . Soutra::date_format($row['created_at']) . '</td>
+               ';
+
+
+            $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
             <button data-id="' . $row['ID_client'] . '" class="btn btn-primary btn-sm btn_update_client">
-            <i class="fa fa-edit"></i> 
-    
-</button> ';
-                    if (strtolower($_SESSION['role']) == ADMIN) {
-                        $output .= '<div class="d-inline">
+            <i class="fa fa-edit"></i> </button> ';
+
+            if (isAdminGestionnaire()) {
+              $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_client'] . '" class="btn btn-warning btn-sm btn_remove_client">
                 <i class="fa fa-trash"></i> </button>
             </div>';
-                    }
-                    $output .= '
+            }
+            $output .= '
           </td>
              </tr>
              ';
-                }
-            }
+          }
+        }
             echo $output;
         }
     }
