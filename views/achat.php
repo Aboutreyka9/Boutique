@@ -23,10 +23,14 @@
   ?>
 
  <header class="page-title-bar">
+  <div class="header-achat d-flex align-items-center mb-4">
+  <i class="bi bi-bag-check me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Espace Achat</h4>
+    <small>Gestion des approvisionnements</small>
+  </div>
+</div>
    <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-     <div class="title">
-       <h1 class="page-title">Espace Achats</h1>
-     </div>
      <div class="activity">
        <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF ?> </b>
      </div>

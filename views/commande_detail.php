@@ -3,11 +3,11 @@
 </header><!-- /.page-title-bar -->
 <!-- .page-section -->
 
-<div class="table-responsive">
+<div class="table-responsive bg-light py-3 px-2 border rounded">
   <!-- .table -->
   <table class="table table-striped table-hover">
     <!-- thead -->
-    <thead class="thead-dark">
+    <thead class="bg-light">
       <tr>
         <th> # </th>
         <th> Article </th>
@@ -83,7 +83,7 @@
 
     </tbody><!-- /tbody -->
   </table><!-- /.table -->
-</div><!-- /.table-responsive -->
+</div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
 
 
 

@@ -196,7 +196,7 @@ class ControllerEleve {
                             ) . '</h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="">
                                 <thead>
                                 <tr>
@@ -263,7 +263,7 @@ class ControllerEleve {
                             ) . '</h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="">
                                 <thead>
                                 <tr>
@@ -334,7 +334,7 @@ class ControllerEleve {
                         $output .= '<a href="#" classe="' . $classe . '" annee="' . $annee . '" title="Exporter la liste de classe" class="btn btn-ligth liste_classe_pdf"> <i class="fa fa-file-pdf-o"></i> Exporter en pdf</a></h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                             <thead>
                                 <tr>
@@ -395,7 +395,7 @@ class ControllerEleve {
                     $output = '<div class="row outer_ins">
             <div class="col-md-12 inner_ins">
             <div class="panel">
-                <div class="panel-body table-responsive element">
+                <div class="panel-body table-responsive bg-light py-3 px-2 border rounded element">
                     <table class="table table-hover table-sm table-striped" id="">
                         <thead>
                             <tr>
@@ -479,7 +479,7 @@ class ControllerEleve {
                     $output = '<div class="row outer_ins">
             <div class="col-md-12 inner_ins">
             <div class="panel">
-                <div class="panel-body table-responsive element">
+                <div class="panel-body table-responsive bg-light py-3 px-2 border rounded element">
                     <table class="table table-hover table-sm table-striped" id="liste_client">
                         <thead>
                             <tr>
@@ -630,7 +630,7 @@ class ControllerEleve {
                     $output = '<div class="row">
             <div class="col-md-12">
             <div class="panel">
-                <div class="panel-body table-responsive ">
+                <div class="panel-body table-responsive bg-light py-3 px-2 border rounded ">
                     <table class="table table-hover table-sm table-striped" id="my-table">
                         <thead>
                             <tr>
@@ -721,7 +721,7 @@ class ControllerEleve {
                     else
                         $output .= '<a href="#" classe="' . $classe . '" annee="' . $annee . '" title="Exporter la liste de classe" class="btn btn-ligth liste_classe_pdf"> <i class="fa fa-file-pdf-o"></i> Exporter en pdf</a></h5>';
                     $output .= '<hr>
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_eleve">
                              <thead>
                                 <tr>
@@ -790,7 +790,7 @@ class ControllerEleve {
                         $output .= '<a href="#" classe="' . $classe . '" annee="' . $annee . '" title="Exporter la liste de classe" class="btn btn-ligth liste_classe_pdf"> <i class="fa fa-file-pdf-o"></i> Exporter en pdf</a></h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                              <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1099,7 +1099,7 @@ class ControllerEleve {
                           <a href="#" classe="' . $classe . '" annee="' . $annee . '" title="Exporter la liste de classe" class="btn btn-ligth liste_classe_pdf"> <i class="fa fa-file-pdf-o"></i> Exporter en pdf</a></h5>
                         <hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1204,7 +1204,7 @@ class ControllerEleve {
         $output = '';
 
         $output .= '
-        <div class="table-responsive">
+        <div class="table-responsive bg-light py-3 px-2 border rounded">
             <table class="table table-hover table-striped" id="liste_client">
                 <thead>
                     <tr>
@@ -1285,7 +1285,7 @@ class ControllerEleve {
         $date = date('Y-m-d');
 
         $output .= '
-        <div class="table-responsive">
+        <div class="table-responsive bg-light py-3 px-2 border rounded">
             <table class="table table-hover table-striped" id="liste_client">
                 <thead>
                     <tr>
@@ -1368,7 +1368,7 @@ class ControllerEleve {
                           <a href="#" classe="' . $classe . '" annee="' . $annee . '" title="Exporter la liste de classe" class="btn btn-ligth liste_classe_pdf"> <i class="fa fa-file-pdf-o"></i> Exporter en pdf</a></h5>
                         <hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1519,7 +1519,7 @@ class ControllerEleve {
                             ) . '
                           <a href="#" search="' . $search . '" title="Exporter les versement en pdf" class="btn btn-ligth btn_list_vers" classe="' . $classe . '" annee="' . $annee . '" > <i class="fa fa-file-pdf-o"></i> Exporter en pdf</a></h5>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1737,7 +1737,7 @@ class ControllerEleve {
                             ) .'</h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1796,7 +1796,7 @@ class ControllerEleve {
                             ) .'</h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1855,7 +1855,7 @@ class ControllerEleve {
                             ) .'</h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>
@@ -1920,7 +1920,7 @@ class ControllerEleve {
                             ) .'</h5>';
                     $output .= '<hr>
                         
-                        <div class="panel-body table-responsive">
+                        <div class="panel-body table-responsive bg-light py-3 px-2 border rounded">
                             <table class="table table-hover table-striped" id="liste_client">
                                 <thead>
                                 <tr>

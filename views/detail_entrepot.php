@@ -162,7 +162,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <!-- .page-section -->
 <div class="card">
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
       <table class="table table-hover my-table">
         <span style="font-size: 18px; font-weight: bold;" class="justify-content-center d-flex mb-3">
@@ -225,7 +225,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 
