@@ -25,17 +25,24 @@ class ControllerDashboard extends Connexion
       $detteClient = Soutra::getTotalDetteClientDashboard($start, $end, 'vente', $entrepot);
 
       $depenses = Soutra::getTotalDepenseDAshboard($start, $end, $entrepot);
-
+      
       $stockDispo = Soutra::getTotauxViewStockProduit();
-
+      
       $stockAlert = Soutra::getCountStockAlert();
-
+      
       $totalAchatAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
-
+      
       $totalVenteAttente = (isGestionnaireCommercial()) ? Soutra::getTotauxVenteEnAttenteNotAdmin() : Soutra::getTotauxVenteEnAttenteAdmin(); // méthode adaptée que l'on a créée
-
+      
       $tresorerie = Soutra::getTotauxTresorerie(); // méthode adaptée que l'on a créée
+      
+      $reliquat  = Soutra::getTotalDetteClientDashboard($start, $end, 'achat', $entrepot);
+      
+      $totauxAchat = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
 
+      // ajout propre dans le même objet
+      $totauxAchat['total_montant_regler'] = (int)$totauxAchat['total'] - (int)$reliquat['montant_total'];
+      // var_dump($totauxAchat,$reliquat);return;
       // echo json_encode($data);
       echo json_encode(compact(
         'reapprovisionnements',
@@ -47,7 +54,9 @@ class ControllerDashboard extends Connexion
         'stockAlert',
         'totalAchatAttente',
         'totalVenteAttente',
-        'tresorerie'
+        'tresorerie',
+        'totauxAchat',
+        'reliquat'
       ));
     }
   }

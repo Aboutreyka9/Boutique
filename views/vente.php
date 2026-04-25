@@ -8,10 +8,17 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
   
 ?>
 <header class="page-title-bar">
-<div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-  <div class="title">
-    <h1 class="page-title">Point de Vente</h1>
+
+  <div class="header-vente d-flex align-items-center mb-4">
+  <i class="bi bi-cart-check me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Espace Vente</h4>
+    <small>Gestion des ventes et encaissements</small>
   </div>
+</div>
+
+<div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+
   <div class="activity">
     <b id="activityDateRange">Activité du <?= date("d-m-Y") ?> </b>
   </div>
@@ -27,7 +34,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
 <div class="row mt-5 dashboard_admin">
 
 
-<div class="col-md-4">
+<div class="col-md-6">
       <div class="card custom-card-detail">
         <div class="card-body">
           <div class="d-flex align-items-center">
@@ -36,13 +43,13 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
             </div>
             <h6><span class="text-muted text-uppercase">Vente en attente</span> (0)</h6>
           </div>
-          <h5><span id="vente_attente">0</span> FCFA</h5>
+          <h5><span id="vente_attente">0</span></h5>
         </div>
       </div>
     </div>
 
 
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="card custom-card-detail">
           <div class="card-body">
             <div class="d-flex align-items-center">
@@ -51,7 +58,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
               </div>
               <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_vente"> 0 </span> FCFA</h5>
+            <h5><span id="montant_vente"> 0 </span></h5>
           </div>
         </div>
       </div>

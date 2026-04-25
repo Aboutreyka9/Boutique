@@ -5,18 +5,23 @@
 
   ?>
  <header class="page-title-bar">
-<h1 class="page-title"> Espace Employés</h1>
-    <p class="text-muted"> Liste des employés</p>
+<div class="header-employe d-flex align-items-center mb-4">
+  <i class="bi bi-people me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Employés</h4>
+    <small>Gestion du personnel</small>
+  </div>
+</div>
         <!-- floating action -->
   <button type="button" data-toggle="modal" data-target="#employe-modal" class="btn btn-success btn-floated" title="Ajouter Employe" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
   <!-- title and toolbar -->
     </header><!-- /.page-title-bar -->
     <!-- .page-section -->
-    <div class="table-responsive col-12 col-md-* col-lg-*">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
 <!-- .table -->
 <table class="table table-striped table-hover my-table bg-light">
   <!-- thead -->
-  <thead class="thead-dark">
+  <thead class="bg-light">
     <tr>
       <th> # </th>
       <th> CODE-EMP </th>

@@ -173,8 +173,8 @@ $liste_versement = Soutra::getListeVersement($id);
                 <!-- .card-header-control -->
             </div><!-- /.d-flex -->
             </header><!-- /.card-header -->
-            <!-- .table-responsive -->
-            <div class="table-responsive">
+            <!-- .table-responsive bg-light py-3 px-2 border rounded -->
+            <div class="table-responsive bg-light py-3 px-2 border rounded">
             <!-- .table -->
             <table class="table table-striped table-hover my-table">
                 <!-- thead -->
@@ -213,7 +213,7 @@ $liste_versement = Soutra::getListeVersement($id);
                
                 </tbody><!-- /tbody -->
             </table><!-- /.table -->
-            </div><!-- /.table-responsive -->
+            </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
         </section><!-- /.card -->
         </div><!-- /grid column -->
         <!-- grid column -->
@@ -230,8 +230,8 @@ $liste_versement = Soutra::getListeVersement($id);
                     
                 </div><!-- /.d-flex -->
                 </header><!-- /.card-header -->
-                <!-- .table-responsive -->
-                <div class="table-responsive">
+                <!-- .table-responsive bg-light py-3 px-2 border rounded -->
+                <div class="table-responsive bg-light py-3 px-2 border rounded">
                 <!-- .table -->
                 <table class="table table-hover">
                 <!-- thead -->
@@ -284,7 +284,7 @@ $liste_versement = Soutra::getListeVersement($id);
                
                 </tbody><!-- /tbody -->
             </table><!-- /.table -->
-            </div><!-- /.table-responsive -->
+            </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
             </section><!-- /.card -->
         </div><!-- /grid column -->
      
@@ -319,7 +319,7 @@ $liste_versement = Soutra::getListeVersement($id);
                                 </header>
                                 <div id="collapse<?= $i ?>" class="collapse" aria-labelledby="heading<?= $i ?>" data-parent="#accordion">
                                   <div class="card-body pt-0">
-                                  <div class="table-responsive">
+                                  <div class="table-responsive bg-light py-3 px-2 border rounded">
                                         <!-- .table -->
                                         <table class="table table-hover">
                                         <!-- thead -->
@@ -338,7 +338,7 @@ $liste_versement = Soutra::getListeVersement($id);
                                             
                                         </tbody><!-- /tbody -->
                                     </table><!-- /.table -->
-                                    </div><!-- /.table-responsive -->
+                                    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
                                     
                                   </div>
                                 </div>

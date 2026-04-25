@@ -6,109 +6,128 @@
 
 <?php
 // Dates par défaut
-$start = (new DateTime('first day of this month'))->format('Y-m-d');
-$end = (new DateTime('today'))->format('Y-m-d');
-
-$dateD = (new DateTime('first day of this month'))->format('d-m-Y');
-$dateF = (new DateTime('today'))->format('d-m-Y');
-
-// Récupérer les achats du mois courant
-$depenses_mois = Soutra::getTotauxDepenseByMouth($start, $end); // méthode adaptée que l'on a créée
-
-// Récupérer les achats du mois courant
-$achat_mois = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
-
-// Récupérer les achats du mois courant
-$vente_mois = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée que l'on a créée
-
-// benefice net
-$benefice = $vente_mois['total_montant'] - ($depenses_mois['total'] + $achat_mois['total']);
-$type = $benefice > 0 ? 'text-success' : 'text-danger';
+$states = Soutra::getTotalInventaire();
 
 ?>
 <header class="page-title-bar">
 
-  <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-    <div class="title">
-      <h1 class="page-title">Espace Inventaire</h1>
-    </div>
-    <div class="activity">
-      <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF; ?> </b>
-    </div>
-    <div class="input-group w-100 w-md-auto filter-box">
-      <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-      <input type="text" id="filterInventaire" class="form-control" placeholder="Sélectionner la période">
-      <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
-
-    </div>
+ <div class="header-inventaire d-flex align-items-center mb-4">
+  <i class="bi bi-box-seam me-3 mr-2" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Espace Inventaire</h4>
+    <small>Gestion du stock et suivi des mouvements</small>
   </div>
+</div>
   <!-- Résumé des ventes -->
-
-  <!-- STATS -->
+<!-- states -->
   <div class="row g-3 mb-1">
 
-    <div class="col-md-6">
-      <div class="card custom-card-detail">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="icon bg-info mr-2">
-              <i class="bi bi-cart-plus"></i>
-            </div>
-            <h6><span class="text-muted text-uppercase">Achats total</span> </h6>
+  <!-- QTE INITIALE -->
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-primary mr-2">
+            <i class="bi bi-box-seam"></i>
           </div>
-          <h5><span id="total_achat"><?= number_format($achat_mois['total'] ?? 0, 0, ',', ' ') ?>
-            </span> FCFA</h5>
+          <h6><span class="text-muted text-uppercase">Qté initiale</span></h6>
         </div>
+        <h5><?= number_format($states['qte_approvisionnement'] ?? 0, 0, ',', ' ') ?></h5>
       </div>
     </div>
-
-    <div class="col-md-6">
-      <div class="card custom-card-detail">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="icon bg-success mr-2">
-              <i class="bi bi-check2-circle"></i>
-            </div>
-            <h6><span class="text-muted text-uppercase">Dépense total</span> </h6>
-          </div>
-          <h5><span id="total_depense"><?= number_format($depenses_mois['total'] ?? 0, 0, ',', ' ') ?>
-            </span> FCFA</h5>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card custom-card-detail">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="icon bg-success mr-2">
-              <i class="bi bi-cash-stack"></i>
-            </div>
-            <h6><span class="text-muted text-uppercase">Ventes total</span> </h6>
-          </div>
-          <h5><span class="tester" id="total_vente"><?= number_format($vente_mois['total_montant'] ?? 0, 0, ',', ' ') ?>
-            </span> FCFA</h5>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card custom-card-detail">
-        <div class="card-body">
-          <div class="d-flex align-items-center">
-            <div class="icon bg-success mr-2">
-              <i class="bi bi-cash-stack"></i>
-            </div>
-            <h6><span class="text-muted text-uppercase">Bénéfice total</span> </h6>
-          </div>
-          <h5><span class="tester <?= $type ?>" id="total_benefice"><?= number_format($benefice ?? 0, 0, ',', ' ') ?>
-            </span> FCFA</h5>
-        </div>
-      </div>
-    </div>
-
   </div>
 
+  <!-- COUT ACHAT -->
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-warning mr-2">
+            <i class="bi bi-bag"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">Coût d’achat</span></h6>
+        </div>
+        <h5><?= number_format($states['cout_achat'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- QTE VENDUE -->
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-info mr-2">
+            <i class="bi bi-cart-check"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">Qté vendue</span></h6>
+        </div>
+        <h5><?= number_format($states['qte_vendue'] ?? 0, 0, ',', ' ') ?></h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTANT VENTES -->
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-success mr-2">
+            <i class="bi bi-cash-coin"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">Chiffre d’affaires</span></h6>
+        </div>
+        <h5><?= number_format($states['montant_vendu'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENEFICE -->
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-dark mr-2">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">Bénéfice</span></h6>
+        </div>
+        <h5><?= number_format($states['benefice'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- QTE RESTANTE -->
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-secondary mr-2">
+            <i class="bi bi-box"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">Stock restant</span></h6>
+        </div>
+        <h5><?= number_format($states['qte_restante'] ?? 0, 0, ',', ' ') ?></h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONTANT RESTANT -->
+  <div class="col-md-12">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-danger mr-2">
+            <i class="bi bi-currency-dollar"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">Valeur du stock</span></h6>
+        </div>
+        <h5><?= number_format($states['montant_quantite_restant'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+</div>
   <!-- floating action -->
   <a href="<?= URL ?>ajouter_achat" class="btn btn-success btn-floated" title="Ajouter vente">
     <span style="line-height: 45px" class="fa fa-plus"></span>
@@ -121,11 +140,11 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
 </header>
 
 
-<div class="table-responsive">
+<div class="table-responsive bg-light py-3 px-2 border rounded">
   <!-- .table -->
   <table class="table table-striped table-hover my-table">
     <!-- thead -->
-    <thead class="thead-dark">
+    <thead class="bg-light">
       <tr>
         <th> # </th>
         <th class="text-right"> Article </th>
@@ -141,7 +160,6 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
     </thead><!-- /thead -->
     <!-- tbody -->
     <tbody class="inventaire-table">
-
 
       <?php
       $i = 0;
@@ -169,4 +187,4 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
       ?>
     </tbody><!-- /tbody -->
   </table><!-- /.table -->
-</div><!-- /.table-responsive -->
+</div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->

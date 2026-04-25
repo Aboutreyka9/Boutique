@@ -270,7 +270,7 @@ class ControllerAchat extends Connexion
         'code_achat' => $code
       );
       if (Soutra::update("achat", $data)) {
-        $msg = ["success" => true, "msg" => "Commande encaissee avec succès"];
+        $msg = ["success" => true, "msg" => "Commande reglée avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }

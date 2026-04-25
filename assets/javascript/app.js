@@ -19,6 +19,9 @@ $(function () {
             maximumFractionDigits: 0
         })
     }
+    function formatMontant(montant) {
+    return new Intl.NumberFormat('fr-FR').format(montant) + ' FCFA';
+}
 
     btnReload();
 
@@ -3102,36 +3105,40 @@ return total_ttc;
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // console.log(data);
+                    console.log(data);
                     // return
-                    $("#achat_attente").text(data.totalAchatAttente.total);
-                    $("#vente_attente").text(data.totalVenteAttente.total);
+                    $("#total_montant_reste").text(((data.reliquat.montant_total)));
+                    $("#total_montant_regler").text(formatMontant((data.totauxAchat.total_montant_regler)));
+                    $("#nb_achats").text(data.totauxAchat.article);
+
+                    $("#achat_attente").text(formatMontant((data.totalAchatAttente.total)));
+                    $("#vente_attente").text(formatMontant((data.totalVenteAttente.total)));
                     $("#nombre_vente").text(data.ventes.nombre_ventes);
-                    $("#montant_vente").text(money(data.ventes.montant_total));
+                    $("#montant_vente").text(formatMontant((data.ventes.montant_total)));
                     $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_achats);
-                    $("#montant_reapprovisionnement").text(money(data.reapprovisionnements.montant_total));
+                    $("#montant_reapprovisionnement").text(formatMontant((data.reapprovisionnements.montant_total)));
 
                     $("#nombre_depense").text(data.depenses.nombre_depense);
-                    $("#montant_depense").text(money(data.depenses.montant_depense));
+                    $("#montant_depense").text(formatMontant((data.depenses.montant_depense)));
                     
-                    $("#nombre_dette_client").text(money(data.detteClient.nombre_total));
-                    $("#montant_dette_client").text(money(data.detteClient.montant_total));
+                    $("#nombre_dette_client").text(formatMontant((data.detteClient.nombre_total)));
+                    $("#montant_dette_client").text(formatMontant((data.detteClient.montant_total)));
                     
-                    $("#nombre_dette_fournisseur").text(money(data.detteFournisseur.nombre_total));
-                    $("#montant_dette_fournisseur").text(money(data.detteFournisseur.montant_total));
+                    $("#nombre_dette_fournisseur").text(formatMontant((data.detteFournisseur.nombre_total)));
+                    $("#montant_dette_fournisseur").text(formatMontant((data.detteFournisseur.montant_total)));
                     
                     
-                    $("#nombre_stock_dispo").text(money(data.stockDispo.total_quantite));
-                    $("#montant_stock_dispo").text(money(data.stockDispo.total_montant));
+                    $("#nombre_stock_dispo").text(formatMontant((data.stockDispo.total_quantite)));
+                    $("#montant_stock_dispo").text(formatMontant((data.stockDispo.total_montant)));
                     
-                    $("#nombre_stock_alert").text(money(data.stockAlert));
+                    $("#nombre_stock_alert").text(formatMontant((data.stockAlert)));
                     let tresorerie = data.tresorerie.solde_tresorerie;
                     if(tresorerie >= 0){
                         $('#montant_tresorerie').addClass('text-success');
                     }else{
                         $('#montant_tresorerie').addClass('text-danger');
                     }
-                    $("#montant_tresorerie").text(money(tresorerie) + ' FCFA');
+                    $("#montant_tresorerie").text(((tresorerie)) + ' FCFA');
 
                 }
             });
@@ -4514,83 +4521,6 @@ return total_ttc;
         });
 
     }
-
-    // initDateRangeFilter(
-    //     "#achatDateRange",     // champ input
-    //     ".achat-table",        // tbody à remplacer
-    //     "../partials/rooter.php", // URL du serveur
-    //     { btn_filter_achat: 1 }  // données supplémentaires
-    // );
-    // initDateRangeFilter(
-    //     "#achatDateRange",     // champ input
-    //     ".achat_by_article-table",        // tbody à remplacer
-    //     "../partials/rooter.php", // URL du serveur
-    //     { btn_filter_achat_by_article: 1 }  // données supplémentaires
-    // );
-    // initDateRangeFilter(
-    //     "#venteDateRange",
-    //     ".vente-table",
-    //     "../partials/rooter.php",
-    //     { btn_filter_vente: 1 },
-    //     { nb: '#nb_ventes', total: '#total_montant' }
-    // );
-    // initDateRangeFilter(
-    //     "#venteByArticleDateRange",
-    //     ".vente_by_article-table",
-    //     "../partials/rooter.php",
-    //     { btn_filter_vente_by_article: 1 },
-    //     { nb: '#nb_ventes', total: '#total_montant' }
-    // );
-    // function initDateRangeFilter(selectorInput, selectorTarget, ajaxUrl, extraData = {}, totalsSelectors = {}) {
-    //     flatpickr(selectorInput, {
-    //         mode: "range",
-    //         dateFormat: "d-m-Y",
-    //         defaultDate: [new Date().setDate(1), new Date()],
-    //         onClose: function(selectedDates) {
-    //             if (selectedDates.length === 2) {
-    //                 var start = selectedDates[0];
-    //                 var end = selectedDates[1];
-
-    //                 // Formater les dates
-    //                 var startStr = ("0" + start.getDate()).slice(-2) + '-' +
-    //                               ("0" + (start.getMonth()+1)).slice(-2) + '-' +
-    //                               start.getFullYear();
-    //                 var endStr = ("0" + end.getDate()).slice(-2) + '-' +
-    //                              ("0" + (end.getMonth()+1)).slice(-2) + '-' +
-    //                              end.getFullYear();
-
-    //                 // Préparer les données pour AJAX
-    //                 var postData = Object.assign({}, extraData, {
-    //                     start_date: startStr,
-    //                     end_date: endStr
-    //                 });
-
-    //                 // Lancer l'AJAX
-    //                 $.ajax({
-    //                     url: ajaxUrl,
-    //                     method: 'POST',
-    //                     data: postData,
-    //                     dataType: 'json', // Important pour JSON
-    //                   success: function(response){
-    //                         $(selectorTarget).html(response.html);
-
-    //                         if (totalsSelectors.nb && response.totaux.nb_ventes !== undefined) {
-    //                             $(totalsSelectors.nb).text(response.totaux.nb_ventes);
-    //                         }
-    //                         if (totalsSelectors.total && response.totaux.total_montant !== undefined) {
-    //                             $(totalsSelectors.total).text(
-    //                                 new Intl.NumberFormat('fr-FR').format(response.totaux.total_montant) + ' CFA'
-    //                             );
-    //                         }
-    //                     },
-    //                     error: function(){
-    //                         alert('Erreur lors du filtrage');
-    //                     }
-    //                 });
-    //             }
-    //         }
-    //     });
-    // }
 
     $('.search_depense').select2();
 

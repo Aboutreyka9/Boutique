@@ -133,7 +133,7 @@ $bilan_fournisseur_nbre = Soutra::getBilanFournisseurNbre($id);
                                 </header>
                                 <div id="collapse<?= $i ?>" class="collapse" aria-labelledby="heading<?= $i ?>" data-parent="#accordion">
                                   <div class="card-body pt-0">
-                                  <div class="table-responsive">
+                                  <div class="table-responsive bg-light py-3 px-2 border rounded">
                                         <!-- .table -->
                                         <table class="table table-hover">
                                         <!-- thead -->
@@ -152,7 +152,7 @@ $bilan_fournisseur_nbre = Soutra::getBilanFournisseurNbre($id);
                                             
                                         </tbody><!-- /tbody -->
                                     </table><!-- /.table -->
-                                    </div><!-- /.table-responsive -->
+                                    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
                                     
                                   </div>
                                 </div>

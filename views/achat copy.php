@@ -16,21 +16,15 @@
   // Récupérer les achats du mois courant
   // $totaux = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
   $totalAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
-  // $totalRegler = Soutra::getTotauxAchatRegler(); // méthode adaptée que l'on a créée
-  // $totalBenefice = Soutra::getTotauxAchatBenefice(); // méthode adaptée que l'on a créée
   // $reste = Soutra::getTotalDetteClientDashboard($start, $end,'achat',$_SESSION['id_entrepot']);
   
   ?>
 
  <header class="page-title-bar">
-  <div class="header-achat d-flex align-items-center mb-4">
-  <i class="bi bi-bag-check me-3 mr-3" style="font-size:30px;"></i>
-  <div>
-    <h4 class="mb-0">Espace Achat</h4>
-    <small>Gestion des approvisionnements</small>
-  </div>
-</div>
    <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+     <div class="title">
+       <h1 class="page-title">Espace Achats</h1>
+     </div>
      <div class="activity">
        <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF ?> </b>
      </div>
@@ -55,7 +49,7 @@
              </div>
              <h6><span class="text-muted text-uppercase">Achat en attente</span> (<?= $totalAttente['article'] ?? 0 ?>)</h6>
            </div>
-           <h5><span id=""><?= number_format($totalAttente['total'] ?? 0, 0, ',', ' ') ?>
+           <h5><span id=""><?= number_format($totalAttente['total'] ?? 0, 0, ',', ' '). "FCFA" ?>
              </span> FCFA</h5>
          </div>
        </div>
@@ -70,7 +64,7 @@
              </div>
              <h6><span class="text-muted text-uppercase">Quantité Achat</span> </h6>
            </div>
-           <h5><span id="nb_achats">
+           <h5><span id="nb_achats"><?= $totaux['article'] ?? 0 ?>
              </span></h5>
          </div>
        </div>
@@ -99,8 +93,7 @@
              </div>
              <h6><span class="text-muted text-uppercase">Facture reglée</span> </h6>
            </div>
-           <h5><span class="tester" id="total_montant_regler">0
-             </span> </h5>
+           <h5><span class="tester" id="total_montant_regler"></span> </h5>
          </div>
        </div>
      </div>
@@ -114,8 +107,7 @@
              </div>
              <h6><span class="text-muted text-uppercase">Reste à payer</span> </h6>
            </div>
-           <h5><span class="tester" id="total_montant_reste">0
-             </span> </h5>
+           <h5><span class="tester" id="total_montant_reste"></span> </h5>
          </div>
        </div>
      </div>

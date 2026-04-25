@@ -29,9 +29,13 @@ if (strtolower($_SESSION['role']) == ADMIN):
 
   <header class="page-title-bar container">
     <input type="hidden" id="canvas_page_dashbord" value="123">
-    <!-- <p class="lead">
-  <span class="font-weight-bold">Hi, Beni.</span> <span class="d-block text-muted">Here’s what’s happening with your business today.</span>
-</p> -->
+<div class="header-dashboard d-flex align-items-center mb-4">
+  <i class="bi bi-speedometer2 me-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Tableau de bord</h4>
+    <small>Vue globale de l’activité</small>
+  </div>
+</div>
   </header><!-- /.page-title-bar -->
 
 
@@ -45,9 +49,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
       <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
 
         <!-- Titre -->
-        <div class="title">
-          <h1 class="page-title mb-1 mb-md-0">Statistiques</h1>
-        </div>
+        
 
         <!-- Activité -->
         <div class="activity text-md-center">
@@ -83,7 +85,8 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">DETTE FOURNISSEURS</span> (<span id="nombre_dette_fournisseur"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_dette_fournisseur"> 0 </span> FCFA</h5>
+            <h5><span id="montant_dette_fournisseur"> 0 </span> 
+          </h5>
           </div>
         </div>
       </div>
@@ -98,7 +101,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">DETTE CLIENTS</span> (<span id="nombre_dette_client"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_dette_client"> 0 </span> FCFA</h5>
+            <h5><span id="montant_dette_client"> 0 </span> </h5>
           </div>
         </div>
       </div>
@@ -112,7 +115,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">DÉPENSES</span> (<span id="nombre_depense"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_depense"> 0 </span> FCFA</h5>
+            <h5><span id="montant_depense"> 0 </span> </h5>
           </div>
         </div>
       </div>
@@ -126,7 +129,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">RÉAPPRO </span> (<span id="nombre_reapprovisionnement"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_reapprovisionnement"> 0 </span> FCFA</h5>
+            <h5><span id="montant_reapprovisionnement"> 0 </span> </h5>
           </div>
         </div>
       </div>
@@ -141,7 +144,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_vente"> 0 </span> FCFA</h5>
+            <h5><span id="montant_vente"> 0 </span> </h5>
           </div>
         </div>
       </div>
@@ -170,7 +173,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">ACHAT EN ATTENTE</span> </h6>
             </div>
-            <h5><span id="achat_attente"> 0 </span> FCFA</h5>
+            <h5><span id="achat_attente"> 0 </span> </h5>
           </div>
         </div>
       </div>
@@ -184,7 +187,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">VENTE EN ATTENTE</span> </h6>
             </div>
-            <h5><span id="vente_attente"> 0 </span> FCFA</h5>
+            <h5><span id="vente_attente"> 0 </span> </h5>
           </div>
         </div>
       </div>
@@ -198,7 +201,7 @@ if (strtolower($_SESSION['role']) == ADMIN):
               </div>
               <h6><span class="text-muted text-uppercase">STOCK DISPO</span> (<span id="nombre_stock_dispo"> 0 </span>)</h6>
             </div>
-            <h5><span id="montant_stock_dispo"> 0 </span> FCFA</h5>
+            <h5><span id="montant_stock_dispo"> 0 </span> </h5>
           </div>
         </div>
       </div>

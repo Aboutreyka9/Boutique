@@ -128,7 +128,7 @@ $taxe = $info['taxe'];
          <span style="font-size: 35px;">Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
        </div>
      </div>
-     <div class="table-responsive panier_vente">
+     <div class="table-responsive bg-light py-3 px-2 border rounded panier_vente">
        <!-- .table -->
        <table class="table table-hover table_total table-nowrap">
          <!-- thead -->
@@ -148,7 +148,7 @@ $taxe = $info['taxe'];
          <tbody class="vente-data-table">
          </tbody><!-- /tbody -->
        </table><!-- /.table -->
-     </div><!-- /.table-responsive -->
+     </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
    </div>
  </div>
 

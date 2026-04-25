@@ -154,3 +154,82 @@
     box-shadow: 0 0 0 0.2rem rgba(185,14,14,0.25) !important;
 }
 
+.header-inventaire {
+  background: #bed1f4;
+  color: #2c3e50;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #0d6efd;
+}
+
+/* DASHBOARD */
+.header-dashboard {
+  background: #eef2f7;
+  color: #2c3e50;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #6c757d;
+}
+
+/* VENTE */
+.header-vente {
+  background: #e8f7ee;
+  color: #1b4332;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #198754;
+}
+
+/* ACHAT */
+.header-achat {
+  background: #fff4e6;
+  color: #7f5539;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #fd7e14;
+}
+
+/* DEPENSE */
+.header-depense {
+  background: #fdeaea;
+  color: #842029;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #dc3545;
+}
+
+/* ENTREPOT */
+.header-entrepot {
+  background: #eef4ff;
+  color: #2c3e50;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #0d6efd;
+}
+
+/* EMPLOYE */
+.header-employe {
+  background: #f3f0ff;
+  color: #3c096c;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #6f42c1;
+}
+
+/* FOURNISSEUR */
+.header-fournisseur {
+  background: #e6fcf5;
+  color: #065f46;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #20c997;
+}
+
+/* CLIENT */
+.header-client {
+  background: #e7f5ff;
+  color: #0b7285;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #0dcaf0;
+}

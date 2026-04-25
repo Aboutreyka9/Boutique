@@ -3965,5 +3965,27 @@ GROUP BY e.ID_entrepot;";
             throw $e;
         }
     }
+
+
+    
+    public static function getTotalInventaire()
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(vba.qte_approvisionnement),0) as qte_approvisionnement,COALESCE(SUM(vba.cout_achat),0) as cout_achat,COALESCE(SUM(vba.qte_vendue),0) as qte_vendue,COALESCE(SUM(vba.montant_vendu),0) as montant_vendu, COALESCE(SUM(vba.benefice),0) as benefice,COALESCE(SUM(vba.qte_restante),0) as qte_restante,COALESCE(SUM(vba.montant_quantite_restant),0) as montant_quantite_restant FROM vue_bilan_articles vba 
+            WHERE vba.entrepot_id = :id
+        ";
+            $params = [
+                'id' => $_SESSION['id_entrepot'],
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
 }
 // fin de classe

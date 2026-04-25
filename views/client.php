@@ -6,18 +6,23 @@
   ?>
 
  <header class="page-title-bar">
-   <h1 class="page-title"> Espace Clients</h1>
-   <p class="text-muted"> Liste des clients</p>
+<div class="header-client d-flex align-items-center mb-4">
+  <i class="bi bi-person-lines-fill me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Clients</h4>
+    <small>Suivi et gestion de la clientèle</small>
+  </div>
+</div>
    <!-- floating action -->
    <button type="button" data-toggle="modal" data-target="#client-modal" class="btn btn-success btn-floated" title="Ajouter Client" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
    <!-- title and toolbar -->
  </header><!-- /.page-title-bar -->
  <!-- .page-section -->
- <div class="table-responsive">
+ <div class="table-responsive bg-light py-3 px-2 border rounded">
    <!-- .table -->
    <table class="table table-striped table-hover my-table">
      <!-- thead -->
-     <thead class="thead-dark">
+     <thead class="bg-light">
        <tr>
          <th style="width: 10%;">#</th>
          <th style="width: 25%;">STATUT</th>

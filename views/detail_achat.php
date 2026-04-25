@@ -21,7 +21,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <button class="btn btn-success ml-2 btn_encaisser_achat" title=""
       data-original-title="Encaisser la facture de la commande"
       data-code="<?= $code ?>"
-      data-reste_a_payer="<?= $reste_a_payer ?>"> <i class="bi bi-cash-coin"></i> Encaisser</button>
+      data-reste_a_payer="<?= $reste_a_payer ?>"> <i class="bi bi-cash-coin"></i> Faire un reglement</button>
     <a href="<?= RACINE ?>views/print_achat.php?id=<?= $code ?>&statut=<?= $achat['statut_achat'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
   </div>
 </div>
@@ -76,7 +76,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <div class="icon bg-success mr-2">
             <i class="bi bi-cart4"></i>
           </div>
-          <h6><span class="text-muted">Montant encaisse</span></h6>
+          <h6><span class="text-muted">Montant Reglé</span></h6>
         </div>
         <h5><?= number_format($montant_versement_total ?? 0, 0, ',', ' ') ?> CFA</h5>
       </div>
@@ -221,11 +221,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <h5 class="text-success"> <i class="fa fa-list"></i> Detail des produits commandés </h5>
   </div>
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
       <table class="table table-striped table-hover">
         <!-- thead -->
-        <thead class="thead-dark">
+        <thead class="bg-light">
           <tr>
             <th> # </th>
             <th> Article</th>
@@ -282,7 +282,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 
@@ -294,11 +294,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <h5 class="text-info"> <i class="fa fa-credit-card"></i> Reglement facture </h5>
   </div>
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
       <table class="table table-striped table-hover">
         <!-- thead -->
-        <thead class="thead-dark">
+        <thead class="bg-light">
           <tr>
             <th> # </th>
             <th>REFERENCE</th>
@@ -346,7 +346,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         </tbody><!-- /tbody -->
       </table><!-- /.table -->
-    </div><!-- /.table-responsive -->
+    </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
 
