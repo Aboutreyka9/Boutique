@@ -17,7 +17,7 @@ SELECT
 FROM vente v
 JOIN vue_montant_ventes vmt ON vmt.code_vente = v.code_vente
 JOIN sortie so ON so.vente_id = v.code_vente
-LEFT JOIN versement ver ON v.code_vente = ver.transaction_code AND ver.type_versement = 'vente' and ver.etat_versement = 1   WHERE  v.statut_vente  IN('validé','encaissé')
+LEFT JOIN versement ver ON v.code_vente = ver.transaction_code AND ver.type_versement = 'vente' and ver.etat_versement = 1   WHERE  v.statut_vente  IN('valide','encaisse')
 GROUP BY v.ID_vente
 
 UNION ALL
@@ -41,5 +41,5 @@ FROM achat a
 JOIN vue_montant_achats vma ON vma.code_achat = a.code_achat
 JOIN entree en ON en.achat_id = a.code_achat
 LEFT JOIN versement ver ON a.code_achat = ver.transaction_code AND ver.type_versement = 'achat' AND ver.etat_versement = 1 
- WHERE a.statut_achat IN('validé','encaissé')
+ WHERE a.statut_achat IN('valide','encaisse')
 GROUP BY a.ID_achat;

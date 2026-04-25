@@ -51,7 +51,7 @@
                      <div class="icon bg-dark mr-2">
                          <i class="bi bi-x-octagon"></i>
                      </div>
-                     <h6><span class="text-muted text-uppercase">Dépenses annulée </span>(<span id="nombre_depense_annule"> <?= $depense_annule['nombre_depense'] ?>
+                     <h6><span class="text-muted text-uppercase">Dépenses annulee </span>(<span id="nombre_depense_annule"> <?= $depense_annule['nombre_depense'] ?>
                          </span>)</h6>
                  </div>
                  <h5><span id="monant_depense_annule"><?= number_format($depense_annule['montant_depense'], 0, ',', ' ') ?>
@@ -83,7 +83,7 @@
                      <div class="icon bg-success mr-2">
                          <i class="bi bi-check2-circle"></i>
                      </div>
-                     <h6><span class="text-muted text-uppercase">Dépenses approuvées</span> (<span id="nombre_depense_approuve"> <?= $depense_approuve['nombre_depense'] ?>
+                     <h6><span class="text-muted text-uppercase">Dépenses approuvees</span> (<span id="nombre_depense_approuve"> <?= $depense_approuve['nombre_depense'] ?>
                          </span>)</h6>
                  </div>
                  <h5><span class="tester" id="montant_depense_approuve"><?= number_format($depense_approuve['montant_depense'], 0, ',', ' ') ?>
@@ -178,7 +178,7 @@
                                         <button type="button" 
                                         id="btn_annulation_depense"
                                         onclick="updateELementDepense(this,\'' . $row['ID_depense'] . '\')"
-                                        data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm " data-original-title="Annulé la depense"> <i class="fa fa-times text-icon-danger"></i> </button>
+                                        data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm " data-original-title="annule la depense"> <i class="fa fa-times text-icon-danger"></i> </button>
                                         ';
                                 endif;
 

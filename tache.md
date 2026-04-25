@@ -1,2 +1,2 @@
 qd ya remise le reliquat reste tj 
-et etat commande vente reste validé
+et etat commande vente reste valide

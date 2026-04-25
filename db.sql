@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS `achat` (
   `employe_id` int NOT NULL,
   `fournisseur_id` int NOT NULL,
   `etat_achat` int DEFAULT '1',
-  `pay_mode` enum('espèce','mobile money','credit','virement','chèque','autre') NOT NULL,
+  `pay_mode` enum('espece','mobile money','credit','virement','cheque','autre') NOT NULL,
   `entrepot_id` int NOT NULL,
-  `statut_achat` enum('en attente','validé','encaissé','retourné','annulé') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `statut_achat` enum('en attente','valide','encaisse','retourne','annule') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `created_at` date NOT NULL,
   `date_echeance` date DEFAULT NULL,
   PRIMARY KEY (`ID_achat`),
@@ -498,8 +498,8 @@ CREATE TABLE IF NOT EXISTS `transfert` (
   `entrepot_destination_id` int NOT NULL,
   `date_transfert` datetime NOT NULL,
   `employe_id` int DEFAULT NULL,
-  `pay_mode` enum('espèce','mobile money','credit','virement','chèque','autre') NOT NULL,
-  `statut_transfert` enum('en attente','validé','encaissé','retourné','annulé') NOT NULL,
+  `pay_mode` enum('espece','mobile money','credit','virement','cheque','autre') NOT NULL,
+  `statut_transfert` enum('en attente','valide','encaisse','retourne','annule') NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID_transfert`),
@@ -579,7 +579,7 @@ CREATE TABLE IF NOT EXISTS `vente` (
   `client_id` int NOT NULL,
   `employe_id` int NOT NULL,
   `etat_vente` int NOT NULL DEFAULT '1',
-  `statut_vente` enum('en attente','validé','encaissé','retourné','annulé') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'en attente',
+  `statut_vente` enum('en attente','valide','encaisse','retourne','annule') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'en attente',
   `pay_mode` varchar(100) DEFAULT NULL,
   `entrepot_id` int NOT NULL,
   `created_at` datetime NOT NULL,
@@ -602,7 +602,7 @@ CREATE TABLE IF NOT EXISTS `versement` (
   `code_versement` varchar(50) NOT NULL,
   `montant_versement` int NOT NULL,
   `type_versement` enum('achat','vente','','') NOT NULL,
-  `pay_mode` enum('espèces','mobile money','chèque','crédit','autre') NOT NULL,
+  `pay_mode` enum('especes','mobile money','cheque','credit','autre') NOT NULL,
   `transaction_code` varchar(50) NOT NULL,
   `client_id` int DEFAULT NULL,
   `fournisseur_id` int DEFAULT NULL,
@@ -730,9 +730,9 @@ CREATE TABLE IF NOT EXISTS `vue_montant_achats` (
 ,`employe_id` int
 ,`fournisseur_id` int
 ,`etat_achat` int
-,`pay_mode` enum('espèce','mobile money','credit','virement','chèque','autre')
+,`pay_mode` enum('espece','mobile money','credit','virement','cheque','autre')
 ,`entrepot_id` int
-,`statut_achat` enum('en attente','validé','encaissé','retourné','annulé')
+,`statut_achat` enum('en attente','valide','encaisse','retourne','annule')
 ,`created_at` date
 ,`date_echeance` date
 ,`libelle_entrepot` varchar(100)
@@ -753,7 +753,7 @@ CREATE TABLE IF NOT EXISTS `vue_montant_ventes` (
 ,`client_id` int
 ,`employe_id` int
 ,`etat_vente` int
-,`statut_vente` enum('en attente','validé','encaissé','retourné','annulé')
+,`statut_vente` enum('en attente','valide','encaisse','retourne','annule')
 ,`pay_mode` varchar(100)
 ,`entrepot_id` int
 ,`created_at` datetime
@@ -840,7 +840,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vue_caisse_mode_paiement`;
 
 DROP VIEW IF EXISTS `vue_caisse_mode_paiement`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_caisse_mode_paiement`  AS SELECT `t`.`entrepot_id` AS `entrepot_id`, `t`.`mode_paiement` AS `mode_paiement`, sum(`t`.`entree`) AS `total_entree`, sum(`t`.`sortie_achat`) AS `total_sortie_achat`, sum(`t`.`depense`) AS `total_depense`, ((sum(`t`.`entree`) - sum(`t`.`sortie_achat`)) - sum(`t`.`depense`)) AS `solde` FROM (select `ve`.`entrepot_id` AS `entrepot_id`,coalesce(`v`.`pay_mode`,'inconnu') AS `mode_paiement`,`v`.`montant_versement` AS `entree`,0 AS `sortie_achat`,0 AS `depense` from (`versement` `v` join `vente` `ve` on((`ve`.`code_vente` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'vente') and (`v`.`etat_versement` = 1)) union all select `ac`.`entrepot_id` AS `entrepot_id`,coalesce(`v`.`pay_mode`,'inconnu') AS `COALESCE(v.pay_mode, 'inconnu')`,0 AS `0`,`v`.`montant_versement` AS `montant_versement`,0 AS `0` from (`versement` `v` join `achat` `ac` on((`ac`.`code_achat` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'achat') and (`v`.`etat_versement` = 1)) union all select `d`.`entrepot_id` AS `entrepot_id`,'espèces' AS `mode_paiement`,0 AS `0`,0 AS `0`,`d`.`montant` AS `montant` from `depense` `d` where (`d`.`etat_depense` = 0)) AS `t` GROUP BY `t`.`entrepot_id`, `t`.`mode_paiement` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_caisse_mode_paiement`  AS SELECT `t`.`entrepot_id` AS `entrepot_id`, `t`.`mode_paiement` AS `mode_paiement`, sum(`t`.`entree`) AS `total_entree`, sum(`t`.`sortie_achat`) AS `total_sortie_achat`, sum(`t`.`depense`) AS `total_depense`, ((sum(`t`.`entree`) - sum(`t`.`sortie_achat`)) - sum(`t`.`depense`)) AS `solde` FROM (select `ve`.`entrepot_id` AS `entrepot_id`,coalesce(`v`.`pay_mode`,'inconnu') AS `mode_paiement`,`v`.`montant_versement` AS `entree`,0 AS `sortie_achat`,0 AS `depense` from (`versement` `v` join `vente` `ve` on((`ve`.`code_vente` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'vente') and (`v`.`etat_versement` = 1)) union all select `ac`.`entrepot_id` AS `entrepot_id`,coalesce(`v`.`pay_mode`,'inconnu') AS `COALESCE(v.pay_mode, 'inconnu')`,0 AS `0`,`v`.`montant_versement` AS `montant_versement`,0 AS `0` from (`versement` `v` join `achat` `ac` on((`ac`.`code_achat` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'achat') and (`v`.`etat_versement` = 1)) union all select `d`.`entrepot_id` AS `entrepot_id`,'especes' AS `mode_paiement`,0 AS `0`,0 AS `0`,`d`.`montant` AS `montant` from `depense` `d` where (`d`.`etat_depense` = 0)) AS `t` GROUP BY `t`.`entrepot_id`, `t`.`mode_paiement` ;
 
 -- --------------------------------------------------------
 
@@ -860,7 +860,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vue_etat_paiements`;
 
 DROP VIEW IF EXISTS `vue_etat_paiements`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_etat_paiements`  AS SELECT `ver`.`type_versement` AS `nature`, `v`.`entrepot_id` AS `entrepot`, `v`.`code_vente` AS `code_transaction`, ifnull(`ver`.`pay_mode`,'...') AS `pay_mode`, `v`.`created_at` AS `date_facture`, `v`.`statut_vente` AS `statut_commande`, `vmt`.`montant_total` AS `montant_facture`, coalesce(sum(`ver`.`montant_versement`),0) AS `total_paye`, (`vmt`.`montant_total` - coalesce(sum(`ver`.`montant_versement`),0)) AS `reste_a_payer`, (case when (coalesce(sum(`ver`.`montant_versement`),0) <= 0) then 'Non payé' when (coalesce(sum(`ver`.`montant_versement`),0) < `vmt`.`montant_total`) then 'Partiel' else 'Soldé' end) AS `statut_paiement` FROM (((`vente` `v` join `vue_montant_ventes` `vmt` on((`vmt`.`code_vente` = `v`.`code_vente`))) join `sortie` `so` on((`so`.`vente_id` = `v`.`code_vente`))) left join `versement` `ver` on(((`v`.`code_vente` = `ver`.`transaction_code`) and (`ver`.`type_versement` = 'vente') and (`ver`.`etat_versement` = 1)))) WHERE (`v`.`statut_vente` in ('validé','encaissé')) GROUP BY `v`.`ID_vente`union all select `ver`.`type_versement` AS `nature`,`a`.`entrepot_id` AS `entrepot`,`a`.`code_achat` AS `code_transaction`,`ver`.`pay_mode` AS `pay_mode`,`a`.`created_at` AS `date_facture`,`a`.`statut_achat` AS `statut_commande`,`vma`.`montant_total` AS `montant_facture`,coalesce(sum(`ver`.`montant_versement`),0) AS `total_paye`,(`vma`.`montant_total` - coalesce(sum(`ver`.`montant_versement`),0)) AS `reste_a_payer`,(case when (coalesce(sum(`ver`.`montant_versement`),0) <= 0) then 'Non payé' when (coalesce(sum(`ver`.`montant_versement`),0) < `vma`.`montant_total`) then 'Partiel' else 'Soldé' end) AS `statut_paiement` from (((`achat` `a` join `vue_montant_achats` `vma` on((`vma`.`code_achat` = `a`.`code_achat`))) join `entree` `en` on((`en`.`achat_id` = `a`.`code_achat`))) left join `versement` `ver` on(((`a`.`code_achat` = `ver`.`transaction_code`) and (`ver`.`type_versement` = 'achat') and (`ver`.`etat_versement` = 1)))) where (`a`.`statut_achat` in ('validé','encaissé')) group by `a`.`ID_achat`  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_etat_paiements`  AS SELECT `ver`.`type_versement` AS `nature`, `v`.`entrepot_id` AS `entrepot`, `v`.`code_vente` AS `code_transaction`, ifnull(`ver`.`pay_mode`,'...') AS `pay_mode`, `v`.`created_at` AS `date_facture`, `v`.`statut_vente` AS `statut_commande`, `vmt`.`montant_total` AS `montant_facture`, coalesce(sum(`ver`.`montant_versement`),0) AS `total_paye`, (`vmt`.`montant_total` - coalesce(sum(`ver`.`montant_versement`),0)) AS `reste_a_payer`, (case when (coalesce(sum(`ver`.`montant_versement`),0) <= 0) then 'Non payé' when (coalesce(sum(`ver`.`montant_versement`),0) < `vmt`.`montant_total`) then 'Partiel' else 'Soldé' end) AS `statut_paiement` FROM (((`vente` `v` join `vue_montant_ventes` `vmt` on((`vmt`.`code_vente` = `v`.`code_vente`))) join `sortie` `so` on((`so`.`vente_id` = `v`.`code_vente`))) left join `versement` `ver` on(((`v`.`code_vente` = `ver`.`transaction_code`) and (`ver`.`type_versement` = 'vente') and (`ver`.`etat_versement` = 1)))) WHERE (`v`.`statut_vente` in ('valide','encaisse')) GROUP BY `v`.`ID_vente`union all select `ver`.`type_versement` AS `nature`,`a`.`entrepot_id` AS `entrepot`,`a`.`code_achat` AS `code_transaction`,`ver`.`pay_mode` AS `pay_mode`,`a`.`created_at` AS `date_facture`,`a`.`statut_achat` AS `statut_commande`,`vma`.`montant_total` AS `montant_facture`,coalesce(sum(`ver`.`montant_versement`),0) AS `total_paye`,(`vma`.`montant_total` - coalesce(sum(`ver`.`montant_versement`),0)) AS `reste_a_payer`,(case when (coalesce(sum(`ver`.`montant_versement`),0) <= 0) then 'Non payé' when (coalesce(sum(`ver`.`montant_versement`),0) < `vma`.`montant_total`) then 'Partiel' else 'Soldé' end) AS `statut_paiement` from (((`achat` `a` join `vue_montant_achats` `vma` on((`vma`.`code_achat` = `a`.`code_achat`))) join `entree` `en` on((`en`.`achat_id` = `a`.`code_achat`))) left join `versement` `ver` on(((`a`.`code_achat` = `ver`.`transaction_code`) and (`ver`.`type_versement` = 'achat') and (`ver`.`etat_versement` = 1)))) where (`a`.`statut_achat` in ('valide','encaisse')) group by `a`.`ID_achat`  ;
 
 -- --------------------------------------------------------
 
@@ -900,7 +900,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vue_tresorerie_par_entrepot`;
 
 DROP VIEW IF EXISTS `vue_tresorerie_par_entrepot`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_tresorerie_par_entrepot`  AS SELECT `t`.`entrepot_id` AS `entrepot_id`, sum(`t`.`entree`) AS `total_entree`, sum(`t`.`sortie_achat`) AS `total_sortie_achat`, sum(`t`.`depense`) AS `total_depense`, ((sum(`t`.`entree`) - sum(`t`.`sortie_achat`)) - sum(`t`.`depense`)) AS `solde_tresorerie` FROM (select `ve`.`entrepot_id` AS `entrepot_id`,`v`.`montant_versement` AS `entree`,0 AS `sortie_achat`,0 AS `depense` from (`versement` `v` join `vente` `ve` on((`ve`.`code_vente` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'vente') and (`v`.`etat_versement` = 1)) union all select `ac`.`entrepot_id` AS `entrepot_id`,0 AS `0`,`v`.`montant_versement` AS `montant_versement`,0 AS `0` from (`versement` `v` join `achat` `ac` on((`ac`.`code_achat` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'achat') and (`v`.`etat_versement` = 1)) union all select `d`.`entrepot_id` AS `entrepot_id`,0 AS `0`,0 AS `0`,`d`.`montant` AS `montant` from `depense` `d` where (`d`.`statut_depense` = 'approuvé')) AS `t` GROUP BY `t`.`entrepot_id` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_tresorerie_par_entrepot`  AS SELECT `t`.`entrepot_id` AS `entrepot_id`, sum(`t`.`entree`) AS `total_entree`, sum(`t`.`sortie_achat`) AS `total_sortie_achat`, sum(`t`.`depense`) AS `total_depense`, ((sum(`t`.`entree`) - sum(`t`.`sortie_achat`)) - sum(`t`.`depense`)) AS `solde_tresorerie` FROM (select `ve`.`entrepot_id` AS `entrepot_id`,`v`.`montant_versement` AS `entree`,0 AS `sortie_achat`,0 AS `depense` from (`versement` `v` join `vente` `ve` on((`ve`.`code_vente` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'vente') and (`v`.`etat_versement` = 1)) union all select `ac`.`entrepot_id` AS `entrepot_id`,0 AS `0`,`v`.`montant_versement` AS `montant_versement`,0 AS `0` from (`versement` `v` join `achat` `ac` on((`ac`.`code_achat` = `v`.`transaction_code`))) where ((`v`.`type_versement` = 'achat') and (`v`.`etat_versement` = 1)) union all select `d`.`entrepot_id` AS `entrepot_id`,0 AS `0`,0 AS `0`,`d`.`montant` AS `montant` from `depense` `d` where (`d`.`statut_depense` = 'approuve')) AS `t` GROUP BY `t`.`entrepot_id` ;
 
 -- --------------------------------------------------------
 
@@ -910,7 +910,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vue_versement_achat`;
 
 DROP VIEW IF EXISTS `vue_versement_achat`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_versement_achat`  AS SELECT `ac`.`fournisseur_id` AS `fournisseur_id`, `ac`.`code_achat` AS `code_achat`, `ac`.`entrepot_id` AS `entrepot_id`, `ac`.`created_at` AS `created_at`, `ac`.`date_echeance` AS `date_echeance`, coalesce(sum(`vs`.`montant_versement`),0) AS `montant_total` FROM (`versement` `vs` join `achat` `ac` on(((`ac`.`code_achat` = `vs`.`transaction_code`) and (`ac`.`statut_achat` in ('validé','encaissé'))))) WHERE ((`vs`.`type_versement` = 'achat') AND (`vs`.`etat_versement` = 1)) GROUP BY `ac`.`code_achat` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_versement_achat`  AS SELECT `ac`.`fournisseur_id` AS `fournisseur_id`, `ac`.`code_achat` AS `code_achat`, `ac`.`entrepot_id` AS `entrepot_id`, `ac`.`created_at` AS `created_at`, `ac`.`date_echeance` AS `date_echeance`, coalesce(sum(`vs`.`montant_versement`),0) AS `montant_total` FROM (`versement` `vs` join `achat` `ac` on(((`ac`.`code_achat` = `vs`.`transaction_code`) and (`ac`.`statut_achat` in ('valide','encaisse'))))) WHERE ((`vs`.`type_versement` = 'achat') AND (`vs`.`etat_versement` = 1)) GROUP BY `ac`.`code_achat` ;
 
 -- --------------------------------------------------------
 
@@ -920,7 +920,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vue_versement_vente`;
 
 DROP VIEW IF EXISTS `vue_versement_vente`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_versement_vente`  AS SELECT `ve`.`client_id` AS `client_id`, `ve`.`code_vente` AS `code_vente`, `ve`.`entrepot_id` AS `entrepot_id`, `ve`.`created_at` AS `created_at`, `ve`.`date_echeance` AS `date_echeance`, coalesce(sum(`vs`.`montant_versement`),0) AS `montant_total` FROM (`versement` `vs` join `vente` `ve` on(((`ve`.`code_vente` = `vs`.`transaction_code`) and (`ve`.`statut_vente` in ('validé','encaissé'))))) WHERE ((`vs`.`type_versement` = 'vente') AND (`vs`.`etat_versement` = 1)) GROUP BY `ve`.`code_vente` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vue_versement_vente`  AS SELECT `ve`.`client_id` AS `client_id`, `ve`.`code_vente` AS `code_vente`, `ve`.`entrepot_id` AS `entrepot_id`, `ve`.`created_at` AS `created_at`, `ve`.`date_echeance` AS `date_echeance`, coalesce(sum(`vs`.`montant_versement`),0) AS `montant_total` FROM (`versement` `vs` join `vente` `ve` on(((`ve`.`code_vente` = `vs`.`transaction_code`) and (`ve`.`statut_vente` in ('valide','encaisse'))))) WHERE ((`vs`.`type_versement` = 'vente') AND (`vs`.`etat_versement` = 1)) GROUP BY `ve`.`code_vente` ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

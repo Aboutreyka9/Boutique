@@ -684,7 +684,7 @@ class ControllerVente extends Connexion
             // return true;
           }
 
-          if (Soutra::verif_type($montant_encaisse)) {
+          if (Soutra::verif_type($montant_encaisse) && $montant_encaisse > 0) {
             $date = date('Y-m-d');
             $code_versement = strtoupper(self::checkCode());
             $data_versement = [
@@ -705,8 +705,13 @@ class ControllerVente extends Connexion
                   'statut_vente' => STATUT_COMMANDE[2],
                   'code_vente' => $code
                 ];
-                Soutra::update('vente', $data_updated);
+              }else{
+                $data_updated = [
+                  'statut_vente' => STATUT_COMMANDE[1],
+                  'code_vente' => $code
+                ];
               }
+              Soutra::update('vente', $data_updated);
             }
           }
 
@@ -1171,7 +1176,7 @@ class ControllerVente extends Connexion
       });
 
       if ($results) {
-        $msg = ["success" => true, "msg" => "Commande validée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande validee avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -1190,7 +1195,7 @@ class ControllerVente extends Connexion
         'code_vente' => $code
       );
       if (Soutra::update("vente", $data)) {
-        $msg = ["success" => true, "msg" => "Commande encaissée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande encaissee avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -1235,7 +1240,7 @@ class ControllerVente extends Connexion
       );
 
       if ($results) {
-        $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -1253,7 +1258,7 @@ class ControllerVente extends Connexion
         'code_vente' => $code
       );
       if (Soutra::update("vente", $data)) {
-        $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
+        $msg = ["success" => true, "msg" => "Commande annulee avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }

@@ -59,7 +59,7 @@ class ControllerDepense extends Connexion
                 <button type="button" 
                 id="btn_annulation_depense"
                 onclick="updateELementDepense(this,\'' . $row['ID_depense'] . '\')"
-                data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm " data-original-title="Annulé la depense"> <i class="fa fa-times text-icon-danger"></i> </button>
+                data-toggle="tooltip" title="" class="btn btn-link btn-danger btn-sm " data-original-title="annule la depense"> <i class="fa fa-times text-icon-danger"></i> </button>
                 ';
         endif;
 
@@ -278,7 +278,7 @@ public static function getDepense()
       ];
       
       if (Soutra::update("depense", $data)) {
-        $msg = ["success" => true, "msg" => "Dépense validée avec succès"];
+        $msg = ["success" => true, "msg" => "Dépense validee avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
@@ -306,7 +306,7 @@ public static function getDepense()
       ];
       
       if (Soutra::update("depense", $data)) {
-        $msg = ["success" => true, "msg" => "Dépense annulée avec succès"];
+        $msg = ["success" => true, "msg" => "Dépense annulee avec succès"];
       } else {
         $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
       }
