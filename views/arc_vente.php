@@ -9,7 +9,7 @@
 <!-- .table -->
 <table class="table table-striped table-hover my-table">
   <!-- thead -->
-  <thead class="thead-dark">
+  <thead class="bg-light">
     <tr>
       <th> # </th>
       <th style="width: 15%;"> CODE </th>

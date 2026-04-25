@@ -1131,7 +1131,6 @@ class ControllerVente extends Connexion
     }
   }
 
-
   public static function validation_vente()
   {
     if (isset($_POST['btn_action']) && $_POST['btn_action'] == "btn_validation_vente") {

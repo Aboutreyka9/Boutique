@@ -24,10 +24,15 @@
     ?>
 
  <header class="page-title-bar">
+    <div class="header-depense d-flex align-items-center mb-4">
+  <i class="bi bi-cash-stack me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Espace Dépense</h4>
+    <small>Suivi des charges et sorties</small>
+  </div>
+</div>
      <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2" >
-         <div class="title">
-             <h1 class="page-title">Espace Dépenses</h1>
-         </div>
+         
          <div class="activity">
              <b id="activityDateRange">Activité du <?= $dateD . ' au ' . $dateF; ?> </b>
          </div>
@@ -109,7 +114,7 @@
  <div class="card">
      <div class="card-body">
 
-         <div class="table-responsive">
+         <div class="table-responsive bg-light py-3 px-2 border rounded">
              <!-- .table -->
              <table class="table table-hover my-table">
                  <!-- thead -->
@@ -193,7 +198,7 @@
 
                  </tbody><!-- /tbody -->
              </table><!-- /.table -->
-         </div><!-- /.table-responsive -->
+         </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
      </div>
  </div>
 
