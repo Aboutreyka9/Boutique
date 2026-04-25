@@ -9,10 +9,10 @@ class Connexion
     */
     private static $con = null;
     private $dbase = 'c2588565c_boutique';
-    private $username = 'c2588565c_kassann';
-    private $password = 'c2588565c_kassann';
-    // private $username = 'root';
-    // private $password = '';
+    // private $username = 'c2588565c_kassann';
+    // private $password = 'c2588565c_kassann';
+    private $username = 'root';
+    private $password = '';
     private $host = 'localhost';
     private $dns;
 
