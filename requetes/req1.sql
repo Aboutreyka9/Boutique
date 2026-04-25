@@ -1,40 +1,21 @@
 
-SELECT ve.client_id,ve.code_vente, ve.entrepot_id, ve.created_at, ve.date_echeance, COALESCE(SUM(vs.montant_versement),0) FROM Versement vs JOIN vente ve ON ve.code_vente = vs.transaction_code AND ve.statut_vente IN('validé','encaissé') WHERE vs.type_versement = 'vente' AND vs.etat_versement = 1 GROUP BY ve.code_vente
+Calcul du Bénéfice de Mars (Le Rapport Final)
+Pour ton dashboard, voici la requête qui calcule le bénéfice net de mars en tenant compte des ventes et des pertes (casse + écarts d'inventaire).
 
+-- La Requête SQL de Profitabilité :
 
-CREATE VIEW view_stock_produit AS SELECT 
-    a.ID_article,
-    a.libelle_article,
-    en.entrepot_id,
-    e.libelle_entrepot,
-    -- 1. Calcul de la quantité disponible (Stock Réel)
-    (
-        SELECT 
-            COALESCE(m_inv.quantite, 0) + 
-            COALESCE(SUM(CASE 
-                WHEN m.type_mouvement IN ('ENTREE', 'RETOUR_CLIENT', 'TRANSFERT_IN', 'AJUSTEMENT_POSITIF') THEN m.quantite 
-                WHEN m.type_mouvement IN ('SORTIE', 'RETOUR_FOURNISSEUR', 'TRANSFERT_OUT', 'AJUSTEMENT_NEGATIF', 'CASSE') THEN -m.quantite 
-                ELSE 0 
-            END), 0)
-        FROM (
-            -- On identifie l'ID du dernier inventaire pour cet article
-            SELECT MAX(ID_mouvement_stock) as last_inv_id, quantite
-            FROM mouvement_stock 
-            WHERE article_id = a.ID_article AND type_mouvement = 'INVENTAIRE'
-            GROUP BY quantite 
-            ORDER BY last_inv_id DESC LIMIT 1
-        ) AS m_inv
-        LEFT JOIN mouvement_stock m ON m.article_id = a.ID_article 
-            AND m.ID_mouvement_stock > m_inv.last_inv_id
-    ) AS quantite_disponible,
-
-    -- 2. Valorisation du stock (Quantité * Dernier Prix d'Achat)
-    (
-        SELECT (quantite_disponible * COALESCE(prix_achat, 0))
-        FROM mouvement_stock 
-        WHERE article_id = a.ID_article AND prix_achat > 0
-        ORDER BY date_mouvement DESC, ID_mouvement_stock DESC LIMIT 1
-    ) AS montant_total_stock
-
-FROM article a 
-JOIN entrepot_article en ON en.article_id = a.ID_article JOIN entrepot e ON e.ID_entrepot = en.entrepot_id GROUP BY e.ID_entrepot,a.ID_article; 
+SELECT 
+    p.libelle_produit,
+    -- Chiffre d'Affaires
+    SUM(CASE WHEN m.type_mouvement = 'VENTE' THEN m.quantite * m.prix_vente ELSE 0 END) AS CA,
+    -- Bénéfice Brut (Marge sur ce qui est vendu)
+    SUM(CASE WHEN m.type_mouvement = 'VENTE' THEN m.quantite * (m.prix_vente - m.prix_achat) ELSE 0 END) AS Marge_Brute,
+    -- Valeur des pertes (Casse + Ajustements négatifs)
+    SUM(CASE WHEN m.type_mouvement IN ('CASSE', 'AJUSTEMENT_NEGATIF') THEN m.quantite * m.prix_achat ELSE 0 END) AS Pertes,
+    -- Bénéfice Net
+    (SUM(CASE WHEN m.type_mouvement = 'VENTE' THEN m.quantite * (m.prix_vente - m.prix_achat) ELSE 0 END) 
+     - SUM(CASE WHEN m.type_mouvement IN ('CASSE', 'AJUSTEMENT_NEGATIF') THEN m.quantite * m.prix_achat ELSE 0 END)) AS Benefice_Net
+FROM Produits p
+JOIN Mouvements_stock m ON p.id_produit = m.produit_id
+WHERE m.date_mouvement BETWEEN '2026-03-01' AND '2026-03-31 23:59:59'
+GROUP BY p.id_produit;

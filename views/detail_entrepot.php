@@ -1,18 +1,25 @@
 <?php
- if (!isAdminGestionnaire()) {
-     return;
- }
+if (!isAdminGestionnaire()) {
+  return;
+}
 
- if (isset($_GET['id']) && !empty($_GET['id'])) {
+if (isset($_GET['id']) && !empty($_GET['id'])) {
   $id = $_GET['id'] ?? '';
   // TODO: Get command data from database
   $entrepot = Soutra::getSingleEntrepotByCode($id);
   $montant_versement_total = Soutra::getSumMontantVersementByCode($id);
   $versements = Soutra::getVersementsByCode($id);
+
+  if (empty($entrepot)) {
+    pageNotFound();
+    return;
+  }
 } else {
   // error 404
-  http_response_code(404);
-  exit();
+  pageNotFound();
+  return;
+  // http_response_code(404);
+  // exit();
 }
 ?>
 <header class="page-title-bar">
@@ -32,126 +39,126 @@
         <div class="ml-2">
           <h4><?= $entrepot['libelle_entrepot'] ?></h4>
         </div>
-        
+
       </div>
     </div>
-    
+
   </div>
 </div>
 
 
 
 <!-- section state -->
- 
+
 
 <!-- STATS -->
 <h5>STATISTIQUES</h5>
-    <div class="row g-3 mb-1 dashboard_admin">
+<div class="row g-3 mb-1 dashboard_admin">
 
-      <div class="col-md-4">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-success mr-2">
-                <i class="bi bi-arrow-repeat"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">RÉAPPRO </span> (<span id="nombre_reapprovisionnement"> 0 </span>)</h6>
-            </div>
-            <h5><span id="montant_reapprovisionnement"> 0 </span> FCFA</h5>
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-success mr-2">
+            <i class="bi bi-arrow-repeat"></i>
           </div>
+          <h6><span class="text-muted text-uppercase">RÉAPPRO </span> (<span id="nombre_reapprovisionnement"> 0 </span>)</h6>
         </div>
+        <h5><span id="montant_reapprovisionnement"> 0 </span> FCFA</h5>
       </div>
-
-      
-      <div class="col-md-4">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-success mr-2">
-                <i class="bi bi-cart-plus"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
-            </div>
-            <h5><span id="montant_vente"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
-
-      
-      <div class="col-md-4">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-success mr-2">
-                <i class="bi bi-currency-exchange"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">TRESORERIE</span> </h6>
-            </div>
-            <h5><span id="montant_tresorerie"> 0 </span> </h5>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-6">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-orange mr-2">
-                  <i class="bi bi-alarm"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">ACHAT EN ATTENTE</span> </h6>
-            </div>
-            <h5><span id="achat_attente"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-orange mr-2">
-                <i class="bi bi-alarm"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">VENTE EN ATTENTE</span> </h6>
-            </div>
-            <h5><span id="vente_attente"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-6">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-info mr-2">
-                  <i class="bi bi-bell"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">STOCK DISPO</span> (<span id="nombre_stock_dispo"> 0 </span>)</h6>
-            </div>
-            <h5><span id="montant_stock_dispo"> 0 </span> FCFA</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-info mr-2">
-                <i class="bi bi-envelope-exclamation-fill"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">STOCK ALERT</span></h6>
-            </div>
-            <h5><span id="nombre_stock_alert"> 0 </span> </h5>
-          </div>
-        </div>
-      </div>
-
-
     </div>
+  </div>
 
- <!-- fin section state -->
+
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-success mr-2">
+            <i class="bi bi-cart-plus"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
+        </div>
+        <h5><span id="montant_vente"> 0 </span> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-4">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-success mr-2">
+            <i class="bi bi-currency-exchange"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">TRESORERIE</span> </h6>
+        </div>
+        <h5><span id="montant_tresorerie"> 0 </span> </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-orange mr-2">
+            <i class="bi bi-alarm"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">ACHAT EN ATTENTE</span> </h6>
+        </div>
+        <h5><span id="achat_attente"> 0 </span> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-orange mr-2">
+            <i class="bi bi-alarm"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">VENTE EN ATTENTE</span> </h6>
+        </div>
+        <h5><span id="vente_attente"> 0 </span> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-info mr-2">
+            <i class="bi bi-bell"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">STOCK DISPO</span> (<span id="nombre_stock_dispo"> 0 </span>)</h6>
+        </div>
+        <h5><span id="montant_stock_dispo"> 0 </span> FCFA</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card custom-card-detail">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="icon bg-info mr-2">
+            <i class="bi bi-envelope-exclamation-fill"></i>
+          </div>
+          <h6><span class="text-muted text-uppercase">STOCK ALERT</span></h6>
+        </div>
+        <h5><span id="nombre_stock_alert"> 0 </span> </h5>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- fin section state -->
 <!-- .page-section -->
 <div class="card">
   <div class="card-body">

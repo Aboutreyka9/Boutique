@@ -356,9 +356,9 @@ class ControllerVente extends Connexion
   public static function verifQteArticleVente()
   {
     if (isset($_POST['btn_verifQteArticleVente'])) {
-      $stock = Soutra::getNiveauStockArticle('view_stock_produit', 'ID_article', 'ID_entrepot', $_POST['id'], $_SESSION['id_entrepot']);
+      $stock = Soutra::getNiveauStockArticle('vue_stock_produit', 'article_id', 'entrepot_id', $_POST['id'], $_SESSION['id_entrepot']);
 
-      var_dump($stock);return;
+
       // $entree = Soutra::getCompterSum('entree', 'qte', 'article_id', $_POST['id']);
       // $sortie = Soutra::getCompterSum('sortie', 'qte', 'article_id', $_POST['id']);
       // $stock = abs($entree - $sortie);
@@ -371,6 +371,7 @@ class ControllerVente extends Connexion
       }
     }
   }
+
   public static function verifDetail()
   {
     if (isset($_POST['btn_detail'])) {
@@ -1115,10 +1116,10 @@ class ControllerVente extends Connexion
       $benefice = $vente_mois - ($depenses_mois + $achat_mois);
       $type = $benefice > 0 ? 'text-success' : 'text-danger';
 
-      $depenses_mois = number_format($depenses_mois??0, 0, ',', ' ');
-      $vente_mois = number_format($vente_mois??0, 0, ',', ' ');
-      $achat_mois = number_format($achat_mois??0, 0, ',', ' ');
-      $benefice = number_format($benefice??0, 0, ',', ' ');
+      $depenses_mois = number_format($depenses_mois ?? 0, 0, ',', ' ');
+      $vente_mois = number_format($vente_mois ?? 0, 0, ',', ' ');
+      $achat_mois = number_format($achat_mois ?? 0, 0, ',', ' ');
+      $benefice = number_format($benefice ?? 0, 0, ',', ' ');
 
       echo json_encode(compact('depenses_mois', 'vente_mois', 'achat_mois', 'benefice', 'type'));
       return;
