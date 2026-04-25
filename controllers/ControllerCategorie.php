@@ -211,9 +211,9 @@ class ControllerCategorie extends Connexion {
         } else {
             $date = date('Y-m-d');
             $data = array(
-                'libelle_categorie' => strtoupper($libelle_categorie),
+                'libelle_categorie' => mb_strtoupper($libelle_categorie, 'UTF-8'),
                 'etat_categorie'=> 1,
-                'created_at'=> $date
+                'created_at'=> $datep
             );
             //var_dump($data);die();
             if (Soutra::insert("categorie", $data)) {

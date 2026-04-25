@@ -113,7 +113,7 @@ $totaux = Soutra::getTotauxVenteByDateRangeByArticle($start, $end); // méthode 
 
 
   <!-- .modal -->
-  <form action="" id="btn_ajouter_achat" method="POST" >
+  <form action="" id="btn_ajouter_achat" method="POST" accept-charset="UTF-8">
   
         <div class="modal fade" data-backdrop="static" id="achat-modal" tabindex="-1" role="dialog" aria-labelledby="achat-modal" aria-hidden="true">
           <!-- .modal-dialog -->

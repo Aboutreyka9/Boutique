@@ -123,7 +123,7 @@ if (isset($_SESSION) && !empty($_SESSION)) {
   <!-- .auth -->
   <main class="auth auth-floated">
     <!-- form -->
-    <form method="post" action="" id="frm_conexion" class="auth-form ">
+    <form method="post" action="" id="frm_conexion" class="auth-form" accept-charset="UTF-8">
       <div class="mb-4">
         <div class="mb-3">
           <img class="rounded" src="assets/apple-touch-icon.png" alt="" height="72">

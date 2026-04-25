@@ -99,10 +99,10 @@ $type = $benefice > 0 ? 'text-success' : 'text-danger';
             <div class="icon bg-success mr-2">
               <i class="bi bi-cash-stack"></i>
             </div>
-            <h6><span class="text-muted text-uppercase">Bénéfice total</span> </h6>
+            <h6><span class="text-muted text-uppercase">Caisse</span> </h6>
           </div>
           <h5><span class="tester <?= $type ?>" id="total_benefice"><?= number_format($benefice ?? 0, 0, ',', ' ') ?>
-            </span> FCFA</h5>
+            FCFA</span> </h5>
         </div>
       </div>
     </div>

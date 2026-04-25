@@ -465,7 +465,7 @@ class ControllerEntrepot extends Connexion
             );
 
             if ($results) {
-                $msg = ["success" => true, "msg" => "Commande validée avec succès"];
+                $msg = ["success" => true, "msg" => "Commande validee avec succès"];
             } else {
                 $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
             }
@@ -485,7 +485,7 @@ class ControllerEntrepot extends Connexion
                 'code_achat' => $code
             );
             if (Soutra::update("achat", $data)) {
-                $msg = ["success" => true, "msg" => "Commande encaissée avec succès"];
+                $msg = ["success" => true, "msg" => "Commande encaissee avec succès"];
             } else {
                 $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
             }
@@ -531,7 +531,7 @@ class ControllerEntrepot extends Connexion
             );
 
             if ($results) {
-                $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
+                $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
             } else {
                 $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
             }
@@ -550,9 +550,9 @@ class ControllerEntrepot extends Connexion
                 'code_achat' => $code
             );
             if (Soutra::update("achat", $data)) {
-                $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
-                $msg = ["success" => true, "msg" => "Commande retournée avec succès"];
-                $msg = ["success" => true, "msg" => "Commande annulée avec succès"];
+                $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
+                $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
+                $msg = ["success" => true, "msg" => "Commande annulee avec succès"];
             } else {
                 $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
             }

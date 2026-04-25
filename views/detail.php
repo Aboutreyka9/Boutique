@@ -76,7 +76,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <div class="icon bg-success mr-2">
             <i class="bi bi-cart4"></i>
           </div>
-          <h6><span class="text-muted">Montant encaissé</span></h6>
+          <h6><span class="text-muted">Montant encaisse</span></h6>
         </div>
         <h5><?= number_format($montant_versement_total ?? 0, 0, ',', ' ') ?> CFA</h5>
       </div>
