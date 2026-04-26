@@ -165,7 +165,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 <!-- fin section state -->
 <!-- .page-section -->
-<div class="card">
+<div class="card mt-5">
   <div class="card-body">
     <div class="table-responsive bg-light py-3 px-2 border rounded">
       <!-- .table -->
@@ -177,12 +177,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <thead class="thead-light">
           <tr>
             <th style="width: 2%;">#</th>
-            <th style="width: 20%;">Nom</th>
+            <th style="width: 20%;">Libelle</th>
             <th style="width: 17%;">Famille</th>
-            <th style="width: 15%;">Marque</th>
-            <th style="width: 20%;">Unité</th>
+            <th style="width: 15%;">Prix Achat</th>
+            <th style="width: 20%;">Prix Vente</th>
+            <th style="width: 20%;"> Stock Alert</th>
+            <th style="width: 10%;">Garantie</th>
             <th style="width: 10%;">Statut</th>
-            <th style="width: 10%;">Créer le</th>
             <th style="width: 8%;">Actions</th>
           </tr>
         </thead><!-- /thead -->
@@ -191,11 +192,14 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <?php
           $output = '';
           $entrepot = Soutra::getAllArticleFamilleMark($id);
+          // var_dump($entrepot);
           if (!empty($entrepot)) {
             $i = 0;
 
             foreach ($entrepot as $row) {
               $i++;
+              $detail = '<button title="detail article" data-id_article="' . $row['ID_article'] . '"  class="btn btn-info btn-sm btn_detail_entrepot_article">
+                <i class="bi bi-eye"></i> </button>';
               $btn = '<button title="Désactiver entrepot" data-code="' . $row['ID_article'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
                 <i class="bi bi-x-circle"></i> </button>';
               $etat = '<span class="badge badge-success">Actif</span>';
@@ -211,11 +215,12 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
               <td>' . $i . '</td>
               <td>' . $row['libelle_article'] . '</td>
               <td>' . $row['famille'] . '</td>
-              <td>' . $row['mark'] . '</td>
-              <td>' . $row['unite'] . '</td>
+              <td>' . $row['prix_achat'] . '</td>
+              <td>' . $row['prix_vente'] . '</td>
+              <td><span class="badge badge-warning">'.$row['stock_alert'].'</span> </td>
+              <td><span class="badge badge-info">'.$row['garantie_article'].' mois</span> </td>
               <td>' . $etat . '</td>
-              <td>' . $row['created_at'] . '</td>
-              <td>' . $btn . '</td>
+              <td>' . $detail . ' ' . $btn . '</td>
               ';
 
 
@@ -233,6 +238,173 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
+
+<!-- liste versement vente -->
+<div class="card mt-5">
+  <div class="card-body">
+
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
+
+      <span style="font-size: 18px; font-weight: bold;" class="justify-content-center d-flex mb-3">
+        Liste des versements ventes
+      </span>
+
+      <table class="table table-hover my-table">
+
+        <!-- THEAD -->
+        <thead class="thead-light">
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Employé</th>
+            <th>Montant</th>
+            <th>Paye Mode</th>
+            <th>Référence</th>
+            <th>Stataut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <!-- TBODY -->
+        <tbody class="entrepot-table">
+
+          <?php
+          $output = '';
+          $versements = Soutra::getDetailVersementByEntrepot($id);
+
+          if (!empty($versements)) {
+
+            $i = 0;
+
+            foreach ($versements as $row) {
+              $i++;
+
+              $output .= '
+              <tr class="row' . $row['ID_versement'] . '">
+
+                <td>' . $i . '</td>
+
+                <td>' . date('d/m/Y', strtotime($row['created_at'])) . '</td>
+
+                <td>' . ($row['client']) . '</td>
+
+                <td>' . ($row['employe']) . '</td>
+
+                <td><strong>' . number_format($row['montant_versement'], 0, ',', ' ') . ' FCFA</strong></td>
+                <td>' . checkModePaiement($row['pay_mode']). '</td>
+
+                <td>
+                  <span class="badge bg-info text-light">
+                    ' . $row['code_versement'] . '
+                  </span>
+                </td>
+
+                <td>' . checkEtat($row['etat_versement']) . '</td>
+                <td>
+                  <button class="btn btn-info btn-sm">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </td>
+
+              </tr>';
+            }
+          }
+
+          echo $output;
+          ?>
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- liste versement vente -->
+<div class="card mt-5">
+  <div class="card-body">
+
+    <div class="table-responsive bg-light py-3 px-2 border rounded">
+
+      <span style="font-size: 18px; font-weight: bold;" class="justify-content-center d-flex mb-3">
+        Liste des versements achats
+      </span>
+
+      <table class="table table-hover my-table">
+
+        <!-- THEAD -->
+        <thead class="thead-light">
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Employé</th>
+            <th>Montant</th>
+            <th>Paye Mode</th>
+            <th>Référence</th>
+            <th>Stataut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <!-- TBODY -->
+        <tbody class="entrepot-table">
+
+          <?php
+          $output = '';
+          $versements = Soutra::getDetailVersementByEntrepot($id,'achat');
+
+          if (!empty($versements)) {
+
+            $i = 0;
+
+            foreach ($versements as $row) {
+              $i++;
+
+              $output .= '
+              <tr class="row' . $row['ID_versement'] . '">
+
+                <td>' . $i . '</td>
+
+                <td>' . date('d/m/Y', strtotime($row['created_at'])) . '</td>
+
+                <td>' . ($row['client']) . '</td>
+
+                <td>' . ($row['employe']) . '</td>
+
+                <td><strong>' . number_format($row['montant_versement'], 0, ',', ' ') . ' FCFA</strong></td>
+                <td>' . checkModePaiement($row['pay_mode']). '</td>
+
+                <td>
+                  <span class="badge bg-info text-light">
+                    ' . $row['code_versement'] . '
+                  </span>
+                </td>
+
+                <td>' . checkEtat($row['etat_versement']) . '</td>
+                <td>
+                  <button class="btn btn-info btn-sm">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </td>
+
+              </tr>';
+            }
+          }
+
+          echo $output;
+          ?>
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -312,6 +484,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 </div><!-- /.m -->
 
 <?= modalAttribution() ?>
+<?= modalDetailEntrepotArticle() ?>
 <!-- btn detail -->
 <!-- <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm mr-2">
             <i class="fa fa-eye"></i></a> -->

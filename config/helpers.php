@@ -187,6 +187,20 @@ function mergeByKeyArticlesCommande(array $articleSaved, array $addedArticle, ar
   return array_values($result);
 }
 
+function checkModePaiement(string $mode)
+{
+    $modes = PAYMENT_MODE_SHOW;
+
+    if (!isset($modes[$mode])) {
+        return '';
+    }
+
+    return '<span class="text-light badge bg-' . $modes[$mode]['class'] . '">
+                ' . $modes[$mode]['label'] . '
+            </span>';
+}
+
+
 function checkStatusCommande(string $etat, array $data = STATUT_COMMANDE)
 {
   $result = "";

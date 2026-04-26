@@ -1340,7 +1340,7 @@ GROUP BY e.ID_entrepot;";
     public static function getAllArticleFamilleMark($entrepot = null, $etat = 1)
     {
         $data = [];
-        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite,ent.prix_achat,ent.prix_vente,ent.stock_alert,ent.garantie_article
         FROM article ar 
         JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id AND ent.etat_article = :etat_entrepot_article
         JOIN famille fa ON fa.ID_famille = ar.famille_id 
@@ -1355,7 +1355,28 @@ GROUP BY e.ID_entrepot;";
         ]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getDetailEntrepotArticleById($id_article = null)
+    {
+        $data = [];
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite,ent.prix_achat,ent.prix_vente,ent.stock_alert,ent.garantie_article
+        FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.article_id = :article_id
+        JOIN famille fa ON fa.ID_famille = ar.famille_id 
+        JOIN mark ma ON ma.ID_mark = ar.mark_id 
+        JOIN unite un ON un.ID_unite = ar.unite_id ORDER BY ID_article DESC";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'article_id' => $id_article
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -2141,6 +2162,28 @@ GROUP BY e.ID_entrepot;";
         $query->closeCursor();
         return $data;
     }
+
+public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
+{
+    $sql = "SELECT 
+                v.*,
+                CONCAT(c.nom_client, ' ', c.prenom_client) AS client,
+                CONCAT(e.nom_employe, ' ', e.prenom_employe) AS employe
+            FROM versement v
+            LEFT JOIN client c ON v.client_id = c.ID_client
+            LEFT JOIN employe e ON e.ID_employe = v.employe_id
+            WHERE v.entrepot_id = :entrepot 
+              AND v.type_versement = :types";
+
+    $query = self::getConnexion()->prepare($sql);
+
+    $query->execute([
+        'entrepot' => $entrepot,
+        'types' => $type
+    ]);
+
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public static function getDetailAchat($id_achat, $etat = 1)
     {
@@ -3966,8 +4009,6 @@ GROUP BY e.ID_entrepot;";
         }
     }
 
-
-
     public static function getTotalInventaire()
     {
         try {
@@ -3987,5 +4028,106 @@ GROUP BY e.ID_entrepot;";
             die('Erreur : ' . $e->getMessage());
         }
     }
+    
+    
+    public static function getInventaireDateByAnneeArticle($annee,$article)
+    {
+        $data = [];
+        try {
+
+            $sql = "SELECT ms.ID_mouvement_stock,ms.type_mouvement,ms.date_mouvement FROM mouvement_stock ms
+                WHERE YEAR(ms.date_mouvement) = :annee AND ms.article_id = :article AND ms.type_mouvement = :inventaire GROUP BY ms.ID_mouvement_stock ORDER BY ms.date_mouvement DESC";
+            $params = [
+                'annee' => $annee,
+                'article' => $article,
+                'inventaire' => 'INVENTAIRE'
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            return $data;
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+    public static function getArticlesFiltersByEntrepot()
+    {
+        $data = [];
+        try {
+
+            $sql = "SELECT ar.ID_article AS id_article,ar.libelle_article AS article,ea.prix_vente AS prix_vente FROM article ar JOIN entrepot_article ea ON ar.ID_article = ea.article_id WHERE ea.entrepot_id = :id";
+            $params = [
+                'id' => $_SESSION['id_entrepot']
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
+
+            return $data;
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
+    public static function getFormNowToFirstYearAchatForFiltersByEntrepot()
+    {
+        $data = [];
+        try {
+
+            $sql = "SELECT MIN(created_at) AS premiere_date FROM achat WHERE entrepot_id = :id";
+            $params = [
+                'id' => $_SESSION['id_entrepot']
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+            $data = $query->fetch(PDO::FETCH_ASSOC);
+
+            return self::generateYesFromFirstYear($data['premiere_date'],"DESC");
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+    
+    public static function generateYesFromFirstYear($premiere_date,$ordre = 'ASC') {
+        // sécuriser la date
+        if (empty($premiere_date)) {
+        return [date('Y')];
+    }
+
+    $annee_debut = (int) date('Y', strtotime($premiere_date));
+    $annee_actuelle = (int) date('Y');
+
+    $annees = range($annee_debut, $annee_actuelle);
+
+    if ($ordre === 'DESC') {
+        $annees = array_reverse($annees);
+    }
+
+    return $annees;
+    }
+
+    // public static function getInventaireByAnneArticleDateForFilters($annee = null, $article = null, $date = null)
+    // {
+    //     try {
+
+    //         $sql = "SELECT COALESCE(SUM(vba.qte_approvisionnement),0) as qte_approvisionnement,COALESCE(SUM(vba.cout_achat),0) as cout_achat,COALESCE(SUM(vba.qte_vendue),0) as qte_vendue,COALESCE(SUM(vba.montant_vendu),0) as montant_vendu, COALESCE(SUM(vba.benefice),0) as benefice,COALESCE(SUM(vba.qte_restante),0) as qte_restante,COALESCE(SUM(vba.montant_quantite_restant),0) as montant_quantite_restant FROM vue_bilan_articles vba 
+    //         WHERE vba.entrepot_id = :id
+    //     ";
+    //         $params = [
+    //             'id' => $_SESSION['id_entrepot'],
+    //         ];
+
+    //         $query = self::getConnexion()->prepare($sql);
+    //         $query->execute($params);
+
+    //         return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+    //     } catch (Exception $e) {
+    //         die('Erreur : ' . $e->getMessage());
+    //     }
+    // }
 }
 // fin de classe
