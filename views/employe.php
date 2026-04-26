@@ -7,13 +7,13 @@
 
 
  <header class="page-title-bar">
-<div class="header-employe d-flex align-items-center mb-4">
-  <i class="bi bi-people me-3 mr-3" style="font-size:30px;"></i>
-  <div>
-    <h4 class="mb-0">Employés</h4>
-    <small>Gestion du personnel</small>
-  </div>
-</div>
+   <div class="header-employe d-flex align-items-center mb-4">
+     <i class="bi bi-people me-3 mr-3" style="font-size:30px;"></i>
+     <div>
+       <h4 class="mb-0">Employés</h4>
+       <small>Gestion du personnel</small>
+     </div>
+   </div>
 
    <!-- title and toolbar -->
  </header><!-- /.page-title-bar -->
@@ -66,7 +66,6 @@
                     <td class="action-cell">' . $row['prenom_employe'] . '</td>
                     <td class="action-cell">' . $row['telephone_employe'] . '</td>
                     <td class="action-cell">' . $row['role'] . '</td>';
-
 
                 $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
                   <a  href="' . URL . 'profile_employe&id=' . $row['ID_employe'] . '" class="btn btn-success btn-link btn-sm " data-toggle="tooltip" title="" data-original-title="Voir details client">
