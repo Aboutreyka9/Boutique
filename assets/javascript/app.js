@@ -584,10 +584,12 @@ return total_ttc;
     btn_ajouter_categorie();
 
     function btn_ajouter_categorie() {
-        $('body').delegate('#btn_ajouter_categorie', 'submit', function (e) {
+        $('body').on('submit', '#btn_ajouter_categorie',  function (e) {
             e.preventDefault();
 
             var categorie = $(this).serialize();
+            console.log(categorie);
+            
             ajouter_categorie(categorie);
 
         });
