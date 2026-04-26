@@ -4,8 +4,13 @@
  }
   ?>
  <header class="page-title-bar">
-       <h1 class="page-title"> Espace Famille</h1>
-    <p class="text-muted"> Liste des Familles</p>
+      <div class="header-base header-souscategories">
+  <i class="bi bi-folder2-open me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Sous-catégories</h4>
+    <small>Détail des classifications</small>
+  </div>
+</div>
     <!-- floating action -->
         <button type="button" data-toggle="modal" data-target="#famille-modal" class="btn btn-success btn-floated" title="Ajouter famille" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
     <!-- title and toolbar -->

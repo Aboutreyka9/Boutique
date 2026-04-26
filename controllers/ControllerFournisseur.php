@@ -48,30 +48,30 @@ class ControllerFournisseur extends Connexion
     {
         if (isset($_POST['btn_liste_fournisseur'])) {
             $output = '';
-            $fournisseur = Soutra::getAllfournisseur();
+            $fournisseur = Soutra::getAllFournisseurEntrepot();
             if (!empty($fournisseur)) {
                 $i = 0;
                 foreach ($fournisseur as $row) {
                     $i++;
                     $output .= '
                 <tr class="row' . $row['ID_fournisseur'] . '">
-                   <td>' . $i . '</td>
-                   <td>
-                   <a href="' . URL . 'fournisseur_profile&id=' . $row['ID_fournisseur'] . '" title="Detail fournisseur"> <i class="fa fa-eye fa-lg"></i>  '
-                        . $row['code_fournisseur'] .
-                        '</a> </td>
-                   <td>' . $row['nom_fournisseur'] . '</td>
-                   <td>' . $row['telephone_fournisseur'] . '</td>
-                   <td>' . $row['email_fournisseur'] . '</td>
-                   <td>' . Soutra::date_format($row['created_at']) . '</td>
-                   ';
+               <td>' . $i . '</td>
+               <td>' . checkEtatData($row['etat_fournisseur']) . '</td>
+               <td>' . $row['nom_fournisseur'] . '</td>
+               <td>' . $row['telephone_fournisseur'] . '</td>
+               <td>' . $row['email_fournisseur'] . '</td>
+               <td>' . Soutra::date_format($row['created_at']) . '</td>
+               ';
+
 
                     $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+                 <a  href="' . URL . 'fournisseur_profile&id=' . $row['ID_fournisseur'] . '" class="btn btn-success btn-link btn-sm " data-toggle="tooltip" title="" data-original-title="Voir details fournisseur">
+                  <i class="fa fa-eye text-icon-success"></i> </a>
+
             <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-primary btn-sm btn_update_fournisseur">
-            <i class="fa fa-edit"></i> 
-    
-</button> ';
-                    if (strtolower($_SESSION['role']) == ADMIN) {
+            <i class="fa fa-edit"></i>  </button> ';
+
+                    if (isAdminGestionnaire()) {
                         $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_fournisseur'] . '" class="btn btn-warning btn-sm btn_remove_fournisseur">
                 <i class="fa fa-trash"></i> </button>

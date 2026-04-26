@@ -51,26 +51,26 @@ class ControllerEmploye extends Connexion
             $employe = Soutra::getAllByItemsa('employe', 'ID_employe', $_POST['id_employe']);
             $roles = Soutra::getAllTable('role', 'etat_role', 1);
             $output = '
-            <div class="col-md-12">
+            <div class="col-md-6">
             <div class="form-group">
               <label for="nom_employe">Nom</label>
                <input type="text" name="nom_employe" value="' . $employe['nom_employe'] . '" id="nom_employe" class="form-control">
             </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-6">
             <div class="form-group">
               <label for="prenom_employe">Prenoms</label>
                <input type="text" name="prenom_employe" value="' . $employe['prenom_employe'] . '" id="prenom_employe" class="form-control">
             </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-6">
             <div class="form-group">
               <label for="telephone_employe">Telephone</label>
               <input type="text" name="telephone_employe" value="' . $employe['telephone_employe'] . '" id="telephone_employe" class="form-control">
               <input type="hidden" name="id_employe" value="' . $employe['ID_employe'] . '" class="form-control">
             </div>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-6">
             <div class="form-group">
               <label for="role_employe">Role</label>
               <select name="role_employe" id="role_employe" class="form-control" id="">
@@ -131,25 +131,25 @@ class ControllerEmploye extends Connexion
                 foreach ($emp as $row) {
                     $i++;
                     $output .= '
-                <tr class="row' . $row['ID_employe'] . '">
-                   <td>' . $i . '</td>
-                   <td>' . $row['code_employe'] . '</td>
-                   <td>' . $row['nom_employe'] . '</td>
-                   <td>' . $row['prenom_employe'] . '</td>
-                   <td>' . $row['telephone_employe'] . '</td>
-                   <td>' . $row['role'] . '</td>';
+                 <tr class="row' . $row['ID_employe'] . '">
+                    <td class="action-cell">' . $i . '</td>
+                    <td>' . checkEtatData($row['etat_employe']) . '</td>
+                    <td class="action-cell">' . $row['nom_employe'] . '</td>
+                    <td class="action-cell">' . $row['prenom_employe'] . '</td>
+                    <td class="action-cell">' . $row['telephone_employe'] . '</td>
+                    <td class="action-cell">' . $row['role'] . '</td>';
 
                     $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="' . $row['ID_employe'] . '" class="btn btn-primary btn-sm btn_update_employe">
-                   <i class="fa fa-edit"></i> 
-    
-</button>
-                   <div class="d-inline">
-                       <button data-id="' . $row['ID_employe'] . '" class="btn btn-warning btn-sm btn_remove_employe">
-                       <i class="fa fa-trash"></i> </button>
-                   </div>
-                 </td>
-                    </tr>
+                  <a  href="' . URL . 'profile_employe&id=' . $row['ID_employe'] . '" class="btn btn-success btn-link btn-sm " data-toggle="tooltip" title="" data-original-title="Voir details client">
+                  <i class="fa fa-eye text-icon-success"></i> </a>
+
+                   <button data-id="' . $row['ID_employe'] . '" class="btn btn-primary btn-link btn-sm btn_update_employe" data-toggle="tooltip" title="" data-original-title="Modifier info client client">
+                  <i class="fa fa-edit text-icon-primary"></i> </button>
+                
+                      <button data-id="' . $row['ID_employe'] . '" class="btn btn-warning btn-link btn-sm btn_remove_employe" data-toggle="tooltip" title="" data-original-title="Changer statut client">
+                      <i class="fa fa-trash text-icon-warning"></i> </button>
+                </td>
+                  </tr> 
                     ';
                 }
             }

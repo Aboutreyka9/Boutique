@@ -1,54 +1,68 @@
  <?php
-  if (Soutra::getState('client') != 1) {
-    include('views/not_found.php');
+  if (!isAdminGestionnaire()) {
+    pageNotFound();
     return;
   }
   ?>
 
+
  <header class="page-title-bar">
-<div class="header-client d-flex align-items-center mb-4">
-  <i class="bi bi-person-lines-fill me-3 mr-3" style="font-size:30px;"></i>
-  <div>
-    <h4 class="mb-0">Clients</h4>
-    <small>Suivi et gestion de la clientèle</small>
-  </div>
-</div>
-   <!-- floating action -->
-   <button type="button" data-toggle="modal" data-target="#client-modal" class="btn btn-success btn-floated" title="Ajouter Client" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
+   <div class="header-client d-flex align-items-center mb-4">
+     <i class="bi bi-person-lines-fill me-3 mr-3" style="font-size:30px;"></i>
+     <div>
+       <h4 class="mb-0">Clients</h4>
+       <small>Suivi et gestion de la clientèle</small>
+     </div>
+   </div>
+
    <!-- title and toolbar -->
  </header><!-- /.page-title-bar -->
- <!-- .page-section -->
- <div class="table-responsive bg-light py-3 px-2 border rounded">
-   <!-- .table -->
-   <table class="table table-striped table-hover my-table">
-     <!-- thead -->
-     <thead class="bg-light">
-       <tr>
-         <th style="width: 10%;">#</th>
-         <th style="width: 25%;">STATUT</th>
-         <th style="width: 35%;">REF-CL</th>
-         <th style="width: 60%;">NOM</th>
-         <th style="width: 19%;">TELEPHONE</th>
-         <th style="width: 20%;">EMAIL</th>
-         <th style="width: 10%;">DATE-ENR</th>
-         <th style="width: 8%;">ACTIONS</th>
-       </tr>
-     </thead><!-- /thead -->
-     <!-- tbody -->
-     <tbody class="client-table">
-       <?php
-        $output = '';
-        $client = Soutra::getAllClientEntrepot();
-        if (!empty($client)) {
-          $i = 0;
-          foreach ($client as $row) {
-            $i++;
 
-            $output .= '
+ <div class="card mb-3">
+   <div class="card-body">
+     <div class="row">
+       <div class="col-md-4">
+         <button style="border: none;" type="button" class="btn btn-outline-dark w-50 btn_reload"><i class="bi bi-arrow-repeat"></i> &nbsp; Mettre à jour</button>
+       </div>
+       <div class="col-md-8 d-flex justify-content-end">
+         <button type="button" data-toggle="modal" data-target="#client-modal" class="btn btn-primary w-25" title="Ajouter client" aria-label="Close"> <i class="fa fa-plus"></i> &nbsp; Créer</button>
+       </div>
+     </div>
+   </div>
+ </div>
+
+ <div class="card">
+   <div class="card-body">
+
+     <div class="table-responsive">
+       <!-- .table -->
+       <table class="table table-striped table-hover my-table bg-light">
+         <!-- thead -->
+         <thead class="bg-light">
+           <tr>
+             <th> # </th>
+             <th> STATUT </th>
+             <th> NOM </th>
+             <th> TELEPHONE </th>
+             <th> EMAIL </th>
+             <th> ENREGISTRER </th>
+             <th> ACTION </th>
+           </tr>
+         </thead><!-- /thead -->
+         <!-- tbody -->
+         <tbody class="client-table">
+           <?php
+            $output = '';
+            $client = Soutra::getAllClientEntrepot();
+            if (!empty($client)) {
+              $i = 0;
+              foreach ($client as $row) {
+                $i++;
+
+                $output .= '
             <tr class="row' . $row['ID_client'] . '">
                <td>' . $i . '</td>
                <td>' . checkEtatData($row['etat_client']) . '</td>
-               <td>' . $row['code_client'] . '</td>
                <td>' . $row['nom_client'] . '</td>
                <td>' . $row['telephone_client'] . '</td>
                <td>' . $row['email_client'] . '</td>
@@ -56,82 +70,33 @@
                ';
 
 
-            $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+                $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
+                <a  href="' . URL . 'client_profile&id=' . $row['ID_client'] . '" class="btn btn-success btn-link btn-sm " data-toggle="tooltip" title="" data-original-title="Voir details client">
+                  <i class="fa fa-eye text-icon-success"></i> </a>
+                  
             <button data-id="' . $row['ID_client'] . '" class="btn btn-primary btn-sm btn_update_client">
             <i class="fa fa-edit"></i> </button> ';
 
-            if (isAdminGestionnaire()) {
-              $output .= '<div class="d-inline">
+                if (isAdminGestionnaire()) {
+                  $output .= '<div class="d-inline">
                 <button data-id="' . $row['ID_client'] . '" class="btn btn-warning btn-sm btn_remove_client">
                 <i class="fa fa-trash"></i> </button>
             </div>';
-            }
-            $output .= '
+                }
+                $output .= '
           </td>
              </tr>
              ';
-          }
-        }
-        echo $output; ?>
+              }
+            }
+            echo $output; ?>
 
 
-     </tbody><!-- /tbody -->
-   </table><!-- /.table -->
- </div><!-- /.table-responsive -->
-
+         </tbody><!-- /tbody -->
+       </table><!-- /.table -->
+     </div><!-- /.table-responsive -->
+   </div>
+ </div>
 
 
  <?= modalVenteClient(); ?>
-
- <div class="modal fade" data-backdrop="static" id="client-modal" tabindex="-1" role="dialog" aria-labelledby="client-modal" aria-hidden="true">
-   <!-- .modal-dialog -->
-   <div class="modal-dialog" role="document">
-     <!-- .modal-content -->
-     <div class="modal-content">
-       <!-- .modal-header -->
-       <div class="modal-header">
-         <h6 class="modal-title inline-editable">Formulaire <i class=""></i>
-         </h6>
-       </div><!-- /.modal-header -->
-       <!-- .modal-body -->
-       <div class="modal-body">
-         <!-- .form-row -->
-         <div class="form-row menu-modal">
-           <div class="col-md-12">
-             <div class="form-group">
-               <label for="nom_client">Nom</label>
-               <input type="text" name="nom_client" id="nom_client" class="form-control">
-             </div>
-           </div>
-           <div class="col-md-12">
-             <div class="form-group">
-               <label for="telephone_client">Telephone</label>
-               <input type="text" name="telephone_client" id="telephone_client" class="form-control">
-               <input type="hidden" name="code_inscrire" id="code_module" class="form-control">
-             </div>
-           </div>
-           <div class="col-md-12">
-             <div class="form-group">
-               <label for="email_client">Email</label>
-               <input type="email" name="email_client" id="email_client" class="form-control">
-             </div>
-           </div>
-           <div class="col-md-12">
-             <div class="form-group">
-               <label for="adresse_client">Adresse</label>
-               <textarea rows="3" name="adresse_client" class="form-control"></textarea>
-             </div>
-           </div>
-
-         </div><!-- /.form-row -->
-       </div><!-- /.modal-body -->
-       <!-- .modal-footer -->
-       <div class="modal-footer">
-         <input type="hidden" name="btn_ajouter_client" class="form-control">
-
-         <button type="submit" class="btn btn-primary">Enregistrer</button> <button type="button" class="btn btn-light dismiss_modal">Close</button>
-       </div><!-- /.modal-footer -->
-     </div><!-- /.modal-content -->
-   </div><!-- /.modal-dialog -->
- </div><!-- /.m -->
- </form><!-- /.modal -->

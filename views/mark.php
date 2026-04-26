@@ -4,8 +4,13 @@
  }
   ?>
  <header class="page-title-bar">
-       <h1 class="page-title"> Espace Mark</h1>
-    <p class="text-muted"> Liste des mark</p>
+      <div class="header-base header-marques">
+  <i class="bi bi-tag me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Marques</h4>
+    <small>Gestion des marques produits</small>
+  </div>
+</div>
     <!-- floating action -->
         <button type="button" data-toggle="modal" data-target="#mark-modal" class="btn btn-success btn-floated" title="Ajouter mark" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->
     <!-- title and toolbar -->

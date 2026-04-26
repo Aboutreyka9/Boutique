@@ -1329,7 +1329,7 @@ return total_ttc;
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: entrepotData,
-                dataType: 'json',
+                // dataType: 'json',
                 success: function (data) {
                     console.log(data);
 
@@ -1538,6 +1538,150 @@ return total_ttc;
             });
         });
     }
+searchByAnneeArticleToGetInventaire();
+    function searchByAnneeArticleToGetInventaire() {
+
+    $('body').on('change', '#annee_inventaire_search, #article_inventaire_search', function () {
+
+        let annee = $('#annee_inventaire_search').val();
+        let article = $('#article_inventaire_search').val();
+
+        // 👉 condition obligatoire : les 2 doivent être remplis
+        if (annee !== "" && article !== "") {
+            console.log(annee,article);
+            
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    annee: annee,
+                    article: article,
+                    btn_search_inventaire_annee_article_to_get_inventaire: 1
+                },
+                dataType: 'json',
+
+                success: function (response) {
+                    // console.log(response);return
+                    
+                    if (response.code === 200) {
+
+                        $("#inventaire_id_mouvement_search").html(
+                            '<option value="">Toutes les dates</option>' + response.html
+                        );
+
+                    } else {
+                        console.log("Aucun résultat trouvé");
+                    }
+                },
+
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+
+        } else {
+            console.log("Sélectionne année ET article");
+        }
+
+    });
+}
+btnSearchByAnneeArticleToGetInventaire();
+    function btnSearchByAnneeArticleToGetInventaire() {
+
+    $('body').on('click', '.btn_inventaire_search_filters', function () {
+        let annee = $('#annee_inventaire_search').val();
+        let article = $('#article_inventaire_search').val();
+        let id_mouvement = $('#inventaire_id_mouvement_search').val();
+
+        // 👉 condition obligatoire : les 2 doivent être remplis
+        if (annee !== "" && article !== "" && id_mouvement !== "") {
+            // console.log(annee,article,id_mouvement);
+            
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    annee: annee,
+                    article: article,
+                    id_mouvement,
+                    btn_search_inventaire_annee_article_mouvement: 1
+                },
+                // dataType: 'json',
+
+                success: function (response) {
+                    // console.log(response);return
+
+                    if (response.code === 200) {
+
+                        const s = response;
+                        $(".qte_approvisionnement").text(formatNumber(s.qte_approvisionnement));
+                        $(".cout_achat").text(formatNumber(s.cout_achat) + " FCFA");
+                        $(".qte_vendue").text(formatNumber(s.qte_vendue));
+                        $(".montant_vendu").text(formatNumber(s.montant_vendu) + " FCFA");
+                        $(".benefice").text(formatNumber(s.benefice) + " FCFA");
+                        $(".qte_restante").text(formatNumber(s.qte_restante));
+                        $(".montant_quantite_restant").text(formatNumber(s.montant_quantite_restant) + " FCFA");
+
+                    } else {
+                        console.log("Aucun résultat trouvé");
+                    }
+                },
+
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+
+        } else {
+            console.log("Sélectionne année ET article");
+        }
+
+    });
+}
+ajax_detail_entrepot_article();
+    function ajax_detail_entrepot_article() {
+
+    $('body').on('click', '.btn_detail_entrepot_article', function () {
+        let id_article =  $(this).data('id_article');
+
+        // 👉 condition obligatoire : les 2 doivent être remplis
+        if (id_article !== "") {
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_article: id_article,
+                    btn_detail_entrepot_article_click: 1
+                },
+                dataType: 'json',
+
+                success: function (response) {
+                    // console.log(response);return
+                    if (response.code === 200) {
+
+                        $("#contentDetailArticle").html(response.html);
+
+                        $("#modalDetailArticle").modal('show');
+
+                    } else {
+                        console.log("Aucun résultat trouvé");
+                    }
+                },
+
+                error: function (err) {
+                    console.log("Erreur AJAX :", err);
+                }
+            });
+
+        } else {
+            console.log("Sélectionne année ET article");
+        }
+
+    });
+}
     
     selectEntrepotToSearchTransfert();
 

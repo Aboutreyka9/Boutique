@@ -7,8 +7,13 @@ $info = Soutra::getInfoBoutique();
 $image = $info['image'];
  ?>
 <div class="page-section mt-5 col-12 col-md-* col-lg-*">
-        <h1 class="page-title"> Configuration Boutique</h1>
-    <p class="text-muted"> Configurer les informations de la boutique</p>
+    <div class="header-base header-config">
+  <i class="bi bi-gear me-3 mr-3"></i>
+  <div>
+    <h4 class="mb-0">Configuration</h4>
+    <small>Paramétrage du système</small>
+  </div>
+</div>
     <div class="row">
          <!-- grid column -->
          <div class="col-xl-6"> 

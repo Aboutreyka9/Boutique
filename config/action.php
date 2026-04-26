@@ -130,6 +130,28 @@ function modalAchatFournisseur()
 
 
 
+function modalDetailEntrepotArticle()
+{
+  return '
+  <div class="modal fade" id="modalDetailArticle">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Détail Article</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" id="contentDetailArticle">
+        <!-- contenu AJAX -->
+      </div>
+
+    </div>
+  </div>
+</div>
+    ';
+}
+
 function modalAttribution()
 {
   return '
