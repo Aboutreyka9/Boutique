@@ -4,9 +4,13 @@
  }
   ?>
  <header class="page-title-bar">
-   <h1 class="page-title"> Espace Produits</h1>
-   <p class="text-muted"> Liste des produits</p>
-
+<div class="header-base header-produits">
+  <i class="bi bi-box-seam me-3 mr-3" style="font-size:30px;" ></i>
+  <div>
+    <h4 class="mb-0">Produits</h4>
+    <small>Catalogue des articles</small>
+  </div>
+</div>
    <!-- title and toolbar -->
  </header><!-- /.page-title-bar -->
 

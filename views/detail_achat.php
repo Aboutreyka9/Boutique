@@ -12,7 +12,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   exit();
 }
 ?>
-
+<div class="header-achat d-flex align-items-center mb-4">
+  <i class="bi bi-cart-plus me-3 mr-3"  style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Détail Achat</h4>
+    <small>Historique des approvisionnements fournisseurs</small>
+  </div>
+</div>
 <!-- HEADER ACTIONS -->
 <div class="d-flex justify-content-between align-items-center mb-3">
   <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>

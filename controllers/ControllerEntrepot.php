@@ -143,7 +143,7 @@ class ControllerEntrepot extends Connexion
             extract($_POST);
             $msg['code'] = 400;
 
-            if (empty($libelle_entrepot) || empty($responsable_entrepot) || empty($ville_entrepot)) {
+            if (empty($libelle_entrepot) || empty($ville_entrepot)) {
 
                 $msg['message'] = 'Veuillez renseigner tous les champs !';
             } elseif (Soutra::existe("entrepot", "libelle_entrepot", $libelle_entrepot)) {
@@ -157,21 +157,38 @@ class ControllerEntrepot extends Connexion
                     'etat_entrepot' => 1,
                     'created_at_entrepot' => $date
                 );
-                $dataService = array(
-                    'entrepot_id' => "",
-                    'employe_id' => $responsable_entrepot,
-                    'etat_service' => 0,
-                    'responsable' => 1,
-                    'created_at_service' => $date
-                );
+
+                 $dataService = [
+                            'employe_id' => $responsable_entrepot,
+                            'entrepot_id' => "",
+                            'etat_service' => '0',
+                            'responsable' => '1',
+                            'created_at_service' => $date
+                            ];
+
+                
                 $result = Soutra::transactionData(function () use ($data, $dataService) {
-                    Soutra::insert("entrepot", $data);
+                    Soutra::inserted("entrepot", $data);
+                    
                     $lastId = Soutra::lastInsertId();
                     $dataService['entrepot_id'] = $lastId;
-                    Soutra::insert("service", $dataService);
+                    if(!empty($dataService['employe_id'])){
+                       
+                            Soutra::inserted("service", $dataService);
+                        
+                    }
+    
+                    if(empty($_SESSION['id_entrepot'])){
+                        $dataUpdateEmp = [
+                            'entrepot' => $lastId,
+                            'ID_employe' => $_SESSION['id_employe']
+                        ];
+    
+                        Soutra::update("employe", $dataUpdateEmp);
+                        $_SESSION['id_entrepot'] = $lastId;
+                    }
                 });
 
-                //var_dump($data);die();
                 if ($result) {
                     $msg['code'] = 200;
                     $msg['message'] = "Entrepot Creer avec succès.";

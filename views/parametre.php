@@ -2,8 +2,13 @@
 $employe = Soutra::getAllByItemsa('employe','ID_employe',$_SESSION['id_employe']);
  ?>
 <div class="page-section mt-5 col-12 col-md-* col-lg-*">
-        <h1 class="page-title"> Profil Utilisateur</h1>
-    <p class="text-muted"> Profil</p>
+  <div class="header-base header-profil">
+  <i class="bi bi-person-circle me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Profil utilisateur</h4>
+    <small>Informations personnelles et compte</small>
+  </div>
+</div>
     <div class="row">
         <!-- grid column -->
         <div class="col-xl-6 col-12 col-md-* col-lg-*">

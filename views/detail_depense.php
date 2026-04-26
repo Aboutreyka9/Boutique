@@ -9,7 +9,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   exit();
 }
 ?>
-
+<div class="header-depense d-flex align-items-center mb-4">
+  <i class="bi bi-credit-card me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Détail Dépense</h4>
+    <small>Analyse des charges et sorties d’argent</small>
+  </div>
+</div>
 <!-- HEADER ACTIONS -->
 <div class="d-flex justify-content-between align-items-center mb-3">
   <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
@@ -104,7 +110,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
           <div class="col-6">
             <span class="text-muted">Date Modification</span>
-            <p class="fw-semibold"><?= date('d/m/Y \à H:i', strtotime($depense['date_confirm']))??'Non spécifié' ?></p>
+            <p class="fw-semibold"><?= $depense['date_confirm']?', ':'Non spécifié' ?></p>
 
             <span class="text-muted">Description</span>
             <p class="fw-semibold"><?= $depense['description']??'Non spécifié' ?></p>

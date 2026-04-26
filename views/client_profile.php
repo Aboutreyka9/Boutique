@@ -21,8 +21,13 @@ $liste_versement = Soutra::getListeVersement($id);
 ?>
     <!-- .page-section -->
     <div class="page-section">
-    <h1 class="page-title"> Profil Client</h1>
-    <p class="text-muted"> Détails</p>
+<div class="header-client d-flex align-items-center mb-4">
+  <i class="bi bi-person-circle me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Détail Client</h4>
+    <small>Historique des achats et interactions</small>
+  </div>
+</div>
     <!-- .section-block -->
     <div class="section-block">
         <!-- metric row -->

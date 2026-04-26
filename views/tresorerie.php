@@ -7,7 +7,13 @@ if (isAdminGestionnaire()):
   <!-- DASHBOARD ADMIN  -->
 
 <div class="col-md-12 mb-4 mt-2">
-
+<div class="header-base header-tresorerie">
+  <i class="bi bi-cash-coin me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Trésorerie</h4>
+    <small>Suivi des flux financiers</small>
+  </div>
+</div>
   <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
 
     <!-- Titre -->
