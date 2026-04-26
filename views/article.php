@@ -1,16 +1,17 @@
  <?php
- if (!isAdminGestionnaire()) {
-     return;
- }
+  if (!isAdminGestionnaire()) {
+    pageNotFound();
+    return;
+  }
   ?>
  <header class="page-title-bar">
-<div class="header-base header-produits">
-  <i class="bi bi-box-seam me-3 mr-3" style="font-size:30px;" ></i>
-  <div>
-    <h4 class="mb-0">Produits</h4>
-    <small>Catalogue des articles</small>
-  </div>
-</div>
+   <div class="header-base header-produits">
+     <i class="bi bi-box-seam me-3 mr-3" style="font-size:30px;"></i>
+     <div>
+       <h4 class="mb-0">Produits</h4>
+       <small>Catalogue des articles</small>
+     </div>
+   </div>
    <!-- title and toolbar -->
  </header><!-- /.page-title-bar -->
 
@@ -118,7 +119,7 @@
                  <input type="text" name="slug" id="slug" class="form-control" placeholder="Ex:P-005">
                </div>
              </div>
-             
+
              <div class="col-md-4">
                <div class="form-group">
                  <label for="famille_id">Catégorie <span class="text-danger">*</span> </label>
@@ -185,7 +186,7 @@
              <?php
               // endif;
               ?>
-             
+
            </div><!-- /.form-row -->
          </div><!-- /.modal-body -->
          <!-- .modal-footer -->

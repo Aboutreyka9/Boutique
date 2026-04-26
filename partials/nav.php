@@ -56,15 +56,14 @@
               <!-- .dropdown-menu -->
             </li><!-- /.nav-item -->
             <?php
-            //$limit = Soutra::getStockLimitAlert();
-            $limit = [];
+            $limit = Soutra::getStockLimitAlert();
 
             if (count($limit) > 0): ?>
 
               <!-- .nav-item -->
               <li class="nav-item dropdown header-nav-dropdown has-notified">
                 <a class="nav-link" href="#!" data-toggle="dropdown" data-boundary="viewport" aria-haspopup="true"
-                  aria-expanded="false"><span style="color: orange;" class="oi oi-envelope-open  pulse">
+                  aria-expanded="false"><span style="color: #eb2f2fff;" class="oi oi-envelope-open  pulse">
                     <?= count($limit); ?></span></a>
                 <div class="dropdown-arrow"></div><!-- .dropdown-menu -->
                 <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right">
@@ -78,11 +77,10 @@
                     <?php foreach ($limit as $key => $value) { ?>
 
                       <!-- .dropdown-item -->
-                      <a href="<?= URL; ?>approvision&id=<?= $value['ID_article']; ?>" class="dropdown-item">
+                      <a href="<?= URL; ?>approvision&id=<?= $value['article_id']; ?>" class="dropdown-item">
                         <div class="tile tile-circle bg-warning"> A </div>
                         <div class="dropdown-item-body">
-                          <p class="subject"> <?= $value['article']; ?> </p>
-                          <p class="text text-truncate"><?= $value['niveau']; ?> </p>
+                          <p class="subject"> <?= $value['libelle_article']; ?> </p>
                         </div>
                       </a> <!-- /.dropdown-item -->
 
@@ -146,68 +144,67 @@
             </li><!-- /.nav-item -->
 
 
-          <?php
-          // var_dump($_SESSION);
-          if (isAdmin()):
-          $entrepots = Soutra::getAllTable('entrepot',"etat_entrepot");
-          $styles = [
-            ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
-            ["color" => "bg-success", "icon" => "fa fa-box"],
-            ["color" => "bg-warning", "icon" => "fa fa-building"],
-            ["color" => "bg-danger", "icon" => "fa fa-archive"],
-          ];
-          ?>
-            <!-- .nav-item -->
-            <li class="nav-item dropdown header-nav-dropdown">
-              <a class="nav-link" href="#!" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
-                  class="bi bi-bank fa-lg"></span></a>
-              <div class="dropdown-arrow"></div><!-- .dropdown-menu -->
-              <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right">
-                <!-- .dropdown-sheets -->
-              <div class="dropdown-sheets">
-                  <?php foreach ($entrepots as $index => $row): 
-                    $style = $styles[$index % count($styles)];
-                    $isActive = ($row['ID_entrepot'] == ($_SESSION['id_entrepot'] ?? null));
-                  ?>
+            <?php
+            // var_dump($_SESSION);
+            if (isAdmin()):
+              $entrepots = Soutra::getAllTable('entrepot', "etat_entrepot");
+              $styles = [
+                ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
+                ["color" => "bg-success", "icon" => "fa fa-box"],
+                ["color" => "bg-warning", "icon" => "fa fa-building"],
+                ["color" => "bg-danger", "icon" => "fa fa-archive"],
+              ];
+            ?>
+              <!-- .nav-item -->
+              <li class="nav-item dropdown header-nav-dropdown">
+                <a class="nav-link" href="#!" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
+                    class="bi bi-bank fa-lg"></span></a>
+                <div class="dropdown-arrow"></div><!-- .dropdown-menu -->
+                <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right">
+                  <!-- .dropdown-sheets -->
+                  <div class="dropdown-sheets">
+                    <?php foreach ($entrepots as $index => $row):
+                      $style = $styles[$index % count($styles)];
+                      $isActive = ($row['ID_entrepot'] == ($_SESSION['id_entrepot'] ?? null));
+                    ?>
 
-                <div class="dropdown-sheet-item">
-                  <a href="#" 
-                    class="tile-wrapper entrepot-item position-relative"
-                    data-id="<?= $row['ID_entrepot']; ?>">
+                      <div class="dropdown-sheet-item">
+                        <a href="#"
+                          class="tile-wrapper entrepot-item position-relative"
+                          data-id="<?= $row['ID_entrepot']; ?>">
 
-                    <span class="tile tile-lg <?= $style['color']; ?>">
-                      <i class="<?= $style['icon']; ?>"></i>
-                    </span>
+                          <span class="tile tile-lg <?= $style['color']; ?>">
+                            <i class="<?= $style['icon']; ?>"></i>
+                          </span>
 
-                    <!-- ✅ BADGE ACTIF -->
-                    <?php if ($isActive): ?>
-                      <span class="badge-active"></span>
-                    <?php endif; ?>
+                          <!-- ✅ BADGE ACTIF -->
+                          <?php if ($isActive): ?>
+                            <span class="badge-active"></span>
+                          <?php endif; ?>
 
-                    <span class="tile-peek">
-                      <?= $row['libelle_entrepot']; ?><br>
-                      <small><?= $row['ville_entrepot']; ?></small>
-                    </span>
+                          <span class="tile-peek">
+                            <?= $row['libelle_entrepot']; ?><br>
+                            <small><?= $row['ville_entrepot']; ?></small>
+                          </span>
 
-                  </a>
-                </div>
+                        </a>
+                      </div>
 
-              <?php endforeach; ?>
-                </div>
-                <!-- Voir plus button a  droite de la zone des entrepots -->
-                <a href="<?= URL ?>entrepot" class="dropdown-sheets-link text-right btn btn-sm btn-primary my-2 mx-2 d-block justify-content-end" >Voir plus</a>
-                <!-- .dropdown-sheets -->
-              </div><!-- .dropdown-menu -->
-            </li><!-- /.nav-item -->
-<?php endif; ?>
-            
+                    <?php endforeach; ?>
+                  </div>
+                  <!-- Voir plus button a  droite de la zone des entrepots -->
+                  <a href="<?= URL ?>entrepot" class="dropdown-sheets-link text-right btn btn-sm btn-primary my-2 mx-2 d-block justify-content-end">Voir plus</a>
+                  <!-- .dropdown-sheets -->
+                </div><!-- .dropdown-menu -->
+              </li><!-- /.nav-item -->
+            <?php endif; ?>
+
           </ul><!-- /.nav -->
         <?php endif; ?>
 
         <?php
         if (strtolower($_SESSION['role']) != ADMIN):
-          // $limit = Soutra::getStockLimitAlert();
-          $limit = [];
+          $limit = Soutra::getStockLimitAlert();
           if (count($limit) > 0): ?>
 
             <ul class="header-nav nav">
@@ -227,11 +224,10 @@
                     <?php foreach ($limit as $key => $value) { ?>
 
                       <!-- .dropdown-item -->
-                      <a href="<?= URL; ?>approvision&id=<?= $value['ID_article']; ?>" class="dropdown-item">
+                      <a href="<?= URL; ?>approvision&id=<?= $value['article_id']; ?>" class="dropdown-item">
                         <div class="tile tile-circle bg-warning"> A </div>
                         <div class="dropdown-item-body">
-                          <p class="subject"> <?= $value['article']; ?> </p>
-                          <p class="text text-truncate"><?= $value['niveau']; ?> </p>
+                          <p class="subject"> <?= $value['libelle_article']; ?> </p>
                         </div>
                       </a> <!-- /.dropdown-item -->
 
@@ -267,7 +263,7 @@
             <?php endif; ?>
 
             <div class="dropdown-divider"></div>
-            <button class="dropdown-item btn_deconnexion" style="cursor: pointer;" >
+            <button class="dropdown-item btn_deconnexion" style="cursor: pointer;">
               <span class="dropdown-icon oi oi-account-logout"></span>
               Déconnexion
             </button>
