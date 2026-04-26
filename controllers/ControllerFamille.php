@@ -1,45 +1,47 @@
 <?php
 
-class ControllerFamille extends Connexion {
+class ControllerFamille extends Connexion
+{
 
     // connexion utilisateur
-    
 
-     public static function getFamille() {
+
+    public static function getFamille()
+    {
         if (isset($_POST["frm_upfamille"])) {
 
-            $famille = Soutra::getAllByItemsa('famille','ID_famille',$_POST['id_famille']);
-            $categorie = Soutra::getAllTable('categorie','etat_categorie',1);
+            $famille = Soutra::getAllByItemsa('famille', 'ID_famille', $_POST['id_famille']);
+            $categorie = Soutra::getAllTable('categorie', 'etat_categorie', 1);
             $output = '
             <div class="col-md-12">
             <div class="form-group">
               <label for="categorie_id">Categorie</label>
               <select name="categorie_id" id="categorie_id" class="form-control" id="">
               ';
-              foreach ($categorie as $row) {
+            foreach ($categorie as $row) {
                 $selected = $famille["categorie_id"] == $row["ID_categorie"] ? " selected" : "";
-                $output .='
-                <option '.$selected.'  value="'.$row['ID_categorie'].'">'.$row['libelle_categorie'].'</option>
+                $output .= '
+                <option ' . $selected . '  value="' . $row['ID_categorie'] . '">' . $row['libelle_categorie'] . '</option>
                 ';
-              }
-            $output .='
+            }
+            $output .= '
               </select>
             </div>
           </div>
             <div class="col-md-12">
             <div class="form-group">
               <label for="libelle_famille">Libelle</label>
-               <input type="text" name="libelle_famille" value="'.$famille['libelle_famille'].'" id="libelle_famille" class="form-control">
+               <input type="text" name="libelle_famille" value="' . $famille['libelle_famille'] . '" id="libelle_famille" class="form-control">
             </div>
-            <input type="hidden" id="id_famille" name="id_famille" value="'.$famille['ID_famille'].'" id="id_famille" class="form-control">
+            <input type="hidden" id="id_famille" name="id_famille" value="' . $famille['ID_famille'] . '" id="id_famille" class="form-control">
           </div>
             ';
-            
-            
-            echo json_encode(['success' => true,'html' => $output]);
+
+
+            echo json_encode(['success' => true, 'html' => $output]);
         }
     }
-  
+
 
     // public static function etat_famille() {
     //     if (isset($_POST["etat_utilisateur"])) {
@@ -69,41 +71,40 @@ class ControllerFamille extends Connexion {
     //     echo $output;
     // }
 
-    public static function liste_famille() {
-        if(isset($_POST['btn_liste_famille'])){ 
-        $output = '';
-        $famille = Soutra::getAllfamille();
-        if (!empty($famille)) {
-            $i = 0;
-            foreach ($famille as $row) {
-                $i++;
-                $etat = $row['etat_famille'] == 1 ? "Disponible" : "Non disponible";
+    public static function liste_famille()
+    {
+        if (isset($_POST['btn_liste_famille'])) {
+            $output = '';
+            $famille = Soutra::getAllfamille();
+            if (!empty($famille)) {
+                $i = 0;
+                foreach ($famille as $row) {
+                    $i++;
+                    $etat = $row['etat_famille'] == 1 ? "Disponible" : "Non disponible";
 
-                $output .= '
-                <tr class="row'.$row['ID_famille'].'">
-                   <td>' . $i . '</td>
-                   <td>' . $row['libelle_famille'] . '</td>
-                   <td>' . $row['categorie'] . '</td>
-                   <td>' . $etat . '</td>
-                   <td>' . Soutra::date_format($row['created_at']) . '</td>
-                   ';
-                
-                   $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="'. $row['ID_famille'].'" class="btn btn-primary btn-sm btn_update_famille">
-                   <i class="fa fa-edit"></i> 
+                    $output .= '
+                 <tr class="row' . $row['ID_famille'] . '">
+               <td>' . $i . '</td>
+               <td>' . $row['libelle_famille'] . '</td>
+               <td>' . $row['categorie'] . '</td>
+               <td>' . $etat . '</td>
+               <td>' . Soutra::date_format($row['created_at']) . '</td>
+               ';
+
+                    $output .= '<td style="display: flex; gap: 30px;"> 
+            <button data-id="' . $row['ID_famille'] . '" class="btn btn-primary  btn-link btn-sm btn_update_famille" data-toggle="tooltip" title="" data-original-title="Modifier sous categorie">
+            <i class="fa fa-edit text-icon-primary "></i> 
     
-</button>
-                   <div class="d-inline">
-                       <button data-id="'. $row['ID_famille'].'" class="btn btn-warning btn-sm btn_remove_famille">
-                       <i class="fa fa-trash"></i> </button>
-                   </div>
-                 </td>
-                    </tr>
+            </button>
+                <button data-id="' . $row['ID_famille'] . '" class="btn btn-warning  btn-link btn-sm btn_remove_famille" data-toggle="tooltip" title="" data-original-title="Supprimer sous categorie">
+                <i class="fa fa-trash text-icon-warning"></i> </button>
+          </td>
+             </tr>
                     ';
+                }
             }
+            echo $output;
         }
-        echo $output;
-      }
     }
 
     // public static function activation() {
@@ -198,24 +199,22 @@ class ControllerFamille extends Connexion {
     //            }
     //         } 
     //     }
-        
+
     //     $output .= "</select>";
     //     echo $output;
     // }
 
-    public static function ajouter_famille() {
+    public static function ajouter_famille()
+    {
         if (isset($_POST['btn_ajouter_famille'])) {
 
-           if (isset($_POST['id_famille'])) {
-            // mod()
-            self::modifier_famille();
-
-           }else{
-            // Ajouter
-            self::createfamille();
-           }
-
-         
+            if (isset($_POST['id_famille'])) {
+                // mod()
+                self::modifier_famille();
+            } else {
+                // Ajouter
+                self::createfamille();
+            }
         }
     }
 
@@ -224,7 +223,7 @@ class ControllerFamille extends Connexion {
         extract($_POST);
         $msg = "";
         if (empty($libelle_famille) || empty($categorie_id)) {
-           $msg =  '2&Veuillez remplir tous les champs !';
+            $msg =  '2&Veuillez remplir tous les champs !';
         } elseif (Soutra::existe("famille", "libelle_famille", $libelle_famille)) {
             $msg = '2&Ce libelle famille existe déjà !';
         } else {
@@ -232,55 +231,54 @@ class ControllerFamille extends Connexion {
             $data = array(
                 'libelle_famille' => strtoupper($libelle_famille),
                 'categorie_id' => $categorie_id,
-                'etat_famille'=> 1,
-                'created_at'=> $date
+                'etat_famille' => 1,
+                'created_at' => $date
             );
             //var_dump($data);die();
             if (Soutra::insert("famille", $data)) {
                 $msg = "1&famille Ajoutée avec succès.";
             } else {
-                $msg= '2&Une erreur est survenue ! ';
+                $msg = '2&Une erreur est survenue ! ';
             }
         }
         echo $msg;
     }
 
-    public static function modifier_famille() {
+    public static function modifier_famille()
+    {
         extract($_POST);
         $msg = "";
-    
-            if (empty($libelle_famille) || empty($categorie_id)) {
-                $msg = '2&Veuillez remplir tous les champs !';
-            } elseif (Soutra::existe("famille", "libelle_famille", $libelle_famille) && Soutra::libelle("famille", "ID_famille", "libelle_famille", $libelle_famille) != $id_famille) {
-                $msg = '2&Ce libelle famille existe déjà !';
-            }else {
-                $data = array(
-                    'libelle_famille' => strtoupper($libelle_famille),
-                    'categorie_id' => $categorie_id,
-                    'ID_famille' => $id_famille
-                );
-                //var_dump($data);die();
-                if (Soutra::update("famille", $data)) {
-                    $msg = "1&famille modifiée avec succès.";
-                } else {
-                    $msg = '2&Une erreur est survenue !';
-                }
-            }
-            echo $msg;
 
-        
+        if (empty($libelle_famille) || empty($categorie_id)) {
+            $msg = '2&Veuillez remplir tous les champs !';
+        } elseif (Soutra::existe("famille", "libelle_famille", $libelle_famille) && Soutra::libelle("famille", "ID_famille", "libelle_famille", $libelle_famille) != $id_famille) {
+            $msg = '2&Ce libelle famille existe déjà !';
+        } else {
+            $data = array(
+                'libelle_famille' => strtoupper($libelle_famille),
+                'categorie_id' => $categorie_id,
+                'ID_famille' => $id_famille
+            );
+            //var_dump($data);die();
+            if (Soutra::update("famille", $data)) {
+                $msg = "1&famille modifiée avec succès.";
+            } else {
+                $msg = '2&Une erreur est survenue !';
+            }
+        }
+        echo $msg;
     }
 
-    public static function suppresion_famille() {
+    public static function suppresion_famille()
+    {
         if (isset($_POST['btn_supprimer_famille'])) {
-          
+
             $data = array(
                 'etat_famille' => 0,
                 'ID_famille' => $_POST['id_famille']
             );
             Soutra::update("famille", $data);
             echo 1;
-            
         }
     }
 
