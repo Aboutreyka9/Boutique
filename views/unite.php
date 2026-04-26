@@ -4,8 +4,13 @@
  }
   ?>
 <header class="page-title-bar">
-    <h1 class="page-title"> Espace Unités</h1>
-    <p class="text-muted"> Liste des unités</p>
+  <div class="header-base header-unites">
+  <i class="bi bi-rulers me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Unités</h4>
+    <small>Gestion des unités de mesure</small>
+  </div>
+</div>
 
 <!-- floating action -->
 <button type="button" data-toggle="modal" data-target="#unite-modal" class="btn btn-success btn-floated" title="Ajouter unite" aria-label="Close"><span style="line-height: 45px" class="fa fa-plus"></span></button> <!-- /floating action -->

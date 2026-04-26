@@ -23,8 +23,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 }
 ?>
 <header class="page-title-bar">
-  <h1 class="page-title"> Détail entrepot</h1>
-
+<div class="header-entrepot d-flex align-items-center mb-4">
+  <i class="bi bi-building me-3 mr-3" style="font-size:30px;"></i>
+  <div>
+    <h4 class="mb-0">Détail Entrepôt</h4>
+    <small>Gestion des stocks par emplacement</small>
+  </div>
+</div>
 </header><!-- /.page-title-bar -->
 
 <div class="card">

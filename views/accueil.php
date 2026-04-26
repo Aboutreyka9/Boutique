@@ -17,6 +17,14 @@
 
 
 
+  <!-- Titre -->
+<div class="header-base header-activite">
+<i class="bi bi-calendar-event me-3 mr-3"  style="font-size:30px;"></i>
+<div>
+  <h4 class="mb-0">Activité du jour</h4>
+  <small>Résumé des opérations quotidiennes</small>
+</div>
+</div>
   <!-- CARDS -->
   <div class="container g-3 dashboard_admin">
 
@@ -24,10 +32,6 @@
 
   <div class="stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
 
-    <!-- Titre -->
-    <div class="title">
-      <h1 class="page-title mb-1 mb-md-0">Statistiques</h1>
-    </div>
 
     <!-- Activité -->
     <div class="activity text-md-center">
