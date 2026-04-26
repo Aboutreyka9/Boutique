@@ -118,6 +118,94 @@ class ControllerEntrepot extends Connexion
         }
     }
 
+   public static function detail_entrepot_article_click()
+{
+    if (isset($_POST['btn_detail_entrepot_article_click'])) {
+
+        $id = $_POST['id_article'] ?? null;
+
+        $row = Soutra::getDetailEntrepotArticleById($id); // 👉 adapte selon ta méthode
+
+        // var_dump($row);return;
+
+        if (!$row) {
+            echo json_encode(['code' => 404]);
+            return;
+        }
+
+        $output = '
+<div class="row g-3">
+
+  <!-- INFO ARTICLE -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h6 class="text-muted mb-3">Informations générales</h6>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Article</span>
+          <strong>' . htmlspecialchars($row['libelle_article']) . '</strong>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Famille</span>
+          <span class="badge bg-light text-dark">' . htmlspecialchars($row['famille']) . '</span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Marque</span>
+          <span class="badge bg-info text-dark">' . htmlspecialchars($row['mark']) . '</span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <span class="text-muted">Unité</span>
+          <span>' . htmlspecialchars($row['unite']) . '</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO PRIX -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h6 class="text-muted mb-3">Informations financières</h6>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Prix achat</span>
+          <strong>' . number_format($row['prix_achat'], 0, ',', ' ') . ' FCFA</strong>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Prix vente</span>
+          <strong class="text-success">' . number_format($row['prix_vente'], 0, ',', ' ') . ' FCFA</strong>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Stock alerte</span>
+          <span class="badge bg-warning text-dark">' . $row['stock_alert'] . '</span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <span class="text-muted">Garantie</span>
+          <span>' . $row['garantie_article'] . ' mois</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+';
+
+        echo json_encode([
+            'code' => 200,
+            'html' => $output
+        ]);
+    }
+}
+
     public static function changeStatutEntrepot()
     {
         if (isset($_POST['btnChangeStatutEntrepot'])) {
@@ -154,13 +242,12 @@ class ControllerEntrepot extends Connexion
                 $data = array(
                     'libelle_entrepot' => $libelle_entrepot,
                     'ville_entrepot' => $ville_entrepot,
+                    'adresse_entrepot' => $adresse_entrepot,
                     'etat_entrepot' => 1,
                     'created_at_entrepot' => $date
                 );
-
-                 $dataService = [
+                $dataService = [
                             'employe_id' => $responsable_entrepot,
-                            'entrepot_id' => "",
                             'etat_service' => '0',
                             'responsable' => '1',
                             'created_at_service' => $date
@@ -168,14 +255,12 @@ class ControllerEntrepot extends Connexion
 
                 
                 $result = Soutra::transactionData(function () use ($data, $dataService) {
-                    Soutra::inserted("entrepot", $data);
+                    Soutra::insert("entrepot", $data);
                     
                     $lastId = Soutra::lastInsertId();
                     $dataService['entrepot_id'] = $lastId;
                     if(!empty($dataService['employe_id'])){
-                       
-                            Soutra::inserted("service", $dataService);
-                        
+                    Soutra::inserted("service", $dataService);
                     }
     
                     if(empty($_SESSION['id_entrepot'])){

@@ -1093,6 +1093,51 @@ class ControllerVente extends Connexion
   }
 
 
+public static function getSearchByAnneeArticleToGetInventaire()
+{
+    if (isset($_POST['btn_search_inventaire_annee_article_to_get_inventaire'])) {
+
+        $annee = $_POST['annee'] ?? null;
+        $article = $_POST['article'] ?? null;
+
+        $data = Soutra::getInventaireDateByAnneeArticle($annee, $article);
+
+        $output = "";
+        
+        foreach ($data as $row) {
+
+            $date = date('d/m/Y', strtotime($row['date_mouvement']));
+
+            $output .= '<option value="' . $row['ID_mouvement_stock'] . '">' . $row['type_mouvement'].' - '.$date . '</option>';
+        }
+
+        echo json_encode(['code' => 200, 'html' => $output]);
+    }
+}
+public static function getSearchByAnneeArticleMouvement()
+{
+    if (isset($_POST['btn_search_inventaire_annee_article_mouvement'])) {
+
+        $annee = $_POST['annee'] ?? null;
+        $article = $_POST['article'] ?? null;
+        $id_mouvement = $_POST['id_mouvement'] ?? null;
+
+        var_dump($_POST);return;
+        $data = Soutra::getInventaireDateByAnneeArticle($annee, $article);
+
+        $output = "";
+        
+        foreach ($data as $row) {
+
+            $date = date('d/m/Y', strtotime($row['date_mouvement']));
+
+            $output .= '<option value="' . $row['ID_mouvement_stock'] . '">' . $row['type_mouvement'].' - '.$date . '</option>';
+        }
+
+        echo json_encode(['code' => 200, 'html' => $output]);
+    }
+}
+
   public static function getDataDateRangeFilterInventaire()
   {
     if (isset($_POST['btn_filter_inventaire'])) {

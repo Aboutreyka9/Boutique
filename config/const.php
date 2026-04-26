@@ -20,3 +20,10 @@ const STATUT_DEPENSE = ['en attente', 'approuve', 'annule'];
 const STATUT = ['0', '1', '2'];
 const STATUT_MOUVEMENT = ['ENTREE', 'SORTIE', 'TRANSFERT_IN', 'TRANSFERT_OUT', 'RETOUR_CLIENT', 'RETOUR_FOURNISSEUR', 'INVENTAIRE', 'AJUSTEMENT_POSITIF', 'AJUSTEMENT_NEGATIF'];
 const MODE_PAIEMENT = ['especes', 'mobile money', 'cheque', 'credit', 'autre'];
+const PAYMENT_MODE_SHOW= [
+  'especes' => ['label' => 'Espèces', 'class' => 'success'],
+  'mobile money' => ['label' => 'Mobile Money', 'class' => 'info'],
+  'cheque' => ['label' => 'Chèque', 'class' => 'warning'],
+  'credit' => ['label' => 'Crédit', 'class' => 'danger'],
+  'autre' => ['label' => 'Autre', 'class' => 'secondary'],
+];

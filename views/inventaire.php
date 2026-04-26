@@ -7,7 +7,6 @@
 <?php
 // Dates par défaut
 $states = Soutra::getTotalInventaire();
-
 ?>
 <header class="page-title-bar">
 
@@ -16,6 +15,49 @@ $states = Soutra::getTotalInventaire();
   <div>
     <h4 class="mb-0">Espace Inventaire</h4>
     <small>Gestion du stock et suivi des mouvements</small>
+  </div>
+<!-- form here -->
+  <div class="ml-auto" >
+    <!-- search1 field select for annee-->
+    <select class="form-control" id="annee_inventaire_search" name="annee_inventaire_search">
+  <?php
+  $annees = Soutra::getFormNowToFirstYearAchatForFiltersByEntrepot();
+  $annee_actuelle = date('Y');
+  foreach ($annees as $annee): ?>
+      <option value="<?= $annee ?>" <?= ($annee == $annee_actuelle) ? 'selected' : '' ?>>
+          <?= $annee ?>
+      </option>
+  <?php endforeach; ?>
+
+</select>
+  </div>
+  <div class="ml-auto" >
+    <!-- search2 field select for article-->
+   <select class="form-control select2" id="article_inventaire_search" name="article_inventaire_search">
+  <option value="">Tous les articles</option>
+
+  <?php 
+  $articles = Soutra::getArticlesFiltersByEntrepot();
+  foreach ($articles as $row): ?>
+    <option value="<?= htmlspecialchars($row['id_article']) ?>">
+      <?= htmlspecialchars($row['article'].' - '.$row['prix_vente']) ?>
+    </option>
+  <?php endforeach; ?>
+
+</select>
+  </div>
+  <div class="ml-auto" >
+    <!-- search2 field select for inventaire date-->
+    <select class="form-control" id="inventaire_id_mouvement_search" name="id_mouvement">
+      <option value="">Toutes les dates</option>
+      
+    </select>
+  </div>
+  <div class="ml-auto" >
+    <!-- btn search -->
+    <button type="submit" class="btn btn-primary btn_inventaire_search_filters">
+      <i class="bi bi-search"></i>
+    </button>
   </div>
 </div>
   <!-- Résumé des ventes -->
@@ -32,7 +74,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Qté initiale</span></h6>
         </div>
-        <h5><?= number_format($states['qte_approvisionnement'] ?? 0, 0, ',', ' ') ?></h5>
+        <h5 clas="qte_approvisionnement" ><?= number_format($states['qte_approvisionnement'] ?? 0, 0, ',', ' ') ?></h5>
       </div>
     </div>
   </div>
@@ -47,7 +89,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Coût d’achat</span></h6>
         </div>
-        <h5><?= number_format($states['cout_achat'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+        <h5 class="cout_achat"><?= number_format($states['cout_achat'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
       </div>
     </div>
   </div>
@@ -62,7 +104,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Qté vendue</span></h6>
         </div>
-        <h5><?= number_format($states['qte_vendue'] ?? 0, 0, ',', ' ') ?></h5>
+        <h5 class="qte_vendue"><?= number_format($states['qte_vendue'] ?? 0, 0, ',', ' ') ?></h5>
       </div>
     </div>
   </div>
@@ -77,7 +119,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Chiffre d’affaires</span></h6>
         </div>
-        <h5><?= number_format($states['montant_vendu'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+        <h5 class="montant_vendu"><?= number_format($states['montant_vendu'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
       </div>
     </div>
   </div>
@@ -92,7 +134,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Bénéfice</span></h6>
         </div>
-        <h5><?= number_format($states['benefice'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+        <h5 class="benefice"><?= number_format($states['benefice'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
       </div>
     </div>
   </div>
@@ -107,7 +149,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Stock restant</span></h6>
         </div>
-        <h5><?= number_format($states['qte_restante'] ?? 0, 0, ',', ' ') ?></h5>
+        <h5 class="qte_restante" ><?= number_format($states['qte_restante'] ?? 0, 0, ',', ' ') ?></h5>
       </div>
     </div>
   </div>
@@ -122,7 +164,7 @@ $states = Soutra::getTotalInventaire();
           </div>
           <h6><span class="text-muted text-uppercase">Valeur du stock</span></h6>
         </div>
-        <h5><?= number_format($states['montant_quantite_restant'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
+        <h5 class="montant_quantite_restant"><?= number_format($states['montant_quantite_restant'] ?? 0, 0, ',', ' ') ?> FCFA</h5>
       </div>
     </div>
   </div>

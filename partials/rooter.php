@@ -86,6 +86,7 @@ ControllerEntrepot::modifier_entrepot();
 ControllerEntrepot::getEntrepotForTransfert();
 ControllerEntrepot::changeStatutEntrepot();
 ControllerEntrepot::set_entrepot();
+ControllerEntrepot::detail_entrepot_article_click();
 
 
 // CATEGORIE
@@ -186,6 +187,8 @@ ControllerVente::getCanvasEmployeMonth();
 ControllerVente::getCanvasMontantByArticle();
 ControllerVente::getCanvasCLient();
 ControllerVente::getDataDateRangeFilterVente();
+ControllerVente::getSearchByAnneeArticleToGetInventaire();
+ControllerVente::getSearchByAnneeArticleMouvement();
 
 // COMMANDE
 ControllerCommande::ajouter_panier_commande();
