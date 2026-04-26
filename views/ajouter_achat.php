@@ -1,9 +1,10 @@
-<?php 
- if(!isAdminGestionnaire()){
-   return;
- }
+<?php
+if (!isAdminGestionnaire()) {
+  pageNotFound();
+  return;
+}
 
-  ?>
+?>
 <header class="page-title-bar">
   <h1 class="page-title mb-3"> Espace réapprovisionement</h1>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->
@@ -151,4 +152,5 @@
     </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
+
 <?= modalAchatFournisseur() ?>

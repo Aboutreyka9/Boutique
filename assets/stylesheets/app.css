@@ -47,6 +47,8 @@
   }
 }
 
+
+
 @media (max-width: 576px) {
   /* module info plus petit */
   .module-info {
@@ -57,7 +59,18 @@
   .d-flex.justify-content-between h3.card-title {
     font-size: 16px;
   }
+
+    .stat-card {
+        padding: 5px;
+    }
+
+    .stat-card h5 {
+        font-size: 14px;
+    }
 }
+
+
+
 
 /* Overlay plein écran */
 .overlay {
@@ -171,16 +184,6 @@
     color: #fff;
 }
 
-/* RESPONSIVE FIX */
-@media (max-width: 576px) {
-    .stat-card {
-        padding: 5px;
-    }
-
-    .stat-card h5 {
-        font-size: 14px;
-    }
-}
 
 
 /********** PAYMENT CARD **********/

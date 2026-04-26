@@ -880,17 +880,13 @@ class Soutra extends Connexion
     public static function getStockLimitAlert()
     {
         $tab = [];
-        $sql = "SELECT ar.ID_article, cp.article,
-        IF(cp.qte_reste <= ar.stock_alert,'Stock insuffisant',1) AS niveau
-        FROM comptabilite cp
-        INNER JOIN article ar ON ar.ID_article = cp.id_article
-        INNER JOIN bilan_entree be ON be.ID_article= cp.id_article
-        HAVING niveau ='Stock insuffisant'
-        ORDER BY cp.qte_reste";
+        $sql = "SELECT * FROM vue_stock_alert WHERE entrepot_id = :entrepot_id";
         try {
-            $query = self::getConnexion()->query($sql);
-            if ($query->rowCount() > 0) {
-                $tab = $query->fetchAll();
+            $stmt = self::getConnexion()->prepare($sql);
+            $stmt->execute(['entrepot_id' => $_SESSION['id_entrepot']]);
+
+            if ($stmt->rowCount() > 0) {
+                $tab = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         } catch (Exception $e) {
             die('Erreur de recherche ' . $e->getMessage());
