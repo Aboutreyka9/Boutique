@@ -262,7 +262,7 @@ if (isset($_SESSION) && !empty($_SESSION)) {
                 // console.log(data);
 
                 swal({
-                  title: "Alert",
+                  title: "Notifiction",
                   text: data.message,
                   icon: 'warning',
                   button: true,
