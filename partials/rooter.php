@@ -87,6 +87,7 @@ ControllerEntrepot::getEntrepotForTransfert();
 ControllerEntrepot::changeStatutEntrepot();
 ControllerEntrepot::set_entrepot();
 ControllerEntrepot::detail_entrepot_article_click();
+ControllerEntrepot::getDataDateRangeFilterVersmentEntrepot();
 
 
 // CATEGORIE

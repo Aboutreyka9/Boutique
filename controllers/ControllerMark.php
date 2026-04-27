@@ -1,29 +1,31 @@
 <?php
 
-class ControllerMark extends Connexion {
+class ControllerMark extends Connexion
+{
 
     // connexion utilisateur
-    
 
-     public static function getMark() {
+
+    public static function getMark()
+    {
         if (isset($_POST["frm_upmark"])) {
-            $mark = Soutra::getAllByItemsa('mark','ID_mark',$_POST['id_mark']);
+            $mark = Soutra::getAllByItemsa('mark', 'ID_mark', $_POST['id_mark']);
             $output = '
             <div class="col-md-12">
             <div class="form-group">
               <label for="libelle_mark">Libelle popopo</label>
-               <input type="text" name="libelle_mark" value="'.$mark['libelle_mark'].'" id="libelle_mark" class="form-control">
+               <input type="text" name="libelle_mark" value="' . $mark['libelle_mark'] . '" id="libelle_mark" class="form-control">
             </div>
-            <input type="hidden" id="id_mark" name="id_mark" value="'.$mark['ID_mark'].'" class="form-control">
+            <input type="hidden" id="id_mark" name="id_mark" value="' . $mark['ID_mark'] . '" class="form-control">
 
           </div>
             ';
-            
-            
+
+
             echo json_encode(['success' => true, 'html' => $output]);
         }
     }
-  
+
 
     // public static function etat_mark() {
     //     if (isset($_POST["etat_utilisateur"])) {
@@ -53,40 +55,40 @@ class ControllerMark extends Connexion {
     //     echo $output;
     // }
 
-    public static function liste_mark() {
-        if(isset($_POST['btn_liste_mark'])){ 
-        $output = '';
-        $mark = Soutra::getAllmark();
-        if (!empty($mark)) {
-            $i = 0;
-            foreach ($mark as $row) {
-                $i++;
-                $etat = $row['etat_mark'] == 1 ? "Disponible" : "Non disponible";
+    public static function liste_mark()
+    {
+        if (isset($_POST['btn_liste_mark'])) {
+            $output = '';
+            $mark = Soutra::getAllmark();
+            if (!empty($mark)) {
+                $i = 0;
+                foreach ($mark as $row) {
+                    $i++;
+                    $etat = $row['etat_mark'] == 1 ? "Disponible" : "Non disponible";
 
-                $output .= '
-                <tr class="row'.$row['ID_mark'].'">
-                   <td>' . $i . '</td>
-                   <td>' . $row['libelle_mark'] . '</td>
-                   <td>' . $etat . '</td>
-                   <td>' . Soutra::date_format($row['created_at']) . '</td>
-                   ';
-                
-                   $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="'. $row['ID_mark'].'" class="btn btn-primary btn-sm btn_update_mark">
-                   <i class="fa fa-edit"></i> 
-    
-</button>
-                   <div class="d-inline">
-                       <button data-id="'. $row['ID_mark'].'" class="btn btn-warning btn-sm btn_remove_mark">
-                       <i class="fa fa-trash"></i> </button>
-                   </div>
-                 </td>
-                    </tr>
+                    $output .= '
+                <tr class="row' . $row['ID_mark'] . '">
+               <td>' . $i . '</td>
+               <td>' . $row['libelle_mark'] . '</td>
+               <td>' . $etat . '</td>
+               <td>' . Soutra::date_format($row['created_at']) . '</td>
+               ';
+
+
+                    $output .= '<td style="display: flex; gap: 30px;"> 
+            <button data-id="' . $row['ID_mark'] . '" class="btn btn-primary btn-link btn-sm btn_update_mark" data-toggle="tooltip" title="" data-original-title="Modifeir marque">
+            <i class="fa fa-edit text-icon-primary"></i> 
+            </button>
+                <button data-id="' . $row['ID_mark'] . '" class="btn btn-warning btn-link btn-sm btn_remove_mark" data-toggle="tooltip" title="" data-original-title="Supprimer marque">
+                <i class="fa fa-trash text-icon-warning"></i> 
+                </button>
+          </td>
+             </tr>
                     ';
+                }
             }
+            echo $output;
         }
-        echo $output;
-      }
     }
 
     // public static function activation() {
@@ -181,24 +183,22 @@ class ControllerMark extends Connexion {
     //            }
     //         } 
     //     }
-        
+
     //     $output .= "</select>";
     //     echo $output;
     // }
 
-    public static function ajouter_mark() {
+    public static function ajouter_mark()
+    {
         if (isset($_POST['btn_ajouter_mark'])) {
 
-           if (isset($_POST['id_mark'])) {
-            // mod()
-            self::modifier_mark();
-
-           }else{
-            // Ajouter
-            self::createmark();
-           }
-
-         
+            if (isset($_POST['id_mark'])) {
+                // mod()
+                self::modifier_mark();
+            } else {
+                // Ajouter
+                self::createmark();
+            }
         }
     }
 
@@ -207,61 +207,60 @@ class ControllerMark extends Connexion {
         extract($_POST);
         $msg = "";
         if (empty($libelle_mark)) {
-           $msg =  '2&Veuillez remplir tous les champs !';
+            $msg =  '2&Veuillez remplir tous les champs !';
         } elseif (Soutra::existe("mark", "libelle_mark", $libelle_mark)) {
             $msg = '2&Ce libelle mark existe déjà !';
         } else {
             $date = date('Y-m-d');
             $data = array(
                 'libelle_mark' => strtoupper($libelle_mark),
-                'etat_mark'=> 1,
-                'created_at'=> $date
+                'etat_mark' => 1,
+                'created_at' => $date
             );
             //var_dump($data);die();
             if (Soutra::insert("mark", $data)) {
                 $msg = "1&mark Ajouté avec succès.";
             } else {
-                $msg= '2&Une erreur est survenue ! ';
+                $msg = '2&Une erreur est survenue ! ';
             }
         }
         echo $msg;
     }
 
-    public static function modifier_mark() {
+    public static function modifier_mark()
+    {
         extract($_POST);
         $msg = "";
-    
-            if (empty($libelle_mark)) {
-                $msg = '2&Veuillez remplir tous les champs !';
-            }elseif (Soutra::existe("mark", "libelle_mark", $libelle_mark) && Soutra::libelle("mark", "ID_mark", "libelle_mark", $libelle_mark) != $id_mark) {
-                $msg = '2&Le libelle mark existe déjà !';
-            }else {
-                $data = array(
-                    'libelle_mark' => strtoupper($libelle_mark),
-                    'ID_mark' => $id_mark
-                );
-                //var_dump($data);die();
-                if (Soutra::update("mark", $data)) {
-                    $msg = "1&mark modifiée avec succès.";
-                } else {
-                    $msg = '2&Une erreur est survenue !';
-                }
-            }
-            echo $msg;
 
-        
+        if (empty($libelle_mark)) {
+            $msg = '2&Veuillez remplir tous les champs !';
+        } elseif (Soutra::existe("mark", "libelle_mark", $libelle_mark) && Soutra::libelle("mark", "ID_mark", "libelle_mark", $libelle_mark) != $id_mark) {
+            $msg = '2&Le libelle mark existe déjà !';
+        } else {
+            $data = array(
+                'libelle_mark' => strtoupper($libelle_mark),
+                'ID_mark' => $id_mark
+            );
+            //var_dump($data);die();
+            if (Soutra::update("mark", $data)) {
+                $msg = "1&mark modifiée avec succès.";
+            } else {
+                $msg = '2&Une erreur est survenue !';
+            }
+        }
+        echo $msg;
     }
 
-    public static function suppresion_mark() {
+    public static function suppresion_mark()
+    {
         if (isset($_POST['btn_supprimer_mark'])) {
-          
+
             $data = array(
                 'etat_mark' => 0,
                 'ID_mark' => $_POST['id_mark']
             );
             Soutra::update("mark", $data);
             echo 1;
-            
         }
     }
 

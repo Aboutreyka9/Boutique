@@ -1,27 +1,29 @@
 <?php
 
-class ControllerCategorie extends Connexion {
+class ControllerCategorie extends Connexion
+{
 
     // connexion utilisateur
-    
 
-     public static function getCategorie() {
+
+    public static function getCategorie()
+    {
         if (isset($_POST["frm_upcategorie"])) {
-            $categorie = Soutra::getAllByItemsa('categorie','ID_categorie',$_POST['id_categorie']);
+            $categorie = Soutra::getAllByItemsa('categorie', 'ID_categorie', $_POST['id_categorie']);
             $output = '
             <div class="col-md-12">
             <div class="form-group">
               <label for="libelle_categorie">Libelle</label>
-               <input type="text" name="libelle_categorie" value="'.$categorie['libelle_categorie'].'" id="libelle_categorie" class="form-control">
+               <input type="text" name="libelle_categorie" value="' . $categorie['libelle_categorie'] . '" id="libelle_categorie" class="form-control">
             </div>
-            <input type="hidden" id="id_categorie" name="id_categorie" value="'.$categorie['ID_categorie'].'" class="form-control">
+            <input type="hidden" id="id_categorie" name="id_categorie" value="' . $categorie['ID_categorie'] . '" class="form-control">
           </div>
             ';
-            
+
             echo json_encode(['success' => true, 'html' => $output]);
         }
     }
-  
+
 
     // public static function etat_categorie() {
     //     if (isset($_POST["etat_utilisateur"])) {
@@ -51,40 +53,40 @@ class ControllerCategorie extends Connexion {
     //     echo $output;
     // }
 
-    public static function liste_categorie() {
-        if(isset($_POST['btn_liste_categorie'])){ 
-        $output = '';
-        $categorie = Soutra::getAllCategorie();
-        if (!empty($categorie)) {
-            $i = 0;
-            foreach ($categorie as $row) {
-                $i++;
-                $etat = $row['etat_categorie'] == 1 ? "Disponible" : "Non disponible";
+    public static function liste_categorie()
+    {
+        if (isset($_POST['btn_liste_categorie'])) {
+            $output = '';
+            $categorie = Soutra::getAllCategorie();
+            if (!empty($categorie)) {
+                $i = 0;
+                foreach ($categorie as $row) {
+                    $i++;
+                    $etat = $row['etat_categorie'] == 1 ? "Disponible" : "Non disponible";
 
-                $output .= '
-                <tr class="row'.$row['ID_categorie'].'">
-                   <td>' . $i . '</td>
-                   <td>' . $row['libelle_categorie'] . '</td>
-                   <td>' . $etat . '</td>
-                   <td>' . Soutra::date_format($row['created_at']) . '</td>
-                   ';
-                
-                   $output .= '<td style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;"> 
-                   <button data-id="'. $row['ID_categorie'].'" class="btn btn-primary btn-sm btn_update_categorie">
-                   <i class="fa fa-edit"></i> 
+                    $output .= '
+                  <tr class="row' . $row['ID_categorie'] . '">
+               <td>' . $i . '</td>
+               <td>' . $row['libelle_categorie'] . '</td>
+               <td>' . $etat . '</td>
+               <td>' . Soutra::date_format($row['created_at']) . '</td>
+               ';
+
+
+                    $output .= '<td style="display: flex; gap: 30px;"> 
+            <button data-id="' . $row['ID_categorie'] . '" class="btn btn-primary btn-link btn-sm btn_update_categorie" data-toggle="tooltip" title="" data-original-title="modifier categorie">
+            <i class="fa fa-edit text-icon-primary"></i> 
     
-</button>
-                   <div class="d-inline">
-                       <button data-id="'. $row['ID_categorie'].'" class="btn btn-warning btn-sm btn_remove_categorie">
-                       <i class="fa fa-trash"></i> </button>
-                   </div>
-                 </td>
-                    </tr>
+          </button>
+                <button data-id="' . $row['ID_categorie'] . '" class="btn btn-warning btn-link btn-sm btn_remove_categorie" data-toggle="tooltip" title="" data-original-title="Supprimer categorie">
+                <i class="fa fa-trash text-icon-warning"></i> </button>
+          </td>
+             </tr>
                     ';
+                }
             }
+            echo $output;
         }
-        echo $output;
-      }
     }
 
     // public static function activation() {
@@ -179,24 +181,22 @@ class ControllerCategorie extends Connexion {
     //            }
     //         } 
     //     }
-        
+
     //     $output .= "</select>";
     //     echo $output;
     // }
 
-    public static function ajouter_categorie() {
+    public static function ajouter_categorie()
+    {
         if (isset($_POST['btn_ajouter_categorie'])) {
 
-           if (isset($_POST['id_categorie'])) {
-            // mod()
-            self::modifier_categorie();
-
-           }else{
-            // Ajouter
-            self::createcategorie();
-           }
-
-         
+            if (isset($_POST['id_categorie'])) {
+                // mod()
+                self::modifier_categorie();
+            } else {
+                // Ajouter
+                self::createcategorie();
+            }
         }
     }
 
@@ -205,38 +205,39 @@ class ControllerCategorie extends Connexion {
         extract($_POST);
         $msg = "";
         if (empty($libelle_categorie)) {
-           $msg =  '2&Veuillez remplir tous les champs !';
+            $msg =  '2&Veuillez remplir tous les champs !';
         } elseif (Soutra::existe("categorie", "libelle_categorie", $libelle_categorie)) {
             $msg = '2&Ce libelle categorie existe déjà !';
         } else {
             $date = date('Y-m-d');
             $data = array(
                 'libelle_categorie' => mb_strtoupper($libelle_categorie, 'UTF-8'),
-                'etat_categorie'=> 1,
-                'created_at'=> $datep
+                'etat_categorie' => 1,
+                'created_at' => $date
             );
             //var_dump($data);die();
             if (Soutra::insert("categorie", $data)) {
                 $msg = "1&categorie Ajouté avec succès.";
             } else {
-                $msg= '2&Une erreur est survenue ! ';
+                $msg = '2&Une erreur est survenue ! ';
             }
         }
         echo $msg;
     }
 
-    public static function modifier_categorie() {
+    public static function modifier_categorie()
+    {
         extract($_POST);
         $msg = "";
 
-            if (empty($libelle_categorie)) {
-                $msg = '2&Veuillez remplir tous les champs !';
-            }else {
-                $categorie = Soutra::libelle("categorie", "ID_categorie", "libelle_categorie", $libelle_categorie) ;
+        if (empty($libelle_categorie)) {
+            $msg = '2&Veuillez remplir tous les champs !';
+        } else {
+            $categorie = Soutra::libelle("categorie", "ID_categorie", "libelle_categorie", $libelle_categorie);
 
-                if (!empty($categorie) && $categorie != $id_categorie) {
+            if (!empty($categorie) && $categorie != $id_categorie) {
                 $msg = '2&Desolé cette categorie existe déjà !';
-                }else{ 
+            } else {
 
                 $data = array(
                     'libelle_categorie' => ucfirst($libelle_categorie),
@@ -244,27 +245,24 @@ class ControllerCategorie extends Connexion {
                 );
                 if (Soutra::update("categorie", $data)) {
                     $msg = "1&categorie modifié avec succès.";
-
                 } else {
                     $msg = '2&Une erreur est survenue !';
                 }
-             }
             }
-            echo $msg;
-
-        
+        }
+        echo $msg;
     }
 
-    public static function suppresion_categorie() {
+    public static function suppresion_categorie()
+    {
         if (isset($_POST['btn_supprimer_categorie'])) {
-          
+
             $data = array(
                 'etat_categorie' => 0,
                 'ID_categorie' => $_POST['id_categorie']
             );
             Soutra::update("categorie", $data);
             echo 1;
-            
         }
     }
 

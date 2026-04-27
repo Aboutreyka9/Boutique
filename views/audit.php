@@ -1,15 +1,16 @@
 <?php
- if (!isAdminGestionnaire()) {
-     return;
- }
+if (!isAdminGestionnaire()) {
+  pageNotFound();
+  return;
+}
 ?>
 <header class="page-title-bar">
   <h1 class="page-title mb-3"> Espace Audit et correctiion</h1>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->
   <!-- floating action -->
-  <button type="button"  id="btn_ajouter_achat" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button> 
+  <button type="button" id="btn_ajouter_achat" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button>
 
- 
+
 
   <!-- title and toolbar -->
 </header><!-- /.page-title-bar -->

@@ -1,16 +1,17 @@
 <?php
- if (!isAdminGestionnaire()) {
-     return;
- }
+if (!isAdminGestionnaire()) {
+  pageNotFound();
+  return;
+}
 ?>
 <header class="page-title-bar">
   <div class="header-entrepot d-flex align-items-center mb-4">
-  <i class="bi bi-building me-3 mr-3" style="font-size:30px;"></i>
-  <div>
-    <h4 class="mb-0">Entrepôts</h4>
-    <small>Organisation et gestion des stocks</small>
+    <i class="bi bi-building me-3 mr-3" style="font-size:30px;"></i>
+    <div>
+      <h4 class="mb-0">Entrepôts</h4>
+      <small>Organisation et gestion des stocks</small>
+    </div>
   </div>
-</div>
 
 </header><!-- /.page-title-bar -->
 
