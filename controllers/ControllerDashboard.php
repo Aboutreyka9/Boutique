@@ -60,4 +60,22 @@ class ControllerDashboard extends Connexion
       ));
     }
   }
+
+  public static function resetDB(){
+    if($_POST['btn_reset_db']){
+
+    $data = [];
+    $message['code']= 400;
+       $result = Soutra::transactionData(function () use ($data) {
+                             Soutra::resetDataDB();
+        Soutra::restaureDataDB();
+                        });
+                        if ($result) {
+                          $_SESSION = [];
+                          session_destroy();
+                          $message['code'] = 200;
+                        }
+                        echo json_encode($message);
+    }
+  }
 } //fin de la class
