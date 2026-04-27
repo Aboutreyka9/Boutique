@@ -796,6 +796,29 @@ class Soutra extends Connexion
         }
     }
 
+    public static function geDetteClient($client,$nature,$statut_commande, $entrepot)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(SUM(reste_a_payer),0) as montant_total, COUNT(vep.reste_a_payer) as nombre_total FROM vue_etat_paiements vep JOIN vente v ON vep.code_transaction = v.code_vente
+            WHERE v.client_id = :client AND vep.entrepot = :id AND vep.nature = :na AND vep.statut_commande = :st
+            ";
+            $params = [
+                'client' => $client,
+                'id' => $entrepot,
+                'na' => $nature,
+                'st' => STATUT_COMMANDE[1],
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
     public static function getTotalDetteClientDashboard($startDate, $endDate, $nature, $entrepot = null)
     {
         try {
@@ -2162,6 +2185,31 @@ GROUP BY e.ID_entrepot;";
         $query->closeCursor();
         return $data;
     }
+
+public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $dateD,$dateF,$type = 'vente')
+{
+    $sql = "SELECT 
+                v.*,
+            CONCAT(c.nom_client, ' ', c.prenom_client) AS client,
+            CONCAT(e.nom_employe, ' ', e.prenom_employe) AS employe
+            FROM versement v
+            LEFT JOIN client c ON v.client_id = c.ID_client
+            LEFT JOIN employe e ON e.ID_employe = v.employe_id
+            WHERE v.entrepot_id = :entrepot 
+            AND v.created_at BETWEEN :dateStart AND :dateEnd
+            AND v.type_versement = :types";
+
+    $query = self::getConnexion()->prepare($sql);
+
+    $query->execute([
+        'entrepot' => $entrepot,
+        'dateStart' => $dateD,
+        'dateEnd' => $dateF,
+        'types' => $type
+    ]);
+
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
 
 public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
 {

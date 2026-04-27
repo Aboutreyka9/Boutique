@@ -3267,24 +3267,24 @@ ajax_detail_entrepot_article();
                     $("#nombre_depense").text(data.depenses.nombre_depense);
                     $("#montant_depense").text(formatMontant((data.depenses.montant_depense)));
                     
-                    $("#nombre_dette_client").text(formatMontant((data.detteClient.nombre_total)));
+                    $("#nombre_dette_client").text(((data.detteClient.nombre_total)));
                     $("#montant_dette_client").text(formatMontant((data.detteClient.montant_total)));
                     
-                    $("#nombre_dette_fournisseur").text(formatMontant((data.detteFournisseur.nombre_total)));
+                    $("#nombre_dette_fournisseur").text(((data.detteFournisseur.nombre_total)));
                     $("#montant_dette_fournisseur").text(formatMontant((data.detteFournisseur.montant_total)));
                     
                     
-                    $("#nombre_stock_dispo").text(formatMontant((data.stockDispo.total_quantite)));
+                    $("#nombre_stock_dispo").text(((data.stockDispo.total_quantite)));
                     $("#montant_stock_dispo").text(formatMontant((data.stockDispo.total_montant)));
                     
-                    $("#nombre_stock_alert").text(formatMontant((data.stockAlert)));
+                    $("#nombre_stock_alert").text(data.stockAlert);
                     let tresorerie = data.tresorerie.solde_tresorerie;
                     if(tresorerie >= 0){
                         $('#montant_tresorerie').addClass('text-success');
                     }else{
                         $('#montant_tresorerie').addClass('text-danger');
                     }
-                    $("#montant_tresorerie").text(((tresorerie)) + ' FCFA');
+                    $("#montant_tresorerie").text(tresorerie + ' FCFA');
 
                 }
             });
@@ -4658,6 +4658,57 @@ ajax_detail_entrepot_article();
                     $('#total_montant').text(res.mont_vente + " FCFA");
                     $(".vente-table").html(res.output);
 
+                }
+            });
+        });
+
+        $('input[name="' + selector + '"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+    }
+    initDateRangeFilterVersementEntrepot("datefilterVenteVersement",'vente')
+    initDateRangeFilterVersementEntrepot("datefilterAchatVersement",'achat')
+    function initDateRangeFilterVersementEntrepot(selector, type) {
+        $('input[name="' + selector + '"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('input[name="' + selector + '"]').on('apply.daterangepicker', function (ev, picker) {
+            let dateDebut = picker.startDate.format('YYYY-MM-DD');
+            let dateFin = picker.endDate.format('YYYY-MM-DD');
+            let dateD = picker.startDate.format('DD-MM-YYYY');
+            let dateF = picker.endDate.format('DD-MM-YYYY');
+            let id_entrepot = $(".id_entrepot_date_range_filter").val();
+            // console.log(id_entrepot);return;
+            
+            $(this).val(dateD + ' - ' + dateF);
+            // Appeler la fonction de recherche avec les dates sélectionnées
+            $('#activityDateRange').text("Activité du " + dateD + ' au ' + dateF);
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    dateDebut: dateDebut,
+                    dateFin: dateFin,
+                    id_entrepot:id_entrepot,
+                    btn_filter_versement_entrepot: type
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    
+                    let res = data;
+
+
+                    if(type == 'vente'){
+                    $(".type_vente").html(res.html);
+                    }
+                    if(type == 'achat'){
+                    $(".type_achat").html(res.html);
+                    }
                 }
             });
         });

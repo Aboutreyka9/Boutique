@@ -206,6 +206,133 @@ class ControllerEntrepot extends Connexion
     }
 }
 
+
+  public static function getDataDateRangeFilterVersmentEntrepot()
+  {
+    if (isset($_POST['btn_filter_versement_entrepot'])) {
+      $btn_filter_versement_entrepot = $_POST['btn_filter_versement_entrepot'];
+      $dateDebut = $_POST['dateDebut'] ?? null;
+      $dateFin = $_POST['dateFin'] ?? null;
+      $id = (int)$_POST['id_entrepot'] ?? null;
+      if($id <0){
+        echo json_encode(["statut" => false,"html" => 'entrepot introuvable!']);return;
+      }
+      // si le btn = 1 on get par vente
+      if ($btn_filter_versement_entrepot == 'vente') {
+
+        $data = Soutra::getDetailVersementByEntrepotDateRangeFilter($id,$dateDebut, $dateFin,'vente');
+      }
+      // si le btn = 2 on get par article
+      if ($btn_filter_versement_entrepot == 'achat') {
+        $data = Soutra::getDetailVersementByEntrepotDateRangeFilter($id,$dateDebut, $dateFin,'achat');
+      }
+    //   var_dump($data,$dateDebut,$dateFin,$btn_filter_versement_entrepot);return;
+      
+      $output = '';
+      // si le btn = 2 on affiche par article
+      if ($btn_filter_versement_entrepot == 'achat') {
+        $output .= self::returnDataAchatVersementEntrepot($data);
+      }
+      // si le btn = 1 on affiche par vente
+      if ($btn_filter_versement_entrepot == 'vente') {
+        $output .= self::returnDataVenteVersementEntrepot($data);
+      }
+
+      $data = [
+        'statut' => false,
+        'html' => $output,
+      ];
+
+      echo json_encode($data);
+    }
+  }
+
+  
+  private static function returnDataAchatVersementEntrepot($data)
+  {
+    $output = '';
+    // $vente = Soutra::getAllListeVenteByDateRange();
+    if (!empty($data)) {
+      $i = 0;
+      foreach ($data as $row) {
+              $i++;
+
+              $output .= '
+              <tr class="row' . $row['ID_versement'] . '">
+
+                <td>' . $i . '</td>
+
+                <td>' . date('d/m/Y', strtotime($row['created_at'])) . '</td>
+
+                <td>' . ($row['client']) . '</td>
+
+                <td>' . ($row['employe']) . '</td>
+
+                <td><strong>' . number_format($row['montant_versement'], 0, ',', ' ') . ' FCFA</strong></td>
+                <td>' . checkModePaiement($row['pay_mode']). '</td>
+
+                <td>
+                  <span class="badge bg-info text-light">
+                    ' . $row['code_versement'] . '
+                  </span>
+                </td>
+
+                <td>' . checkEtat($row['etat_versement']) . '</td>
+                <td>
+                  <button class="btn btn-info btn-sm">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </td>
+
+              </tr>';
+            }
+    }
+
+    return $output;
+  }
+  private static function returnDataVenteVersementEntrepot($data)
+  {
+    $output = '';
+    // $vente = Soutra::getAllListeVenteByDateRange();
+    if (!empty($data)) {
+      $i = 0;
+      foreach ($data as $row) {
+              $i++;
+
+              $output .= '
+              <tr class="row' . $row['ID_versement'] . '">
+
+                <td>' . $i . '</td>
+
+                <td>' . date('d/m/Y', strtotime($row['created_at'])) . '</td>
+
+                <td>' . ($row['client']) . '</td>
+
+                <td>' . ($row['employe']) . '</td>
+
+                <td><strong>' . number_format($row['montant_versement'], 0, ',', ' ') . ' FCFA</strong></td>
+                <td>' . checkModePaiement($row['pay_mode']). '</td>
+
+                <td>
+                  <span class="badge bg-info text-light">
+                    ' . $row['code_versement'] . '
+                  </span>
+                </td>
+
+                <td>' . checkEtat($row['etat_versement']) . '</td>
+                <td>
+                  <button class="btn btn-info btn-sm">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </td>
+
+              </tr>';
+            }
+    }
+
+    return $output;
+  }
+
     public static function changeStatutEntrepot()
     {
         if (isset($_POST['btnChangeStatutEntrepot'])) {

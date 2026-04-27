@@ -1,9 +1,8 @@
 <?php
- if (!isAdminGestionnaire()) {
-     return;
- }
-  ?>
-
+if (!isAdminGestionnaire()) {
+  return;
+}
+?>
 <?php
 // Dates par défaut
 $states = Soutra::getTotalInventaire();
