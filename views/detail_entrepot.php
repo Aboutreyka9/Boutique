@@ -34,18 +34,20 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 <div class="card">
   <div class="card-body">
-    <div class="row">
-      <div class="col-md-4">
-        <button style="border: none;" type="button" class="btn btn-outline-dark w-50 btn_reload"><i class="bi bi-arrow-repeat"></i> &nbsp; Mettre à jour</button>
-      </div>
+    <div class="row d-flex justify-content-space-between">
 
-      <div class="col-md-8 d-flex justify-content-end">
+    <div class="col-md-9 d-flex">
         <button class="btn btn-dark" onclick="retour()"> <i class="bi bi-arrow-left"></i> Retour </button>
         <div class="ml-2">
           <h4><?= $entrepot['libelle_entrepot'] ?></h4>
         </div>
-
       </div>
+
+      <div class="col-md-3  ml-auto">
+        <button style="border: none;" type="button" class="btn btn-outline-dark w-50 btn_reload"><i class="bi bi-arrow-repeat"></i> &nbsp; Mettre à jour</button>
+      </div>
+
+      
     </div>
 
   </div>
@@ -69,7 +71,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted text-uppercase">RÉAPPRO </span> (<span id="nombre_reapprovisionnement"> 0 </span>)</h6>
         </div>
-        <h5><span id="montant_reapprovisionnement"> 0 </span> FCFA</h5>
+        <h5><span id="montant_reapprovisionnement"> 0 </span></h5>
       </div>
     </div>
   </div>
@@ -84,7 +86,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted text-uppercase">VENTES</span> (<span id="nombre_vente"> 0 </span>)</h6>
         </div>
-        <h5><span id="montant_vente"> 0 </span> FCFA</h5>
+        <h5><span id="montant_vente"> 0 </span></h5>
       </div>
     </div>
   </div>
@@ -113,7 +115,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted text-uppercase">ACHAT EN ATTENTE</span> </h6>
         </div>
-        <h5><span id="achat_attente"> 0 </span> FCFA</h5>
+        <h5><span id="achat_attente"> 0 </span></h5>
       </div>
     </div>
   </div>
@@ -127,7 +129,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted text-uppercase">VENTE EN ATTENTE</span> </h6>
         </div>
-        <h5><span id="vente_attente"> 0 </span> FCFA</h5>
+        <h5><span id="vente_attente"> 0 </span></h5>
       </div>
     </div>
   </div>
@@ -141,7 +143,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted text-uppercase">STOCK DISPO</span> (<span id="nombre_stock_dispo"> 0 </span>)</h6>
         </div>
-        <h5><span id="montant_stock_dispo"> 0 </span> FCFA</h5>
+        <h5><span id="montant_stock_dispo"> 0 </span> </h5>
       </div>
     </div>
   </div>
@@ -168,11 +170,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <div class="card mt-5">
   <div class="card-body">
     <div class="table-responsive bg-light py-3 px-2 border rounded">
-      <!-- .table -->
       <table class="table table-hover my-table">
-        <span style="font-size: 18px; font-weight: bold;" class="justify-content-center d-flex mb-3">
+        <span style="font-size: 25px; font-weight: bold;" class=" d-flex mb-3">
           Liste des articles de l'entrepot
         </span>
+      <!-- .table -->
         <!-- thead -->
         <thead class="thead-light">
           <tr>
@@ -245,10 +247,24 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
     <div class="table-responsive bg-light py-3 px-2 border rounded">
 
-      <span style="font-size: 18px; font-weight: bold;" class="justify-content-center d-flex mb-3">
+      <span style="font-size: 25px; font-weight: bold;" class=" d-flex mb-3">
         Liste des versements ventes
       </span>
 
+      <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+
+  <div class="activity">
+    <b id="activityDateRange">Activité du <?= date("d-m-Y") ?> </b>
+  </div>
+  <div class="input-group w-100 w-md-auto filter-box">
+
+    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+    <input type="text" name="datefilterVenteVersement" class="form-control" placeholder="Sélectionner la période">
+    <input type="hidden" name="id_entrepot" class="id_entrepot_date_range_filter" value="<?= $id ?>">
+    <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
+
+  </div>
+</div>
       <table class="table table-hover my-table">
 
         <!-- THEAD -->
@@ -267,7 +283,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         </thead>
 
         <!-- TBODY -->
-        <tbody class="entrepot-table">
+        <tbody class="entrepot-table type_vente">
 
           <?php
           $output = '';
@@ -328,9 +344,23 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
     <div class="table-responsive bg-light py-3 px-2 border rounded">
 
-      <span style="font-size: 18px; font-weight: bold;" class="justify-content-center d-flex mb-3">
+      <span style="font-size: 25px; font-weight: bold;" class=" d-flex mb-3">
         Liste des versements achats
       </span>
+
+      <div class="mb-3 stats-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+
+  <div class="activity">
+    <b id="activityDateRange">Activité du <?= date("d-m-Y") ?> </b>
+  </div>
+  <div class="input-group w-100 w-md-auto filter-box">
+
+    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+    <input type="text" name="datefilterAchatVersement" class="form-control" placeholder="Sélectionner la période">
+    <button id="filterBtn" class="btn btn-primary ml-2"><i class="fa fa-filter"></i></button>
+
+  </div>
+</div>
 
       <table class="table table-hover my-table">
 
@@ -350,7 +380,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         </thead>
 
         <!-- TBODY -->
-        <tbody class="entrepot-table">
+        <tbody class="entrepot-table type_achat">
 
           <?php
           $output = '';
@@ -486,5 +516,3 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <?= modalAttribution() ?>
 <?= modalDetailEntrepotArticle() ?>
 <!-- btn detail -->
-<!-- <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm mr-2">
-            <i class="fa fa-eye"></i></a> -->
