@@ -796,7 +796,7 @@ class Soutra extends Connexion
         }
     }
 
-    public static function geDetteClient($client,$nature,$statut_commande, $entrepot)
+    public static function geDetteClient($client, $nature, $statut_commande, $entrepot)
     {
         try {
 
@@ -814,52 +814,6 @@ class Soutra extends Connexion
             $query->execute($params);
 
             return $query->fetch(PDO::FETCH_ASSOC) ?? [];
-        } catch (Exception $e) {
-            die('Erreur : ' . $e->getMessage());
-        }
-    }
-
-    public static function restaureDataDB()
-    {
-        try {
-
-            $query = self::getConnexion()->query("INSERT INTO `client` (`ID_client`, `nom_client`, `prenom_client`, `telephone_client`, `code_client`, `solde_client`, `created_at`, `etat_client`, `employe_id`, `updated_at`, `email_client`, `adresse_client`) VALUES
-(1, 'CLIENT 3 ', 'Colman', '0102030405', 'CL2629365', 0, '2026-03-29', 1, 1, '2026-03-29 16:29:37', 'abasanogo9@gmail.com', '')");
-
-            $query = self::getConnexion()->query("INSERT INTO `employe` (`ID_employe`, `code_employe`, `nom_employe`, `prenom_employe`, `telephone_employe`, `email_employe`, `password_employe`, `etat_employe`, `role_id`, `login`, `service`, `entrepot`) VALUES
-(1, 'EM00000', 'Admin', 'Admin', '0102030405', NULL, '202cb962ac59075b964b07152d234b70', 1, 1, '2026-04-25 01:03:22', 0, 1)");
-
-            $query = self::getConnexion()->query("INSERT INTO `fournisseur` (`ID_fournisseur`, `code_fournisseur`, `nom_fournisseur`, `telephone_fournisseur`, `etat_fournisseur`, `created_at`, `email_fournisseur`, `adresse_fournisseur`) VALUES
-(1, 'FS26295878', 'FOURNISSEUR A', '0102030405', 1, '2026-03-29', NULL, '')");
-        } catch (Exception $e) {
-            die('Erreur : ' . $e->getMessage());
-        }
-    }
-
-    public static function resetDataDB()
-    {
-        try {
-
-            $query = self::getConnexion()->query("TRUNCATE TABLE achat ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE vente ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE entree ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE sortie ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE article ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE categorie ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE depense ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE client ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE fournisseur ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE employe ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE entrepot ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE entrepot_article ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE famille ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE ligne_transfert ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE mark ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE mouvement_stock ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE service ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE transfert ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE versement ");
-            $query = self::getConnexion()->query("TRUNCATE TABLE unite ");
         } catch (Exception $e) {
             die('Erreur : ' . $e->getMessage());
         }
@@ -2232,9 +2186,9 @@ GROUP BY e.ID_entrepot;";
         return $data;
     }
 
-public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $dateD,$dateF,$type = 'vente')
-{
-    $sql = "SELECT 
+    public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $dateD, $dateF, $type = 'vente')
+    {
+        $sql = "SELECT 
                 v.*,
             CONCAT(c.nom_client, ' ', c.prenom_client) AS client,
             CONCAT(e.nom_employe, ' ', e.prenom_employe) AS employe
@@ -2245,21 +2199,21 @@ public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $d
             AND v.created_at BETWEEN :dateStart AND :dateEnd
             AND v.type_versement = :types";
 
-    $query = self::getConnexion()->prepare($sql);
+        $query = self::getConnexion()->prepare($sql);
 
-    $query->execute([
-        'entrepot' => $entrepot,
-        'dateStart' => $dateD,
-        'dateEnd' => $dateF,
-        'types' => $type
-    ]);
+        $query->execute([
+            'entrepot' => $entrepot,
+            'dateStart' => $dateD,
+            'dateEnd' => $dateF,
+            'types' => $type
+        ]);
 
-    return $query->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
-{
-    $sql = "SELECT 
+    public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
+    {
+        $sql = "SELECT 
                 v.*,
                 CONCAT(c.nom_client, ' ', c.prenom_client) AS client,
                 CONCAT(e.nom_employe, ' ', e.prenom_employe) AS employe
@@ -2269,15 +2223,15 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             WHERE v.entrepot_id = :entrepot 
               AND v.type_versement = :types";
 
-    $query = self::getConnexion()->prepare($sql);
+        $query = self::getConnexion()->prepare($sql);
 
-    $query->execute([
-        'entrepot' => $entrepot,
-        'types' => $type
-    ]);
+        $query->execute([
+            'entrepot' => $entrepot,
+            'types' => $type
+        ]);
 
-    return $query->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public static function getDetailAchat($id_achat, $etat = 1)
     {
@@ -4122,9 +4076,9 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
-    
-    public static function getInventaireDateByAnneeArticle($annee,$article)
+
+
+    public static function getInventaireDateByAnneeArticle($annee, $article)
     {
         $data = [];
         try {
@@ -4180,28 +4134,29 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             $query->execute($params);
             $data = $query->fetch(PDO::FETCH_ASSOC);
 
-            return self::generateYesFromFirstYear($data['premiere_date'],"DESC");
+            return self::generateYesFromFirstYear($data['premiere_date'], "DESC");
         } catch (Exception $e) {
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
-    public static function generateYesFromFirstYear($premiere_date,$ordre = 'ASC') {
+
+    public static function generateYesFromFirstYear($premiere_date, $ordre = 'ASC')
+    {
         // sécuriser la date
         if (empty($premiere_date)) {
-        return [date('Y')];
-    }
+            return [date('Y')];
+        }
 
-    $annee_debut = (int) date('Y', strtotime($premiere_date));
-    $annee_actuelle = (int) date('Y');
+        $annee_debut = (int) date('Y', strtotime($premiere_date));
+        $annee_actuelle = (int) date('Y');
 
-    $annees = range($annee_debut, $annee_actuelle);
+        $annees = range($annee_debut, $annee_actuelle);
 
-    if ($ordre === 'DESC') {
-        $annees = array_reverse($annees);
-    }
+        if ($ordre === 'DESC') {
+            $annees = array_reverse($annees);
+        }
 
-    return $annees;
+        return $annees;
     }
 
     // public static function getInventaireByAnneArticleDateForFilters($annee = null, $article = null, $date = null)

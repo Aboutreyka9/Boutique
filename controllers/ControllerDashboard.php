@@ -25,19 +25,19 @@ class ControllerDashboard extends Connexion
       $detteClient = Soutra::getTotalDetteClientDashboard($start, $end, 'vente', $entrepot);
 
       $depenses = Soutra::getTotalDepenseDAshboard($start, $end, $entrepot);
-      
+
       $stockDispo = Soutra::getTotauxViewStockProduit();
-      
+
       $stockAlert = Soutra::getCountStockAlert();
-      
+
       $totalAchatAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on a créée
-      
+
       $totalVenteAttente = (isGestionnaireCommercial()) ? Soutra::getTotauxVenteEnAttenteNotAdmin() : Soutra::getTotauxVenteEnAttenteAdmin(); // méthode adaptée que l'on a créée
-      
+
       $tresorerie = Soutra::getTotauxTresorerie(); // méthode adaptée que l'on a créée
-      
+
       $reliquat  = Soutra::getTotalDetteClientDashboard($start, $end, 'achat', $entrepot);
-      
+
       $totauxAchat = Soutra::getTotauxAchatByDateRange($start, $end); // méthode adaptée que l'on a créée
 
       // ajout propre dans le même objet
@@ -58,24 +58,6 @@ class ControllerDashboard extends Connexion
         'totauxAchat',
         'reliquat'
       ));
-    }
-  }
-
-  public static function resetDB(){
-    if($_POST['btn_reset_db']){
-
-    $data = [];
-    $message['code']= 400;
-       $result = Soutra::transactionData(function () use ($data) {
-                             Soutra::resetDataDB();
-        Soutra::restaureDataDB();
-                        });
-                        if ($result) {
-                          $_SESSION = [];
-                          session_destroy();
-                          $message['code'] = 200;
-                        }
-                        echo json_encode($message);
     }
   }
 } //fin de la class
