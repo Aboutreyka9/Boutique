@@ -654,14 +654,13 @@ class ControllerVente extends Connexion
         $msg = ['status' => false, 'message' => 'Verifier les valeurs renseignées'];
       } else {
         $date = date('Y-m-d');
-        $code = self::checkCode();
         $code = strtoupper(self::checkCode());
         $employe_id = $_SESSION['id_employe'];
         $entrepot_id = $_SESSION['id_entrepot'];
 
         $data = array(
           'code_vente' => $code,
-          'client_id' => empty($client) ? $client : 1,
+          'client_id' => !empty($client) ? $client : 1,
           'employe_id' => $employe_id,
           'entrepot_id' => $entrepot_id,
           'etat_vente' => 1,
@@ -671,7 +670,16 @@ class ControllerVente extends Connexion
         );
 
         $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code, $montant_encaisse, $pay_mode) {
+
+          $mouve = false;
+          if (Soutra::verif_type($montant_encaisse) && $montant_encaisse > 0) {
+            $mouve = true;
+          }
+
           Soutra::inserted("vente", $data);
+
+          $mouvements = [];
+
           for ($i = 0; $i < count($pu); $i++) {
             $vente = array(
               'vente_id' => $code,
@@ -681,18 +689,38 @@ class ControllerVente extends Connexion
             );
 
             Soutra::inserted("sortie", $vente);
+
+            if ($mouve) {
+              // 3. Préparer insertion multiple
+              $mouvements[] = [
+                'article_id'     => $id[$i],
+                'type_mouvement' => STATUT_MOUVEMENT[1],
+                'quantite'       => $qte[$i],
+                'employe_id'     => $data['employe_id'],
+                'prix_vente'     => $pu[$i],
+                'entrepot_id'    => $data['entrepot_id'],
+                'date_mouvement' => $data['created_at']
+              ];
+
+              // 4. Insert multiple (1 seule requête 🔥)
+              if (!empty($mouvements)) {
+                Soutra::insertMultiple('mouvement_stock', $mouvements);
+              }
+            }
             // return true;
           }
 
+
+
           if (Soutra::verif_type($montant_encaisse) && $montant_encaisse > 0) {
-            $date = date('Y-m-d');
+
             $code_versement = strtoupper(self::checkCode());
             $data_versement = [
               'montant_versement' => (int)$montant_encaisse,
-              'employe_id' => $_SESSION['id_employe'],
+              'employe_id' => $data['employe_id'],
               'etat_versement' => ETATS[1],
               'code_versement' => $code_versement,
-              'created_at' => $date,
+              'created_at' => $data['created_at'],
               'transaction_code' => $code,
               'type_versement' => 'vente',
               'pay_mode' => $pay_mode
@@ -705,7 +733,7 @@ class ControllerVente extends Connexion
                   'statut_vente' => STATUT_COMMANDE[2],
                   'code_vente' => $code
                 ];
-              }else{
+              } else {
                 $data_updated = [
                   'statut_vente' => STATUT_COMMANDE[1],
                   'code_vente' => $code
@@ -1093,50 +1121,51 @@ class ControllerVente extends Connexion
   }
 
 
-public static function getSearchByAnneeArticleToGetInventaire()
-{
+  public static function getSearchByAnneeArticleToGetInventaire()
+  {
     if (isset($_POST['btn_search_inventaire_annee_article_to_get_inventaire'])) {
 
-        $annee = $_POST['annee'] ?? null;
-        $article = $_POST['article'] ?? null;
+      $annee = $_POST['annee'] ?? null;
+      $article = $_POST['article'] ?? null;
 
-        $data = Soutra::getInventaireDateByAnneeArticle($annee, $article);
+      $data = Soutra::getInventaireDateByAnneeArticle($annee, $article);
 
-        $output = "";
-        
-        foreach ($data as $row) {
+      $output = "";
 
-            $date = date('d/m/Y', strtotime($row['date_mouvement']));
+      foreach ($data as $row) {
 
-            $output .= '<option value="' . $row['ID_mouvement_stock'] . '">' . $row['type_mouvement'].' - '.$date . '</option>';
-        }
+        $date = date('d/m/Y', strtotime($row['date_mouvement']));
 
-        echo json_encode(['code' => 200, 'html' => $output]);
+        $output .= '<option value="' . $row['ID_mouvement_stock'] . '">' . $row['type_mouvement'] . ' - ' . $date . '</option>';
+      }
+
+      echo json_encode(['code' => 200, 'html' => $output]);
     }
-}
-public static function getSearchByAnneeArticleMouvement()
-{
+  }
+  public static function getSearchByAnneeArticleMouvement()
+  {
     if (isset($_POST['btn_search_inventaire_annee_article_mouvement'])) {
 
-        $annee = $_POST['annee'] ?? null;
-        $article = $_POST['article'] ?? null;
-        $id_mouvement = $_POST['id_mouvement'] ?? null;
+      $annee = $_POST['annee'] ?? null;
+      $article = $_POST['article'] ?? null;
+      $id_mouvement = $_POST['id_mouvement'] ?? null;
 
-        var_dump($_POST);return;
-        $data = Soutra::getInventaireDateByAnneeArticle($annee, $article);
+      var_dump($_POST);
+      return;
+      $data = Soutra::getInventaireDateByAnneeArticle($annee, $article);
 
-        $output = "";
-        
-        foreach ($data as $row) {
+      $output = "";
 
-            $date = date('d/m/Y', strtotime($row['date_mouvement']));
+      foreach ($data as $row) {
 
-            $output .= '<option value="' . $row['ID_mouvement_stock'] . '">' . $row['type_mouvement'].' - '.$date . '</option>';
-        }
+        $date = date('d/m/Y', strtotime($row['date_mouvement']));
 
-        echo json_encode(['code' => 200, 'html' => $output]);
+        $output .= '<option value="' . $row['ID_mouvement_stock'] . '">' . $row['type_mouvement'] . ' - ' . $date . '</option>';
+      }
+
+      echo json_encode(['code' => 200, 'html' => $output]);
     }
-}
+  }
 
   public static function getDataDateRangeFilterInventaire()
   {
