@@ -260,6 +260,8 @@
 
               <a class="dropdown-item" href="<?= URL; ?>configuration">
                 <span class="dropdown-icon oi oi-person"></span> Configuration</a>
+              <button class="dropdown-item" id="reset_db">
+                <span class="dropdown-icon oi oi-database"></span> Restauration</button>
             <?php endif; ?>
 
             <div class="dropdown-divider"></div>

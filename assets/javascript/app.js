@@ -238,6 +238,36 @@ return total_ttc;
             });
         });
     }
+ajax_reset_db();
+    function ajax_reset_db() {
+        $('body').on('click', '#reset_db', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    btn_reset_db: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    if(data.code == 200){
+
+                swal({
+                title: "Notification",
+                text: "Op&ration effectuée avec succès",
+                icon: "success",
+            }).then(()=>{
+                history.go(0);
+            })
+                    }else{
+                        console.log('une erreur est ...');
+                        
+                    }
+
+                }
+            });
+        });
+    }
 
     btn_update_login_employe();
 

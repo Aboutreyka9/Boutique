@@ -819,6 +819,52 @@ class Soutra extends Connexion
         }
     }
 
+    public static function restaureDataDB()
+    {
+        try {
+
+            $query = self::getConnexion()->query("INSERT INTO `client` (`ID_client`, `nom_client`, `prenom_client`, `telephone_client`, `code_client`, `solde_client`, `created_at`, `etat_client`, `employe_id`, `updated_at`, `email_client`, `adresse_client`) VALUES
+(1, 'CLIENT 3 ', 'Colman', '0102030405', 'CL2629365', 0, '2026-03-29', 1, 1, '2026-03-29 16:29:37', 'abasanogo9@gmail.com', '')");
+
+            $query = self::getConnexion()->query("INSERT INTO `employe` (`ID_employe`, `code_employe`, `nom_employe`, `prenom_employe`, `telephone_employe`, `email_employe`, `password_employe`, `etat_employe`, `role_id`, `login`, `service`, `entrepot`) VALUES
+(1, 'EM00000', 'Admin', 'Admin', '0102030405', NULL, '202cb962ac59075b964b07152d234b70', 1, 1, '2026-04-25 01:03:22', 0, 1)");
+
+            $query = self::getConnexion()->query("INSERT INTO `fournisseur` (`ID_fournisseur`, `code_fournisseur`, `nom_fournisseur`, `telephone_fournisseur`, `etat_fournisseur`, `created_at`, `email_fournisseur`, `adresse_fournisseur`) VALUES
+(1, 'FS26295878', 'FOURNISSEUR A', '0102030405', 1, '2026-03-29', NULL, '')");
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
+    public static function resetDataDB()
+    {
+        try {
+
+            $query = self::getConnexion()->query("TRUNCATE TABLE achat ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE vente ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE entree ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE sortie ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE article ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE categorie ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE depense ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE client ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE fournisseur ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE employe ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE entrepot ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE entrepot_article ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE famille ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE ligne_transfert ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE mark ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE mouvement_stock ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE service ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE transfert ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE versement ");
+            $query = self::getConnexion()->query("TRUNCATE TABLE unite ");
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
     public static function getTotalDetteClientDashboard($startDate, $endDate, $nature, $entrepot = null)
     {
         try {
