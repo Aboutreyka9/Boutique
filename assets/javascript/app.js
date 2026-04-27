@@ -2718,7 +2718,8 @@ ajax_detail_entrepot_article();
                 method: "POST",
                 data: verement,
                 success: function (data) {
-
+                    console.log(data,'4744');
+                    
                     var verif = data.split("&");
                     if (verif[0] == 1) {
                         notify(verif[3]);
@@ -3280,6 +3281,7 @@ ajax_detail_entrepot_article();
                     
                     $("#nombre_stock_alert").text(data.stockAlert);
                     let tresorerie = data.tresorerie.solde_tresorerie;
+                    tresorerie = (tresorerie == undefined) ? 0 : tresorerie;
                     if(tresorerie >= 0){
                         $('#montant_tresorerie').addClass('text-success');
                     }else{
@@ -5017,6 +5019,7 @@ function updateELement(btn_action,code) {
                     },
                     dataType: 'JSON',
                     success: function (data) {
+                        console.log(data);
                         
                         if (data.success) {
                             swal("Notification", data.msg, "success")
@@ -5095,8 +5098,10 @@ function updateELementDepense(btn_action,code) {
                     
                     if(data.status) {
 
-                        swal("Notification", data.message, "success");
-                        $("#encaisser-modal").modal('hide');
+                        swal("Notification", data.message, "success").then(() => {
+                            history.go(0);
+                        })
+                        // $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
@@ -5119,12 +5124,13 @@ form_encaisser_achat();
                 data: data,
                 dataType: 'JSON',
                 success: function (data) {
-                    // console.log(data);return;
                     
                      if(data.status) {
 
-                        swal("Notification", data.message, "success");
-                        $("#encaisser-modal").modal('hide');
+                         swal("Notification", data.message, "success").then(() => {
+                             history.go(0);
+                        });
+                        // $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
