@@ -1331,7 +1331,7 @@ return total_ttc;
                 url: "../partials/rooter.php",
                 method: "POST",
                 data: entrepotData,
-                // dataType: 'json',
+                dataType: 'json',
                 success: function (data) {
                     console.log(data);
 
