@@ -34,7 +34,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
   <div class="row mt-5 dashboard_admin">
 
 
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="card custom-card-detail">
         <div class="card-body">
           <div class="d-flex align-items-center">
@@ -49,7 +49,7 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
     </div>
 
 
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class="card custom-card-detail">
         <div class="card-body">
           <div class="d-flex align-items-center">
@@ -63,36 +63,51 @@ $totaux = Soutra::getTotauxVenteByDateRange($start, $end); // méthode adaptée 
       </div>
     </div>
 
-    <!-- <div class="col-md-6">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-success mr-2">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">Facture reglée</span> </h6>
+    <div class="col-md-4">
+      <div class="card custom-card-detail">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon bg-success mr-2">
+              <i class="bi bi-cart-plus"></i>
             </div>
-            <h5><span class="tester" id="total_montant_regler"><?= number_format($totaux['total_montant'] - $reste['montant_total'] ?? 0, 0, ',', ' ') ?>
-              </span> FCFA</h5>
+            <h6><span class="text-muted text-uppercase">Quantité VENTE</span></h6>
           </div>
+          <h5><span id="nb_vente"> 0 </span></h5>
         </div>
       </div>
+    </div>
 
-      <div class="col-md-6">
-        <div class="card custom-card-detail">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-              <div class="icon bg-danger mr-2">
-                <i class="bi bi-cash-stack"></i>
-              </div>
-              <h6><span class="text-muted text-uppercase">Reste à payer</span> </h6>
+    
+    <div class="col-md-6">
+      <div class="card custom-card-detail">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon bg-success mr-2">
+              <i class="bi bi-cash-stack"></i>
             </div>
-            <h5><span class="tester" id="total_montant_reste"><?= number_format($reste['montant_total'] ?? 0, 0, ',', ' ') ?>
-              </span> FCFA</h5>
+            <h6><span class="text-muted text-uppercase">Facture reglée</span> </h6>
           </div>
+          <h5><span class="tester" id="total_montant_regler_vente">0
+            </span> </h5>
         </div>
-      </div> -->
+      </div>
+    </div>
 
+    
+    <div class="col-md-6">
+      <div class="card custom-card-detail">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="icon bg-danger mr-2">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+            <h6><span class="text-muted text-uppercase">Reste à payer</span> </h6>
+          </div>
+          <h5><span class="tester" id="total_montant_reste_vente">0
+            </span> </h5>
+        </div>
+      </div>
+    </div>
 
   </div>
 
