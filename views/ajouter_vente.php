@@ -1,13 +1,13 @@
- <?php 
-// if(!isAdminGestionnaire()){
-//   return;
-// }
+ <?php
+  // if(!isAdminGestionnaire()){
+  //   return;
+  // }
 
-$info = Soutra::getInfoBoutique();
-$taxe = $info['taxe'];
-// var_dump($info);
- ?>
- 
+  $info = Soutra::getInfoBoutique();
+  $taxe = $info['taxe'];
+  // var_dump($info);
+  ?>
+
  <header class="page-title-bar">
    <h1 class="page-title mb-3"> Espace vente</h1>
    <!-- <p class="text-muted"> Ajouter une vente</p> -->
@@ -22,7 +22,7 @@ $taxe = $info['taxe'];
                    <div style="position: relative;" class="form-group">
                      <label for="client">Client</label>
                      <select name="client" class="form-control client_search" id="client">
-                       <option value="--- CHOISIR ---"></option>
+                       <option value="">--- CHOISIR ---</option>
                        <?php
                         $client = Soutra::getAllClient();
                         $output = "";
@@ -78,6 +78,11 @@ $taxe = $info['taxe'];
                </div>
              </form>
            </div>
+           <div class="col-md-12">
+             <div class="form-group">
+               <h3>Ce client doit : <strong id="dette_client"></strong></h3>
+             </div>
+           </div>
          </div>
        </div>
      </div>
@@ -125,7 +130,7 @@ $taxe = $info['taxe'];
    <div class="card-body">
      <div class="row row_montant">
        <div class="col-md-12 mb-3 ">
-         <span style="font-size: 35px;">Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
+         <span style="font-size: 35px;"> Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
        </div>
      </div>
      <div class="table-responsive bg-light py-3 px-2 border rounded panier_vente">
@@ -173,7 +178,7 @@ $taxe = $info['taxe'];
              <span>Montant de la remise :</span>
 
              <div class="input-group remise-input">
-               <input type="number" class="form-control"  min="0" id="montant_remise" value="0">
+               <input type="number" class="form-control" min="0" id="montant_remise" value="0">
                <span class="input-group-text"> FCFA</span>
              </div>
            </div>
@@ -207,7 +212,7 @@ $taxe = $info['taxe'];
            <div class="mb-3">
              <label class="form-label">encaisse :</label>
              <div class="input-group">
-               <input type="number" class="form-control "  id="montant_encaisse" value="0">
+               <input type="number" class="form-control " id="montant_encaisse" value="0">
                <span class="input-group-text"> FCFA</span>
              </div>
            </div>

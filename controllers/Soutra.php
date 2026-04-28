@@ -796,11 +796,11 @@ class Soutra extends Connexion
         }
     }
 
-    public static function geDetteClient($client,$nature,$statut_commande, $entrepot)
+    public static function geDetteClient($client, $nature, $entrepot)
     {
         try {
 
-            $sql = "SELECT COALESCE(SUM(reste_a_payer),0) as montant_total, COUNT(vep.reste_a_payer) as nombre_total FROM vue_etat_paiements vep JOIN vente v ON vep.code_transaction = v.code_vente
+            $sql = "SELECT COALESCE(SUM(reste_a_payer),0) as reste_a_payer FROM vue_etat_paiements vep JOIN vente v ON vep.code_transaction = v.code_vente
             WHERE v.client_id = :client AND vep.entrepot = :id AND vep.nature = :na AND vep.statut_commande = :st
             ";
             $params = [
@@ -1355,6 +1355,27 @@ GROUP BY e.ID_entrepot;";
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getAllArticleFamilleMarkDetailEntepot($entrepot = null)
+    {
+        $data = [];
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite,ent.prix_achat,ent.prix_vente,ent.stock_alert,ent.garantie_article,ent.etat_article AS etat_entrepot_article,ent.ID_entrepot_article
+        FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id 
+        JOIN famille fa ON fa.ID_famille = ar.famille_id 
+        JOIN mark ma ON ma.ID_mark = ar.mark_id  
+        JOIN unite un ON un.ID_unite = ar.unite_id ORDER BY ar.libelle_article DESC";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $entrepot ?? $_SESSION['id_entrepot']
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;
@@ -2186,9 +2207,9 @@ GROUP BY e.ID_entrepot;";
         return $data;
     }
 
-public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $dateD,$dateF,$type = 'vente')
-{
-    $sql = "SELECT 
+    public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $dateD, $dateF, $type = 'vente')
+    {
+        $sql = "SELECT 
                 v.*,
             CONCAT(c.nom_client, ' ', c.prenom_client) AS client,
             CONCAT(e.nom_employe, ' ', e.prenom_employe) AS employe
@@ -2199,39 +2220,39 @@ public static function getDetailVersementByEntrepotDateRangeFilter($entrepot, $d
             AND v.created_at BETWEEN :dateStart AND :dateEnd
             AND v.type_versement = :types";
 
-    $query = self::getConnexion()->prepare($sql);
+        $query = self::getConnexion()->prepare($sql);
 
-    $query->execute([
-        'entrepot' => $entrepot,
-        'dateStart' => $dateD,
-        'dateEnd' => $dateF,
-        'types' => $type
-    ]);
+        $query->execute([
+            'entrepot' => $entrepot,
+            'dateStart' => $dateD,
+            'dateEnd' => $dateF,
+            'types' => $type
+        ]);
 
-    return $query->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
-{
-    $sql = "SELECT 
+    public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
+    {
+        $sql = "SELECT 
                 v.*,
                 CONCAT(c.nom_client, ' ', c.prenom_client) AS client,
                 CONCAT(e.nom_employe, ' ', e.prenom_employe) AS employe
             FROM versement v
             LEFT JOIN client c ON v.client_id = c.ID_client
             LEFT JOIN employe e ON e.ID_employe = v.employe_id
-            WHERE v.entrepot_id = :entrepot 
+            WHERE  v.entrepot_id = :entrepot 
               AND v.type_versement = :types";
 
-    $query = self::getConnexion()->prepare($sql);
+        $query = self::getConnexion()->prepare($sql);
 
-    $query->execute([
-        'entrepot' => $entrepot,
-        'types' => $type
-    ]);
+        $query->execute([
+            'entrepot' => $entrepot,
+            'types' => $type
+        ]);
 
-    return $query->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public static function getDetailAchat($id_achat, $etat = 1)
     {
@@ -3020,23 +3041,23 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
     {
         $data = [];
         $sql = 'SELECT ach.*, 
-            SUM(en.qte) AS article,
-            SUM(en.prix_achat * en.qte) AS total,
+            COALESCE(COUNT(ach.ID_achat),0) article,
+            COALESCE(SUM(vma.montant_total),0) AS total,
             -- ach._achat,ach.created_at,
             fr.nom_fournisseur AS fournisseur, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
             FROM achat ach 
-            JOIN entree en ON en.achat_id = ach.code_achat
+            JOIN vue_montant_achats vma ON vma.code_achat = ach.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ach.fournisseur_id
             JOIN employe emp ON emp.ID_employe = ach.employe_id
-            WHERE DATE(ach.created_at) BETWEEN :dateStart AND :dateEnd
+            WHERE ach.entrepot_id = :entrepot_id AND DATE(ach.created_at) BETWEEN :dateStart AND :dateEnd
             GROUP BY ach.ID_achat 
             ORDER BY ach.ID_achat DESC';
 
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
+        $query->execute(['entrepot_id' => $_SESSION['id_entrepot'], 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
 
@@ -3441,7 +3462,8 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
         return $data;
     }
 
-    public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_entree = 1)
+    
+    public static function getTotauxAchatDashboardByDateRange($startDate, $endDate, $etat_entree = 1)
     {
         $data = [];
 
@@ -3449,8 +3471,8 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             FROM achat ac
             JOIN entree en ON en.achat_id = ac.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
-            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse )
-              AND en.etat_entree = :etat_entree 
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse ) 
+            AND en.etat_entree = :etat_entree
               AND DATE(ac.created_at) BETWEEN :start AND :end
            ';
 
@@ -3472,23 +3494,83 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
 
         return $data;
     }
+    
+    public static function getTotauxVenteDashboardByDateRange($startDate, $endDate, $etat_sortie = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_vente * en.qte),0) total
+            FROM vente ac
+            JOIN sortie en ON en.vente_id = ac.code_vente
+            JOIN client cl ON cl.ID_client = ac.client_id
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_vente = :statut_valide OR ac.statut_vente = :statut_encaisse ) 
+            AND en.etat_sortie = :etat_sortie
+              AND DATE(ac.created_at) BETWEEN :start AND :end
+           ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_valide' => STATUT_COMMANDE[1],
+            'statut_encaisse' => STATUT_COMMANDE[2],
+            'etat_sortie' => $etat_sortie,
+            'start' => $startDate,
+            'end' => $endDate
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
+    public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(COUNT(ac.ID_achat),0) article, COALESCE(SUM(vma.montant_total),0) total
+            FROM achat ac
+            JOIN vue_montant_achats vma ON vma.code_achat = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse ) 
+              AND DATE(ac.created_at) BETWEEN :start AND :end
+           ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_valide' => STATUT_COMMANDE[1],
+            'statut_encaisse' => STATUT_COMMANDE[2],
+            'start' => $startDate,
+            'end' => $endDate
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
 
     public static function getTotauxAchatEnAttente($etat = 1)
     {
         $data = [];
 
-        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_achat * en.qte),0) total
+        $sql = 'SELECT COALESCE(COUNT(ac.ID_achat),0) article, COALESCE(SUM(vma.montant_total),0) total
             FROM achat ac
-            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN vue_montant_achats vma ON vma.code_achat = ac.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
-            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_en_attente
-              AND en.etat_entree = :etat_entree ';
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_en_attente';
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
             'entrepot_id' => $_SESSION['id_entrepot'],
-            'statut_en_attente' => STATUT_COMMANDE[0],
-            'etat_entree' => $etat,
+            'statut_en_attente' => STATUT_COMMANDE[0]
         ]);
 
         if ($query->rowCount() > 0) {
@@ -3639,17 +3721,16 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
     {
         $data = [];
 
-        $sql = 'SELECT COALESCE(SUM(so.qte),0) article, COALESCE(SUM(so.prix_vente * so.qte),0) total
+        $sql = 'SELECT COALESCE(COUNT(ve.ID_vente),0) article, 
+                COALESCE(SUM(vmv.montant_total),0) total
             FROM vente ve
-            JOIN sortie so ON so.vente_id = ve.code_vente
+            JOIN vue_montant_ventes vmv ON vmv.code_vente =ve.code_vente
             LEFT JOIN client cl ON cl.ID_client = ve.client_id
-            WHERE ve.entrepot_id = :entrepot_id AND ve.statut_vente = :statut_en_attente
-            AND so.etat_sortie = :etat_sortie ';
+            WHERE ve.entrepot_id = :entrepot_id AND ve.statut_vente = :statut_en_attente';
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
             'entrepot_id' => $_SESSION['id_entrepot'],
-            'statut_en_attente' => STATUT_COMMANDE[0],
-            'etat_sortie' => $etat,
+            'statut_en_attente' => STATUT_COMMANDE[0]
         ]);
 
         if ($query->rowCount() > 0) {
@@ -3895,14 +3976,12 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             FROM type_depense t
             JOIN depense d ON t.ID_type = d.type_id
             JOIN employe e ON e.id_employe = d.employe_id
-        WHERE  DATE(d.date_created) BETWEEN :startDate AND :endDate ";
-        $params = ['startDate' => $startDate, 'endDate' => $endDate];
+        WHERE d.entrepot_id = :entrepot_id AND DATE(d.date_created) BETWEEN :startDate AND :endDate ORDER BY d.ID_depense DESC";
+
+        $params = ['startDate' => $startDate, 'endDate' => $endDate, 'entrepot_id' => $entrepot];
 
 
-        if (!empty($entrepot)) {
-            $sql .= " AND d.entrepot_id = :entrepot_id";
-            $params['entrepot_id'] = $entrepot;
-        }
+
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute($params);
@@ -3923,19 +4002,16 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
         $sql = 'SELECT  COALESCE(SUM(d.montant),0) montant_depense,  COALESCE(COUNT(d.ID_depense),0) nombre_depense
             FROM type_depense t
             JOIN depense d ON t.ID_type = d.type_id AND d.statut_depense = :statut_depense
-            WHERE DATE(d.date_created) BETWEEN :startDate AND :endDate ';
+            WHERE d.entrepot_id = :entrepot_id AND  DATE(d.date_created) BETWEEN :startDate AND :endDate ';
 
         $params = [
             ':startDate' => $startDate,
             ':endDate'   => $endDate,
             ':statut_depense'   => $statut,
+            ':entrepot_id'   => $_SESSION['id_entrepot']
         ];
 
-        // Ajout condition dynamique
-        if (!empty($entrepot)) {
-            $sql .= ' AND d.entrepot_id = :entrepot_id ';
-            $params[':entrepot_id'] = $entrepot;
-        }
+
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute($params);
@@ -4076,9 +4152,9 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
-    
-    public static function getInventaireDateByAnneeArticle($annee,$article)
+
+
+    public static function getInventaireDateByAnneeArticle($annee, $article)
     {
         $data = [];
         try {
@@ -4134,28 +4210,29 @@ public static function getDetailVersementByEntrepot($entrepot, $type = 'vente')
             $query->execute($params);
             $data = $query->fetch(PDO::FETCH_ASSOC);
 
-            return self::generateYesFromFirstYear($data['premiere_date'],"DESC");
+            return self::generateYesFromFirstYear($data['premiere_date'], "DESC");
         } catch (Exception $e) {
             die('Erreur : ' . $e->getMessage());
         }
     }
-    
-    public static function generateYesFromFirstYear($premiere_date,$ordre = 'ASC') {
+
+    public static function generateYesFromFirstYear($premiere_date, $ordre = 'ASC')
+    {
         // sécuriser la date
         if (empty($premiere_date)) {
-        return [date('Y')];
-    }
+            return [date('Y')];
+        }
 
-    $annee_debut = (int) date('Y', strtotime($premiere_date));
-    $annee_actuelle = (int) date('Y');
+        $annee_debut = (int) date('Y', strtotime($premiere_date));
+        $annee_actuelle = (int) date('Y');
 
-    $annees = range($annee_debut, $annee_actuelle);
+        $annees = range($annee_debut, $annee_actuelle);
 
-    if ($ordre === 'DESC') {
-        $annees = array_reverse($annees);
-    }
+        if ($ordre === 'DESC') {
+            $annees = array_reverse($annees);
+        }
 
-    return $annees;
+        return $annees;
     }
 
     // public static function getInventaireByAnneArticleDateForFilters($annee = null, $article = null, $date = null)

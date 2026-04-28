@@ -239,6 +239,7 @@ return total_ttc;
         });
     }
 
+
     btn_update_login_employe();
 
     function btn_update_login_employe() {
@@ -1304,6 +1305,50 @@ return total_ttc;
         });
     }
     
+ajaxChangeStatutEntrepotArticle();
+    function ajaxChangeStatutEntrepotArticle() {  
+        $('body').on('click', '.btnChangeStatutEntrepotArticle', function (e) {
+            const code = $(this).data('code');
+            const statut = $(this).data('statut');
+            const entrepot = $(this).data('id_entrepot');
+        
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    code: code,
+                    statut: statut,
+                    btnChangeStatutEntrepotArticle: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log('code:' + code);
+                    if (data.code == 200) {
+                        $.notify(data.message, "success");
+                        liste_entrepot_article(entrepot);
+                    } else {
+                        $.notify(data.message, "");
+                        
+                    }
+                }
+            });
+        });
+    }
+    
+     function liste_entrepot_article(code) {
+        $.ajax({
+            url: "../partials/rooter.php",
+            method: "POST",
+            data: {
+                id:code,
+                btn_liste_entrepot_article: 1
+            },
+            success: function (data) {
+                // // 
+                $('.entrepot-article-table').html(data);
+            }
+        });
+    }
      function liste_entrepot() {
         $.ajax({
             url: "../partials/rooter.php",
@@ -1381,6 +1426,30 @@ return total_ttc;
             });
         });
     }
+btn_update_entrepot_article();
+    function btn_update_entrepot_article() {
+
+        $('body').on('click','.btn_update_entrepot_article', function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: {
+                    id_entrepot_article: id,
+                    frm_update_entrepot_article: 1
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+
+                    $(".menu-modal-edit-entrepot-article").html(data.html);
+                    $("#edit-entrepot-article-modal").modal('show');
+                }
+            });
+        });
+    }
 
     btn_modifier_entrepot();
 
@@ -1409,6 +1478,36 @@ return total_ttc;
                         notify(data.message, "", "alert", "warning");
 
 
+                    }
+
+                }
+            });
+
+        });
+    }
+btn_modifier_entrepot_article();
+    function btn_modifier_entrepot_article() {
+        $('body').on('submit','#frm_modifier_entrepot_article', function (e) {
+            e.preventDefault();
+
+            var entrepotData = $(this).serialize();
+            // console.log(entrepotData);
+
+            $.ajax({
+                url: "../partials/rooter.php",
+                method: "POST",
+                data: entrepotData,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.code == 200) {
+                        $.notify(data.message,'success');
+                        $('#edit-entrepot-article-modal').modal('hide');
+                        liste_entrepot_article(data.entrepot_id);
+
+                    } else {
+                        $.notify(data.message,"warning");
                     }
 
                 }
@@ -1474,13 +1573,22 @@ return total_ttc;
                 },
                 dataType: 'json',
                 success: function (response) {
+                    console.log(response);
                     
                     if (response.code === 200) {
 
                         const c = response.client;
+                        const d = response.dette;
+                        let dette = d.reste_a_payer;
                         $("#nom_client").val(c.nom_client);
                         $("#telephone_client").val(c.telephone_client);
                         $("#email_client").val(c.email_client);
+                        $("#dette_client").text(dette +" FCFA");                        
+                        if(dette > 0) {
+                            $("#dette_client").removeClass("text-green").addClass("text-red");
+                        } else {
+                            $("#dette_client").removeClass("text-red").addClass("text-green");
+                        }
 
                     } else {
                         console.log("Client non trouvé");
@@ -2381,10 +2489,11 @@ ajax_detail_entrepot_article();
             e.preventDefault();
 
             var fournisseur = $('#fournisseur').val();
-            if (!fournisseur) {
-                notify("Veuillez choisir un fournisseur", "", "alert", "warning");
-                return;
-            }
+
+            // if (!fournisseur) {
+            //     notify("Veuillez choisir un fournisseur", "", "alert", "warning");
+            //     return;
+            // }
 
             var id = pushData("id");
             var qte = pushData("qte");
@@ -2717,7 +2826,8 @@ ajax_detail_entrepot_article();
                 method: "POST",
                 data: verement,
                 success: function (data) {
-
+                    console.log(data,'4744');
+                    
                     var verif = data.split("&");
                     if (verif[0] == 1) {
                         notify(verif[3]);
@@ -2841,10 +2951,12 @@ ajax_detail_entrepot_article();
             var client = $('#client').val();
             var montant_encaisse = $('#montant_encaisse').val();
             var pay_mode = $('.pay_mode').val();
-            if (!client) {
-                notify("Veuillez choisir un client", "", "alert", "warning");
-                return;
-            }
+
+            // if (!client) {
+            //     notify("Veuillez choisir un client", "", "alert", "warning");
+            //     return;
+            // }
+
             var id = pushData("id");
             var qte = pushData("qte");
             var pu = pushData("pu");
@@ -2869,7 +2981,7 @@ ajax_detail_entrepot_article();
             },
             dataType: "json",
             success: function (data) {
-                
+
                 var verif = data;
                 if (verif.status) {
 
@@ -3254,11 +3366,15 @@ ajax_detail_entrepot_article();
                     console.log(data);
                     // return
                     $("#total_montant_reste").text(((data.reliquat.montant_total)));
+                    $("#total_montant_reste_vente").text(((data.reliquatVente.montant_total)));
                     $("#total_montant_regler").text(formatMontant((data.totauxAchat.total_montant_regler)));
+                    $("#total_montant_regler_vente").text(formatMontant((data.totauxVente.total_montant_regler)));
                     $("#nb_achats").text(data.totauxAchat.article);
+                    $("#nb_vente").text(data.totauxVente.article);
 
                     $("#achat_attente").text(formatMontant((data.totalAchatAttente.total)));
                     $("#vente_attente").text(formatMontant((data.totalVenteAttente.total)));
+                    $("#nombre_vente_en_attente").text((data.totalVenteAttente.article));
                     $("#nombre_vente").text(data.ventes.nombre_ventes);
                     $("#montant_vente").text(formatMontant((data.ventes.montant_total)));
                     $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_achats);
@@ -3279,12 +3395,14 @@ ajax_detail_entrepot_article();
                     
                     $("#nombre_stock_alert").text(data.stockAlert);
                     let tresorerie = data.tresorerie.solde_tresorerie;
+                    console.log('tresorerie', tresorerie);
+                    
                     if(tresorerie >= 0){
                         $('#montant_tresorerie').addClass('text-success');
                     }else{
                         $('#montant_tresorerie').addClass('text-danger');
                     }
-                    $("#montant_tresorerie").text(tresorerie + ' FCFA');
+                    $("#montant_tresorerie").text(((tresorerie == undefined) ? 0 : tresorerie) + ' FCFA');
 
                 }
             });
@@ -4604,9 +4722,9 @@ ajax_detail_entrepot_article();
                     btn_filter_achat: type
                 },
                 success: function (data) {
-                    // console.log(data);return
                     
                     let res = JSON.parse(data);
+                    console.log(res);return
 
 
                     $('#nb_achats').text(res.total_article);
@@ -5016,6 +5134,7 @@ function updateELement(btn_action,code) {
                     },
                     dataType: 'JSON',
                     success: function (data) {
+                        console.log(data);
                         
                         if (data.success) {
                             swal("Notification", data.msg, "success")
@@ -5094,8 +5213,10 @@ function updateELementDepense(btn_action,code) {
                     
                     if(data.status) {
 
-                        swal("Notification", data.message, "success");
-                        $("#encaisser-modal").modal('hide');
+                        swal("Notification", data.message, "success").then(() => {
+                            history.go(0);
+                        })
+                        // $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }
@@ -5118,12 +5239,13 @@ form_encaisser_achat();
                 data: data,
                 dataType: 'JSON',
                 success: function (data) {
-                    // console.log(data);return;
                     
                      if(data.status) {
 
-                        swal("Notification", data.message, "success");
-                        $("#encaisser-modal").modal('hide');
+                         swal("Notification", data.message, "success").then(() => {
+                             history.go(0);
+                        });
+                        // $("#encaisser-modal").modal('hide');
                     }else{
                         swal("Notification", data.message, "error");
                     }

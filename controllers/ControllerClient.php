@@ -50,8 +50,10 @@ class ControllerClient extends Connexion
             if (!empty($_POST['id_client'])) {
 
                 $client = Soutra::getAllByItemsa('client', 'ID_client', $_POST['id_client']);
+                $dette = Soutra::geDetteClient($_POST['id_client'], 'vente', $_SESSION['id_entrepot']);
                 $msg["code"] = 200;
                 $msg["client"] = $client;
+                $msg["dette"] = $dette;
             }
             echo json_encode($msg);
         }

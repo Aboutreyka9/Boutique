@@ -147,3 +147,6 @@ if (!isAdminGestionnaire()) {
     </div><!-- /.table-responsive bg-light py-3 px-2 border rounded -->
   </div>
 </div>
+
+
+<?= modalAchatFournisseur() ?>

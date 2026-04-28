@@ -64,6 +64,55 @@ class ControllerEntrepot extends Connexion
             echo json_encode(['data' => $output]);
         }
     }
+    public static function getEntrepotArticleEdit()
+    {
+        if (isset($_POST["frm_update_entrepot_article"])) {
+
+            $entrepot = Soutra::getElementSingle('entrepot_article', 'ID_entrepot_article', $_POST['id_entrepot_article']);
+            $output = '
+             <form action="" id="frm_modifier_entrepot_article" method="POST">
+            <input type="hidden" name="btn_modifier_entrepot_article">
+            <input type="hidden"  name="id_entrepot_article" value="' . $entrepot['ID_entrepot_article'] . '" >
+            <input type="hidden"  name="entrepot_id" value="' . $entrepot['entrepot_id'] . '" >
+
+            <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                  <label for="prix_achat">Prix achat</label>
+                  <input type="text" name="prix_achat" value="' . $entrepot['prix_achat'] . '" id="prix_achat" class="form-control">
+                </div>
+              </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                  <label for="prix_vente">Prix vente</label>
+                  <input type="text" name="prix_vente" value="' . $entrepot['prix_vente'] . '" id="prix_vente" class="form-control">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="stock_alert">Stock alert</label>
+                  <input type="text" name="stock_alert" value="' . $entrepot['stock_alert'] . '" id="stock_alert" class="form-control">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="garantie_article">Garantie</label>
+                  <input type="text" name="garantie_article" value="' . $entrepot['garantie_article'] . '" id="garantie_article" class="form-control">
+                </div>
+              </div>
+
+                 <div class="col-md-12 modal_footer">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="button" class="btn btn-light dismiss_modal">Close</button>
+              </div>
+            </div><!-- /.row -->
+          </form><!-- /.modal -->
+            ';
+
+
+            echo json_encode(['html' => $output]);
+        }
+    }
 
 
     public static function liste_entrepot()
@@ -74,18 +123,18 @@ class ControllerEntrepot extends Connexion
             if (!empty($entrepot)) {
                 $i = 0;
                 foreach ($entrepot as $row) {
-                    $i++;
-                    $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
+              $i++;
+              $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
                 <i class="bi bi-x-circle"></i> </button>';
-                    $etat = '<span class="badge badge-success">Actif</span>';
+              $etat = '<span class="badge badge-success">Actif</span>';
 
-                    if ($row['etat_entrepot'] !== 1) {
-                        $etat = '<span class="badge badge-danger">Inactif</span>';
-                        $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
+              if ($row['etat_entrepot'] !== 1) {
+                $etat = '<span class="badge badge-danger">Inactif</span>';
+                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
                 <i class="bi bi-check-circle"></i> </button>';
-                    }
+              }
 
-                    $output .= '
+              $output .= '
             <tr class="row' . $row['ID_entrepot'] . '" ' . ($row['ID_entrepot'] == $_SESSION['id_entrepot'] ? 'style="background-color: #d4edda;"' : '') . '>
                <td>' . $i . '</td>
                <td>' . $row['libelle_entrepot'] . '</td>
@@ -97,9 +146,13 @@ class ControllerEntrepot extends Connexion
                ';
 
 
-                    $output .= '
+              $output .= '
               
               <td style="display: flex; flex-direction: row; align-items: center;"> 
+              
+              <a href="' . URL . 'detail_entrepot&id=' . $row['ID_entrepot'] . '"  title="Voir details entrepot" class="btn btn-info btn-sm mr-2">
+            <i class="fa fa-eye"></i></a>
+
             <button data-id="' . $row['ID_entrepot'] . '" title="Atribuer article" class="btn btn-success btn-sm btn_attribuer_article mr-2" data-action="entrepot">
             <i class="fa fa-link"></i></button>
 
@@ -112,7 +165,59 @@ class ControllerEntrepot extends Connexion
           </td>
             </tr>
             ';
-                }
+            }
+            }
+            echo $output;
+        }
+    }
+
+    public static function liste_entrepot_article()
+    {
+        if (isset($_POST['btn_liste_entrepot_article'])) {
+            $output = '';
+            $id = $_POST['id'] ?? null;
+            $entrepot = Soutra::getAllArticleFamilleMarkDetailEntepot($id);
+            if (!empty($entrepot)) {
+                $i = 0;
+            foreach ($entrepot as $row) {
+              $i++;
+              $detail = '<button title="detail article" data-id_article="' . $row['ID_entrepot_article'] . '"  class="btn btn-info btn-sm btn_detail_entrepot_article mr-2">
+                <i class="bi bi-eye"></i> </button>';
+              $btn = '<button title="Désactiver l\'article" data-code="' . $row['ID_entrepot_article'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepotArticle" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '">
+                <i class="bi bi-x-circle"></i> </button>';
+              $etat = '<span class="badge badge-success">Disponible</span>';
+              
+             $edit = '<button title="Modifier entrepot" data-id="' . $row['ID_entrepot_article'] . '" class="btn btn-primary btn-sm mr-2 btn_update_entrepot_article">
+            <i class="fa fa-edit"></i>  </button>';
+
+              if ($row['etat_entrepot_article'] !== 1) {
+                $etat = '<span class="badge badge-danger">Non disponible</span>';
+                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '" data-code="' . $row['ID_entrepot_article'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepotArticle">
+                <i class="bi bi-check-circle"></i> </button>';
+
+              $edit = '<button title="Non disponible"  class="btn btn-secondary btn-sm mr-2 ">
+            ...  </button>';
+              }
+
+              $output .= '
+            <tr class="row' . $row['ID_entrepot_article'] . '" >
+              <td>' . $i . '</td>
+              <td>' . $row['libelle_article'] . '</td>
+              <td>' . $row['famille'] . '</td>
+              <td>' . $row['prix_achat'] . '</td>
+              <td>' . $row['prix_vente'] . '</td>
+              <td><span class="badge badge-warning">'.$row['stock_alert'].'</span> </td>
+              <td><span class="badge badge-info">'.$row['garantie_article'].' mois</span> </td>
+              <td>' . $etat . '</td>
+              <td class="d-flex justify-content-center" > ' . $edit . ' ' . $detail . ' ' . $btn . ' </td>
+              ';
+
+
+              $output .= '
+              
+            </tr>
+            ';
+            }
             }
             echo $output;
         }
@@ -351,6 +456,24 @@ class ControllerEntrepot extends Connexion
         }
     }
 
+    public static function changeStatutEntrepotArticle()
+    {
+        if (isset($_POST['btnChangeStatutEntrepotArticle'])) {
+            extract($_POST);
+            $msg['code'] = 400;
+            $data['etat_article'] = $statut == 1 ? 0 : 1;
+            $data['ID_entrepot_article'] = $code;
+
+            if (Soutra::update('entrepot_article', $data)) {
+                $msg['code'] = 200;
+                $msg['message'] = "Statut article entrepot changé avec succès.";
+            } else {
+                $msg['message'] = 'Une erreur est survenue ! ';
+            }
+            echo json_encode($msg);
+        }
+    }
+
 
     public static function ajouter_entrepot()
     {
@@ -472,6 +595,41 @@ class ControllerEntrepot extends Connexion
                 } else {
                     $msg['message'] = 'Une erreur est survenue !';
                 }
+            }
+
+            echo json_encode($msg);
+        }
+    }
+
+    public static function modifier_entrepot_article()
+    {
+        
+        if (isset($_POST['btn_modifier_entrepot_article'])) {
+
+            extract($_POST);
+            $msg['code'] = 400;
+            $msg['message'] = "";
+
+            if (!empty($prix_achat) && !empty($prix_vente)) {
+                $data = [
+                    'prix_achat' => $prix_achat,
+                    'prix_vente' => $prix_vente,
+                    'stock_alert' => $stock_alert,
+                    'garantie_article' => $garantie_article
+                ];
+
+                $result = Soutra::updated("entrepot_article", $data, ['ID_entrepot_article' => $id_entrepot_article]);
+
+
+                if ($result) {
+                    $msg['entrepot_id'] = $entrepot_id;
+                    $msg['message'] = "Entrepot modifié avec succès.";
+                    $msg['code'] = 200;
+                } else {
+                    $msg['message'] = 'Une erreur est survenue !';
+                }
+            }else {
+                $msg["message"] = 'Veuillez renseigner les champs obligatoires !';
             }
 
             echo json_encode($msg);

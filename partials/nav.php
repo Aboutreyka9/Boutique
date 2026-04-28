@@ -149,16 +149,20 @@
             if (isAdmin()):
               $entrepots = Soutra::getAllTable('entrepot', "etat_entrepot");
               $styles = [
-                ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
-                ["color" => "bg-success", "icon" => "fa fa-box"],
-                ["color" => "bg-warning", "icon" => "fa fa-building"],
-                ["color" => "bg-danger", "icon" => "fa fa-archive"],
+                // ["color" => "bg-primary", "icon" => "fa fa-warehouse"],
+                // ["color" => "bg-success", "icon" => "fa fa-box"],
+                // ["color" => "bg-warning", "icon" => "fa fa-building"],
+                // ["color" => "bg-danger", "icon" => "fa fa-archive"],
+                 ["color" => "bg-primary", "icon" => "bi bi-shop"],
+                ["color" => "bg-success", "icon" => "bi bi-shop"],
+                ["color" => "bg-warning", "icon" => "bi bi-shop"],
+                ["color" => "bg-danger", "icon" => "bi bi-shop"],
               ];
             ?>
               <!-- .nav-item -->
               <li class="nav-item dropdown header-nav-dropdown">
                 <a class="nav-link" href="#!" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
-                    class="bi bi-bank fa-lg"></span></a>
+                    class="bi bi-shop fa-lg"></span></a>
                 <div class="dropdown-arrow"></div><!-- .dropdown-menu -->
                 <div class="dropdown-menu dropdown-menu-rich dropdown-menu-right">
                   <!-- .dropdown-sheets -->
@@ -193,7 +197,7 @@
                     <?php endforeach; ?>
                   </div>
                   <!-- Voir plus button a  droite de la zone des entrepots -->
-                  <a href="<?= URL ?>entrepot" class="dropdown-sheets-link text-right btn btn-sm btn-primary my-2 mx-2 d-block justify-content-end">Voir plus</a>
+                  <a href="<?= URL ?>entrepot" class="dropdown-sheets-link text-right btn btn-sm btn-primary my-2 mx-2 d-block justify-content-end"> <i class="bi bi-list"></i> Voir plus</a>
                   <!-- .dropdown-sheets -->
                 </div><!-- .dropdown-menu -->
               </li><!-- /.nav-item -->
@@ -260,6 +264,8 @@
 
               <a class="dropdown-item" href="<?= URL; ?>configuration">
                 <span class="dropdown-icon oi oi-person"></span> Configuration</a>
+              <button class="dropdown-item" id="reset_db">
+                <span class="dropdown-icon oi oi-database"></span> Restauration</button>
             <?php endif; ?>
 
             <div class="dropdown-divider"></div>

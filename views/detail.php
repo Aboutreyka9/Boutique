@@ -12,7 +12,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   exit();
 }
 ?>
- <div class="header-vente d-flex align-items-center mb-4">
+<div class="header-vente d-flex align-items-center mb-4">
   <i class="bi bi-receipt-cutoff me-3 mr-3" style="font-size:30px;"></i>
   <div>
     <h4 class="mb-0">Détail Vente</h4>
@@ -25,7 +25,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
   <div class="d-flex gap-5">
     <button class="btn btn-success ml-2 btn_encaisser_vente" title="" data-code="<?= $code ?>"
-    data-reste_a_payer="<?= $reste_a_payer ?>"
+      data-reste_a_payer="<?= $reste_a_payer ?>"
       data-original-title="Encaisser la facture de la commande"> <i class="bi bi-cash-coin"></i> Encaisser</button>
 
     <a href="<?= RACINE ?>views/print.php?id=<?= $code ?>&statut=<?= $vente['statut_vente'] ?>" target="_blank" class="btn btn-dark ml-2" data-toggle="tooltip" title="" data-original-title="Télécharger la facture de la commande"> <i class="bi bi-download"></i> Télécharger</a>
@@ -55,7 +55,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </div>
           <h6><span class="text-muted">Retour</span></h6>
         </div>
-        <h6>05 Produit(s)</h6>
+        <h6>0 Produit(s)</h6>
       </div>
     </div>
   </div>

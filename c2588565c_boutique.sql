@@ -587,7 +587,10 @@ INSERT INTO `type_depense` (`id_type`, `libelle_type`) VALUES
 (11, 'Sante'),
 (12, 'Education'),
 (13, 'Imprevus'),
-(14, 'Autres');
+(14, 'Frais de route'),
+(15, 'Frais de transport'),
+(16, 'Emballage'),
+(17, 'Autres');
 
 -- --------------------------------------------------------
 

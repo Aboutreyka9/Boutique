@@ -132,26 +132,47 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
         tbody td:nth-child(2),
         tbody td:nth-child(3),
         tbody td:nth-child(4) { text-align: right; }
-        
         .totaux { 
-            padding: 20px;
-            display: flex;
-            justify-content: flex-end;
-        }
-        .totaux-table { width: 300px; }
-        .totaux .ligne { 
-            display: flex; 
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .totaux .ligne:last-child { 
-            border-bottom: 2px solid #e7e5e52e2;
-            padding-top: 10px;
-        }
-        .totaux .libelle { font-weight: bold; color: #333; }
-        .totaux .montant { font-weight: bold; }
-        .totaux .total { font-size: 16px; color: #1a1a1a; }
+    padding: 20px;
+}
+
+/* IMPORTANT : affichage en tableau (compatible PDF) */
+.totaux-table { 
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+.totaux .ligne { 
+    display: table-cell;
+    text-align: center;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+/* supprimer bordure droite du dernier */
+.totaux .ligne:last-child { 
+    border-right: none;
+}
+
+/* style texte */
+.totaux .libelle { 
+    display: block;
+    font-weight: bold; 
+    color: #333;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.totaux .montant { 
+    display: block;
+    font-weight: bold; 
+}
+
+.totaux .total { 
+    font-size: 16px; 
+    color: #1a1a1a; 
+}
         
         .footer {
             text-align: center; 
@@ -288,10 +309,18 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
                 </table>
             </div>
             
-            <div class="totaux">
+            <div class="totaux ">
                 <div class="totaux-table">
                     <div class="ligne">
                         <span class="libelle">TOTAL À PAYER</span>
+                        <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
+                    </div>
+                    <div class="ligne">
+                        <span class="libelle">TOTAL PAYE</span>
+                        <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
+                    </div>
+                    <div class="ligne">
+                        <span class="libelle">RESTE A PAYER</span>
                         <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
                     </div>
                 </div>

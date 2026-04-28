@@ -575,7 +575,8 @@ class ControllerVente extends Connexion
                   'created_at' => $date,
                   'transaction_code' => $code_vente,
                   'type_versement' => 'vente',
-                  'pay_mode' => $pay_mode
+                  'pay_mode' => $pay_mode,
+                  'entrepot_id' => $_SESSION["id_entrepot"]
                 ];
 
                 $connect = Soutra::getConnexion();
@@ -723,7 +724,8 @@ class ControllerVente extends Connexion
               'created_at' => $data['created_at'],
               'transaction_code' => $code,
               'type_versement' => 'vente',
-              'pay_mode' => $pay_mode
+              'pay_mode' => $pay_mode,
+              'entrepot_id' => $_SESSION["id_entrepot"]
             ];
 
             if (Soutra::insert("versement", $data_versement)) {
@@ -746,7 +748,7 @@ class ControllerVente extends Connexion
           // return false;
         });
         if ($results) {
-          $msg = ['status' => true, 'message' => 'Vente enregistrée avec succès.'];
+          $msg = ['client' => $client, 'status' => true, 'message' => 'Vente enregistrée avec succès.'];
         } else {
           $msg = ['status' => false, 'message' => 'Une erreur est survenue !'];
         }
