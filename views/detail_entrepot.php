@@ -24,7 +24,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 ?>
 <header class="page-title-bar">
 <div class="header-entrepot d-flex align-items-center mb-4">
-  <i class="bi bi-building me-3 mr-3" style="font-size:30px;"></i>
+  <i class="bi bi-shop me-3 mr-3" style="font-size:30px;"></i>
   <div>
     <h4 class="mb-0">Détail Entrepôt</h4>
     <small>Gestion des stocks par emplacement</small>
@@ -190,30 +190,36 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           </tr>
         </thead><!-- /thead -->
         <!-- tbody -->
-        <tbody class="entrepot-table">
+        <tbody class="entrepot-article-table">
           <?php
           $output = '';
-          $entrepot = Soutra::getAllArticleFamilleMark($id);
+          $entrepot = Soutra::getAllArticleFamilleMarkDetailEntepot($id);
           // var_dump($entrepot);
           if (!empty($entrepot)) {
             $i = 0;
 
             foreach ($entrepot as $row) {
               $i++;
-              $detail = '<button title="detail article" data-id_article="' . $row['ID_article'] . '"  class="btn btn-info btn-sm btn_detail_entrepot_article">
+              $detail = '<button title="detail article" data-id_article="' . $row['ID_entrepot_article'] . '"  class="btn btn-info btn-sm btn_detail_entrepot_article mr-2">
                 <i class="bi bi-eye"></i> </button>';
-              $btn = '<button title="Désactiver entrepot" data-code="' . $row['ID_article'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
+              $btn = '<button title="Désactiver l\'article" data-code="' . $row['ID_entrepot_article'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepotArticle" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '">
                 <i class="bi bi-x-circle"></i> </button>';
-              $etat = '<span class="badge badge-success">Actif</span>';
+              $etat = '<span class="badge badge-success">Disponible</span>';
+              
+             $edit = '<button title="Modifier entrepot" data-id="' . $row['ID_entrepot_article'] . '" class="btn btn-primary btn-sm mr-2 btn_update_entrepot_article">
+            <i class="fa fa-edit"></i>  </button>';
 
-              if ($row['etat_article'] !== 1) {
-                $etat = '<span class="badge badge-danger">Inactif</span>';
-                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_article'] . '" data-code="' . $row['ID_article'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
+              if ($row['etat_entrepot_article'] !== 1) {
+                $etat = '<span class="badge badge-danger">Non disponible</span>';
+                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '" data-code="' . $row['ID_entrepot_article'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepotArticle">
                 <i class="bi bi-check-circle"></i> </button>';
+
+              $edit = '<button title="Non disponible"  class="btn btn-secondary btn-sm mr-2 ">
+            ...  </button>';
               }
 
               $output .= '
-            <tr class="row' . $row['ID_article'] . '" >
+            <tr class="row' . $row['ID_entrepot_article'] . '" >
               <td>' . $i . '</td>
               <td>' . $row['libelle_article'] . '</td>
               <td>' . $row['famille'] . '</td>
@@ -222,7 +228,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
               <td><span class="badge badge-warning">'.$row['stock_alert'].'</span> </td>
               <td><span class="badge badge-info">'.$row['garantie_article'].' mois</span> </td>
               <td>' . $etat . '</td>
-              <td>' . $detail . ' ' . $btn . '</td>
+              <td class="d-flex justify-content-center" > ' . $edit . ' ' . $detail . ' ' . $btn . ' </td>
               ';
 
 
@@ -318,9 +324,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
                 <td>' . checkEtat($row['etat_versement']) . '</td>
                 <td>
-                  <button class="btn btn-info btn-sm">
-                    <i class="bi bi-eye"></i>
-                  </button>
+                  <a href="' . URL . 'detail&id=' . $row['transaction_code'] . '" data-toggle="tooltip" title="" data-original-title="Voir la vente" class="btn btn-link btn-primary btn-sm">
+                    <i class="fa fa-eye text-icon-primary"></i>
+                  </a>
                 </td>
 
               </tr>';
@@ -385,7 +391,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
           <?php
           $output = '';
           $versements = Soutra::getDetailVersementByEntrepot($id,'achat');
-
           if (!empty($versements)) {
 
             $i = 0;
@@ -415,9 +420,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
                 <td>' . checkEtat($row['etat_versement']) . '</td>
                 <td>
-                  <button class="btn btn-info btn-sm">
-                    <i class="bi bi-eye"></i>
-                  </button>
+                  <a href="' . URL . 'detail_achat&id=' . $row['transaction_code'] . '" data-toggle="tooltip" title="" data-original-title="Voir la vente" class="btn btn-link btn-primary btn-sm">
+                    <i class="fa fa-eye text-icon-primary"></i>
+                  </a>
                 </td>
 
               </tr>';
@@ -513,6 +518,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
   </div><!-- /.modal-dialog -->
 </div><!-- /.m -->
 
+<?= modalEditEntrepotArticle() ?>
 <?= modalAttribution() ?>
 <?= modalDetailEntrepotArticle() ?>
 <!-- btn detail -->
