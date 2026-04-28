@@ -5,7 +5,7 @@ if (!isAdminGestionnaire()) {
 }
 
 ?>
-<header class="page-title-bar">
+<header class="page-title-bar" id="page_achat_sexion">
   <h1 class="page-title mb-3"> Espace réapprovisionement</h1>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->
   <!-- floating action -->
@@ -18,7 +18,7 @@ if (!isAdminGestionnaire()) {
       <div class="col-md-12">
         <div class="card">
           <div class="card-body">
-            <form method="post">
+            <form method="post" id="frm_fournisseur_vente_sexion">
               <div class="row my-3">
                 <div class="col-md-4">
                   <div style="position: relative;" class="form-group">

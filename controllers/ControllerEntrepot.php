@@ -6,13 +6,13 @@ class ControllerEntrepot extends Connexion
 
 
 
-    public static function getEntrepot()
-    {
-        if (isset($_POST["frm_update_entrepot"])) {
+  public static function getEntrepot()
+  {
+    if (isset($_POST["frm_update_entrepot"])) {
 
-            $entrepot = Soutra::getSingleEntrepot($_POST['id_entrepot']);
-            $employes = Soutra::getEmployeForResponsableEntrepot();
-            $output = '
+      $entrepot = Soutra::getSingleEntrepot($_POST['id_entrepot']);
+      $employes = Soutra::getEmployeForResponsableEntrepot();
+      $output = '
              <form action="" id="btn_modifier_entrepot" method="POST">
             <input type="hidden" name="btn_modifier_entrepot">
             <input type="hidden"  name="id_entrepot" value="' . $entrepot['ID_entrepot'] . '" >
@@ -29,13 +29,13 @@ class ControllerEntrepot extends Connexion
               <label for="responsable_entrepot">Responsable</label>
               <select name="responsable_entrepot" id="responsable_entrepot" class="form-control">
               ';
-            foreach ($employes as $row) {
-                $selected = ($row["responsable"] == 1) ? "selected" : "";
-                $output .= '
+      foreach ($employes as $row) {
+        $selected = ($row["responsable"] == 1) ? "selected" : "";
+        $output .= '
                 <option ' . $selected . '  value="' . $row['ID_employe'] . '">' . $row['nom_employe'] . ' ' . $row['prenom_employe'] . '</option>
                 ';
-            }
-            $output .= '
+      }
+      $output .= '
               </select>
             </div>
           </div>
@@ -61,15 +61,15 @@ class ControllerEntrepot extends Connexion
             ';
 
 
-            echo json_encode(['data' => $output]);
-        }
+      echo json_encode(['data' => $output]);
     }
-    public static function getEntrepotArticleEdit()
-    {
-        if (isset($_POST["frm_update_entrepot_article"])) {
+  }
+  public static function getEntrepotArticleEdit()
+  {
+    if (isset($_POST["frm_update_entrepot_article"])) {
 
-            $entrepot = Soutra::getElementSingle('entrepot_article', 'ID_entrepot_article', $_POST['id_entrepot_article']);
-            $output = '
+      $entrepot = Soutra::getElementSingle('entrepot_article', 'ID_entrepot_article', $_POST['id_entrepot_article']);
+      $output = '
              <form action="" id="frm_modifier_entrepot_article" method="POST">
             <input type="hidden" name="btn_modifier_entrepot_article">
             <input type="hidden"  name="id_entrepot_article" value="' . $entrepot['ID_entrepot_article'] . '" >
@@ -110,31 +110,31 @@ class ControllerEntrepot extends Connexion
             ';
 
 
-            echo json_encode(['html' => $output]);
-        }
+      echo json_encode(['html' => $output]);
     }
+  }
 
 
-    public static function liste_entrepot()
-    {
-        if (isset($_POST['btn_liste_entrepot'])) {
-            $output = '';
-            $entrepot = Soutra::getAllEntrepot();
-            if (!empty($entrepot)) {
-                $i = 0;
-                foreach ($entrepot as $row) {
-              $i++;
-              $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
+  public static function liste_entrepot()
+  {
+    if (isset($_POST['btn_liste_entrepot'])) {
+      $output = '';
+      $entrepot = Soutra::getAllEntrepot();
+      if (!empty($entrepot)) {
+        $i = 0;
+        foreach ($entrepot as $row) {
+          $i++;
+          $btn = '<button title="Désactiver entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepot">
                 <i class="bi bi-x-circle"></i> </button>';
-              $etat = '<span class="badge badge-success">Actif</span>';
+          $etat = '<span class="badge badge-success">Actif</span>';
 
-              if ($row['etat_entrepot'] !== 1) {
-                $etat = '<span class="badge badge-danger">Inactif</span>';
-                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
+          if ($row['etat_entrepot'] !== 1) {
+            $etat = '<span class="badge badge-danger">Inactif</span>';
+            $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot'] . '" data-code="' . $row['ID_entrepot'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepot">
                 <i class="bi bi-check-circle"></i> </button>';
-              }
+          }
 
-              $output .= '
+          $output .= '
             <tr class="row' . $row['ID_entrepot'] . '" ' . ($row['ID_entrepot'] == $_SESSION['id_entrepot'] ? 'style="background-color: #d4edda;"' : '') . '>
                <td>' . $i . '</td>
                <td>' . $row['libelle_entrepot'] . '</td>
@@ -146,7 +146,7 @@ class ControllerEntrepot extends Connexion
                ';
 
 
-              $output .= '
+          $output .= '
               
               <td style="display: flex; flex-direction: row; align-items: center;"> 
               
@@ -165,80 +165,80 @@ class ControllerEntrepot extends Connexion
           </td>
             </tr>
             ';
-            }
-            }
-            echo $output;
         }
+      }
+      echo $output;
     }
+  }
 
-    public static function liste_entrepot_article()
-    {
-        if (isset($_POST['btn_liste_entrepot_article'])) {
-            $output = '';
-            $id = $_POST['id'] ?? null;
-            $entrepot = Soutra::getAllArticleFamilleMarkDetailEntepot($id);
-            if (!empty($entrepot)) {
-                $i = 0;
-            foreach ($entrepot as $row) {
-              $i++;
-              $detail = '<button title="detail article" data-id_article="' . $row['ID_entrepot_article'] . '"  class="btn btn-info btn-sm btn_detail_entrepot_article mr-2">
+  public static function liste_entrepot_article()
+  {
+    if (isset($_POST['btn_liste_entrepot_article'])) {
+      $output = '';
+      $id = $_POST['id'] ?? null;
+      $entrepot = Soutra::getAllArticleFamilleMarkDetailEntepot($id);
+      if (!empty($entrepot)) {
+        $i = 0;
+        foreach ($entrepot as $row) {
+          $i++;
+          $detail = '<button title="detail article" data-id_article="' . $row['ID_entrepot_article'] . '"  class="btn btn-info btn-sm btn_detail_entrepot_article mr-2">
                 <i class="bi bi-eye"></i> </button>';
-              $btn = '<button title="Désactiver l\'article" data-code="' . $row['ID_entrepot_article'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepotArticle" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '">
+          $btn = '<button title="Désactiver l\'article" data-code="' . $row['ID_entrepot_article'] . '"  class="btn btn-danger btn-sm btnChangeStatutEntrepotArticle" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '">
                 <i class="bi bi-x-circle"></i> </button>';
-              $etat = '<span class="badge badge-success">Disponible</span>';
-              
-             $edit = '<button title="Modifier entrepot" data-id="' . $row['ID_entrepot_article'] . '" class="btn btn-primary btn-sm mr-2 btn_update_entrepot_article">
+          $etat = '<span class="badge badge-success">Disponible</span>';
+
+          $edit = '<button title="Modifier entrepot" data-id="' . $row['ID_entrepot_article'] . '" class="btn btn-primary btn-sm mr-2 btn_update_entrepot_article">
             <i class="fa fa-edit"></i>  </button>';
 
-              if ($row['etat_entrepot_article'] !== 1) {
-                $etat = '<span class="badge badge-danger">Non disponible</span>';
-                $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '" data-code="' . $row['ID_entrepot_article'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepotArticle">
+          if ($row['etat_entrepot_article'] !== 1) {
+            $etat = '<span class="badge badge-danger">Non disponible</span>';
+            $btn = '<button title="activer entrepot" data-statut="' . $row['etat_entrepot_article'] . '" data-id_entrepot="' . $id . '" data-code="' . $row['ID_entrepot_article'] . '" class="btn btn-success btn-sm  btnChangeStatutEntrepotArticle">
                 <i class="bi bi-check-circle"></i> </button>';
 
-              $edit = '<button title="Non disponible"  class="btn btn-secondary btn-sm mr-2 ">
+            $edit = '<button title="Non disponible"  class="btn btn-secondary btn-sm mr-2 ">
             ...  </button>';
-              }
+          }
 
-              $output .= '
+          $output .= '
             <tr class="row' . $row['ID_entrepot_article'] . '" >
               <td>' . $i . '</td>
               <td>' . $row['libelle_article'] . '</td>
               <td>' . $row['famille'] . '</td>
               <td>' . $row['prix_achat'] . '</td>
               <td>' . $row['prix_vente'] . '</td>
-              <td><span class="badge badge-warning">'.$row['stock_alert'].'</span> </td>
-              <td><span class="badge badge-info">'.$row['garantie_article'].' mois</span> </td>
+              <td><span class="badge badge-warning">' . $row['stock_alert'] . '</span> </td>
+              <td><span class="badge badge-info">' . $row['garantie_article'] . ' mois</span> </td>
               <td>' . $etat . '</td>
               <td class="d-flex justify-content-center" > ' . $edit . ' ' . $detail . ' ' . $btn . ' </td>
               ';
 
 
-              $output .= '
+          $output .= '
               
             </tr>
             ';
-            }
-            }
-            echo $output;
         }
+      }
+      echo $output;
     }
+  }
 
-   public static function detail_entrepot_article_click()
-{
+  public static function detail_entrepot_article_click()
+  {
     if (isset($_POST['btn_detail_entrepot_article_click'])) {
 
-        $id = $_POST['id_article'] ?? null;
+      $id = $_POST['id_article'] ?? null;
 
-        $row = Soutra::getDetailEntrepotArticleById($id); // 👉 adapte selon ta méthode
+      $row = Soutra::getDetailEntrepotArticleById($id); // 👉 adapte selon ta méthode
 
-        // var_dump($row);return;
+      // var_dump($row);return;
 
-        if (!$row) {
-            echo json_encode(['code' => 404]);
-            return;
-        }
+      if (!$row) {
+        echo json_encode(['code' => 404]);
+        return;
+      }
 
-        $output = '
+      $output = '
 <div class="row g-3">
 
   <!-- INFO ARTICLE -->
@@ -304,12 +304,12 @@ class ControllerEntrepot extends Connexion
 </div>
 ';
 
-        echo json_encode([
-            'code' => 200,
-            'html' => $output
-        ]);
+      echo json_encode([
+        'code' => 200,
+        'html' => $output
+      ]);
     }
-}
+  }
 
 
   public static function getDataDateRangeFilterVersmentEntrepot()
@@ -319,28 +319,21 @@ class ControllerEntrepot extends Connexion
       $dateDebut = $_POST['dateDebut'] ?? null;
       $dateFin = $_POST['dateFin'] ?? null;
       $id = (int)$_POST['id_entrepot'] ?? null;
-      if($id <0){
-        echo json_encode(["statut" => false,"html" => 'entrepot introuvable!']);return;
+      $output = "";
+      if ($id < 0) {
+        echo json_encode(["statut" => false, "html" => 'entrepot introuvable!']);
+        return;
       }
       // si le btn = 1 on get par vente
       if ($btn_filter_versement_entrepot == 'vente') {
 
-        $data = Soutra::getDetailVersementByEntrepotDateRangeFilter($id,$dateDebut, $dateFin,'vente');
+        $data = Soutra::getDetailVersementByEntrepotDateRangeFilter($id, $dateDebut, $dateFin, 'vente');
+        $output .= self::returnDataVenteVersementEntrepot($data);
       }
       // si le btn = 2 on get par article
       if ($btn_filter_versement_entrepot == 'achat') {
-        $data = Soutra::getDetailVersementByEntrepotDateRangeFilter($id,$dateDebut, $dateFin,'achat');
-      }
-    //   var_dump($data,$dateDebut,$dateFin,$btn_filter_versement_entrepot);return;
-      
-      $output = '';
-      // si le btn = 2 on affiche par article
-      if ($btn_filter_versement_entrepot == 'achat') {
+        $data = Soutra::getDetailVersementByEntrepotDateRangeFilter($id, $dateDebut, $dateFin, 'achat');
         $output .= self::returnDataAchatVersementEntrepot($data);
-      }
-      // si le btn = 1 on affiche par vente
-      if ($btn_filter_versement_entrepot == 'vente') {
-        $output .= self::returnDataVenteVersementEntrepot($data);
       }
 
       $data = [
@@ -352,7 +345,7 @@ class ControllerEntrepot extends Connexion
     }
   }
 
-  
+
   private static function returnDataAchatVersementEntrepot($data)
   {
     $output = '';
@@ -360,9 +353,9 @@ class ControllerEntrepot extends Connexion
     if (!empty($data)) {
       $i = 0;
       foreach ($data as $row) {
-              $i++;
+        $i++;
 
-              $output .= '
+        $output .= '
               <tr class="row' . $row['ID_versement'] . '">
 
                 <td>' . $i . '</td>
@@ -374,7 +367,7 @@ class ControllerEntrepot extends Connexion
                 <td>' . ($row['employe']) . '</td>
 
                 <td><strong>' . number_format($row['montant_versement'], 0, ',', ' ') . ' FCFA</strong></td>
-                <td>' . checkModePaiement($row['pay_mode']). '</td>
+                <td>' . checkModePaiement($row['pay_mode']) . '</td>
 
                 <td>
                   <span class="badge bg-info text-light">
@@ -383,14 +376,14 @@ class ControllerEntrepot extends Connexion
                 </td>
 
                 <td>' . checkEtat($row['etat_versement']) . '</td>
-                <td>
-                  <button class="btn btn-info btn-sm">
-                    <i class="bi bi-eye"></i>
-                  </button>
+               <td>
+                  <a href="' . URL . 'detail_achat&id=' . $row['transaction_code'] . '" data-toggle="tooltip" title="" data-original-title="Voir la vente" class="btn btn-link btn-primary btn-sm">
+                    <i class="fa fa-eye text-icon-primary"></i>
+                  </a>
                 </td>
 
               </tr>';
-            }
+      }
     }
 
     return $output;
@@ -402,9 +395,9 @@ class ControllerEntrepot extends Connexion
     if (!empty($data)) {
       $i = 0;
       foreach ($data as $row) {
-              $i++;
+        $i++;
 
-              $output .= '
+        $output .= '
               <tr class="row' . $row['ID_versement'] . '">
 
                 <td>' . $i . '</td>
@@ -416,7 +409,7 @@ class ControllerEntrepot extends Connexion
                 <td>' . ($row['employe']) . '</td>
 
                 <td><strong>' . number_format($row['montant_versement'], 0, ',', ' ') . ' FCFA</strong></td>
-                <td>' . checkModePaiement($row['pay_mode']). '</td>
+                <td>' . checkModePaiement($row['pay_mode']) . '</td>
 
                 <td>
                   <span class="badge bg-info text-light">
@@ -426,554 +419,554 @@ class ControllerEntrepot extends Connexion
 
                 <td>' . checkEtat($row['etat_versement']) . '</td>
                 <td>
-                  <button class="btn btn-info btn-sm">
-                    <i class="bi bi-eye"></i>
-                  </button>
+                  <a href="' . URL . 'detail&id=' . $row['transaction_code'] . '" data-toggle="tooltip" title="" data-original-title="Voir la vente" class="btn btn-link btn-primary btn-sm">
+                    <i class="fa fa-eye text-icon-primary"></i>
+                  </a>
                 </td>
 
               </tr>';
-            }
+      }
     }
 
     return $output;
   }
 
-    public static function changeStatutEntrepot()
-    {
-        if (isset($_POST['btnChangeStatutEntrepot'])) {
-            extract($_POST);
-            $msg['code'] = 400;
-            $data['etat_entrepot'] = $statut == 1 ? 0 : 1;
-            $data['ID_entrepot'] = $code;
+  public static function changeStatutEntrepot()
+  {
+    if (isset($_POST['btnChangeStatutEntrepot'])) {
+      extract($_POST);
+      $msg['code'] = 400;
+      $data['etat_entrepot'] = $statut == 1 ? 0 : 1;
+      $data['ID_entrepot'] = $code;
 
-            if (Soutra::update('entrepot', $data)) {
-                $msg['code'] = 200;
-                $msg['message'] = "Statut entrepot changé avec succès.";
-            } else {
-                $msg['message'] = 'Une erreur est survenue ! ';
-            }
-            echo json_encode($msg);
-        }
+      if (Soutra::update('entrepot', $data)) {
+        $msg['code'] = 200;
+        $msg['message'] = "Statut entrepot changé avec succès.";
+      } else {
+        $msg['message'] = 'Une erreur est survenue ! ';
+      }
+      echo json_encode($msg);
     }
+  }
 
-    public static function changeStatutEntrepotArticle()
-    {
-        if (isset($_POST['btnChangeStatutEntrepotArticle'])) {
-            extract($_POST);
-            $msg['code'] = 400;
-            $data['etat_article'] = $statut == 1 ? 0 : 1;
-            $data['ID_entrepot_article'] = $code;
+  public static function changeStatutEntrepotArticle()
+  {
+    if (isset($_POST['btnChangeStatutEntrepotArticle'])) {
+      extract($_POST);
+      $msg['code'] = 400;
+      $data['etat_article'] = $statut == 1 ? 0 : 1;
+      $data['ID_entrepot_article'] = $code;
 
-            if (Soutra::update('entrepot_article', $data)) {
-                $msg['code'] = 200;
-                $msg['message'] = "Statut article entrepot changé avec succès.";
-            } else {
-                $msg['message'] = 'Une erreur est survenue ! ';
-            }
-            echo json_encode($msg);
-        }
+      if (Soutra::update('entrepot_article', $data)) {
+        $msg['code'] = 200;
+        $msg['message'] = "Statut article entrepot changé avec succès.";
+      } else {
+        $msg['message'] = 'Une erreur est survenue ! ';
+      }
+      echo json_encode($msg);
     }
+  }
 
 
-    public static function ajouter_entrepot()
-    {
-        if (isset($_POST['btn_ajouter_entrepot'])) {
-            extract($_POST);
-            $msg['code'] = 400;
+  public static function ajouter_entrepot()
+  {
+    if (isset($_POST['btn_ajouter_entrepot'])) {
+      extract($_POST);
+      $msg['code'] = 400;
 
-            if (empty($libelle_entrepot) || empty($ville_entrepot)) {
+      if (empty($libelle_entrepot) || empty($ville_entrepot)) {
 
-                $msg['message'] = 'Veuillez renseigner tous les champs !';
-            } elseif (Soutra::existe("entrepot", "libelle_entrepot", $libelle_entrepot)) {
+        $msg['message'] = 'Veuillez renseigner tous les champs !';
+      } elseif (Soutra::existe("entrepot", "libelle_entrepot", $libelle_entrepot)) {
 
-                $msg['message'] = "Ce libelle d'entrepot existe déjà !";
-            } else {
-                $date = date('Y-m-d');
-                $data = array(
-                    'libelle_entrepot' => $libelle_entrepot,
-                    'ville_entrepot' => $ville_entrepot,
-                    'adresse_entrepot' => $adresse_entrepot,
-                    'etat_entrepot' => 1,
-                    'created_at_entrepot' => $date
-                );
-                $dataService = [
-                            'employe_id' => $responsable_entrepot,
-                            'etat_service' => '0',
-                            'responsable' => '1',
-                            'created_at_service' => $date
-                            ];
+        $msg['message'] = "Ce libelle d'entrepot existe déjà !";
+      } else {
+        $date = date('Y-m-d');
+        $data = array(
+          'libelle_entrepot' => $libelle_entrepot,
+          'ville_entrepot' => $ville_entrepot,
+          'adresse_entrepot' => $adresse_entrepot,
+          'etat_entrepot' => 1,
+          'created_at_entrepot' => $date
+        );
+        $dataService = [
+          'employe_id' => $responsable_entrepot,
+          'etat_service' => '0',
+          'responsable' => '1',
+          'created_at_service' => $date
+        ];
 
-                
-                $result = Soutra::transactionData(function () use ($data, $dataService) {
-                    Soutra::insert("entrepot", $data);
-                    
-                    $lastId = Soutra::lastInsertId();
-                    $dataService['entrepot_id'] = $lastId;
-                    if(!empty($dataService['employe_id'])){
-                    Soutra::inserted("service", $dataService);
-                    }
-    
-                    if(empty($_SESSION['id_entrepot'])){
-                        $dataUpdateEmp = [
-                            'entrepot' => $lastId,
-                            'ID_employe' => $_SESSION['id_employe']
-                        ];
-    
-                        Soutra::update("employe", $dataUpdateEmp);
-                        $_SESSION['id_entrepot'] = $lastId;
-                    }
-                });
 
-                if ($result) {
-                    $msg['code'] = 200;
-                    $msg['message'] = "Entrepot Creer avec succès.";
-                } else {
-                    $msg['message'] = 'Une erreur est survenue ! ';
-                }
-            }
-            echo json_encode($msg);
+        $result = Soutra::transactionData(function () use ($data, $dataService) {
+          Soutra::insert("entrepot", $data);
+
+          $lastId = Soutra::lastInsertId();
+          $dataService['entrepot_id'] = $lastId;
+          if (!empty($dataService['employe_id'])) {
+            Soutra::inserted("service", $dataService);
+          }
+
+          if (empty($_SESSION['id_entrepot'])) {
+            $dataUpdateEmp = [
+              'entrepot' => $lastId,
+              'ID_employe' => $_SESSION['id_employe']
+            ];
+
+            Soutra::update("employe", $dataUpdateEmp);
+            $_SESSION['id_entrepot'] = $lastId;
+          }
+        });
+
+        if ($result) {
+          $msg['code'] = 200;
+          $msg['message'] = "Entrepot Creer avec succès.";
+        } else {
+          $msg['message'] = 'Une erreur est survenue ! ';
         }
+      }
+      echo json_encode($msg);
     }
+  }
 
-    public static function modifier_entrepot()
-    {
-        if (isset($_POST['btn_modifier_entrepot'])) {
+  public static function modifier_entrepot()
+  {
+    if (isset($_POST['btn_modifier_entrepot'])) {
 
-            extract($_POST);
-            $msg['code'] = 400;
-            $msg['message'] = "";
+      extract($_POST);
+      $msg['code'] = 400;
+      $msg['message'] = "";
 
-            if (empty($libelle_entrepot) || empty($responsable_entrepot) || empty($ville_entrepot)) {
-                $msg["message"] = 'Veuillez renseigner tous les champs !';
-            } elseif (Soutra::existe("entrepot", "libelle_entrepot", $libelle_entrepot) && Soutra::libelle("entrepot", "ID_entrepot", "libelle_entrepot", $libelle_entrepot) != $id_entrepot) {
-                $msg['message'] = "Ce libelle d'entrepot existe déjà !";
-            } else {
-                $result = true;
+      if (empty($libelle_entrepot) || empty($responsable_entrepot) || empty($ville_entrepot)) {
+        $msg["message"] = 'Veuillez renseigner tous les champs !';
+      } elseif (Soutra::existe("entrepot", "libelle_entrepot", $libelle_entrepot) && Soutra::libelle("entrepot", "ID_entrepot", "libelle_entrepot", $libelle_entrepot) != $id_entrepot) {
+        $msg['message'] = "Ce libelle d'entrepot existe déjà !";
+      } else {
+        $result = true;
 
-                $employe = Soutra::getSingleEmployeServiceEntrepot($id_entrepot, $responsable_entrepot);
+        $employe = Soutra::getSingleEmployeServiceEntrepot($id_entrepot, $responsable_entrepot);
 
 
 
-                if (!empty($employe)) {
-                    if ($employe['responsable'] == 0) {
-                        // existe et modif
-                        $result = Soutra::transactionData(function () use ($id_entrepot, $responsable_entrepot) {
-                            Soutra::updated("service", ['responsable' => '0'], ['entrepot_id' => $id_entrepot]);
-                            Soutra::updated("service", ['responsable' => '1'], ['entrepot_id' => $id_entrepot, 'employe_id' => $responsable_entrepot]);
-                        });
-                    }
-                } else {
-                    // pas encore creer
-                    $date = date('Y-m-d');
-                    $dataService = [
-                        'entrepot_id' => $id_entrepot,
-                        'employe_id' => $responsable_entrepot,
-                        'etat_service' => $service['etat_service'] ?? 0,
-                        'responsable' => 1,
-                        'created_at_service' => $date
-                    ];
-
-                    $result = Soutra::transactionData(function () use ($dataService, $id_entrepot) {
-
-                        Soutra::updated("service", ['responsable' => '0'], ['entrepot_id' => $id_entrepot]);
-                        Soutra::inserted("service", $dataService);
-                    });
-                }
-
-                $dataEntrepot = [
-                    'libelle_entrepot' => $libelle_entrepot,
-                    'ville_entrepot' => $ville_entrepot,
-                    'adresse_entrepot' => $adresse_entrepot
-                ];
-
-                Soutra::updated("entrepot", $dataEntrepot, ['ID_entrepot' => $id_entrepot]);
-
-
-                if ($result) {
-                    $msg['message'] = "Entrepot modifié avec succès.";
-                    $msg['code'] = 200;
-                } else {
-                    $msg['message'] = 'Une erreur est survenue !';
-                }
-            }
-
-            echo json_encode($msg);
-        }
-    }
-
-    public static function modifier_entrepot_article()
-    {
-        
-        if (isset($_POST['btn_modifier_entrepot_article'])) {
-
-            extract($_POST);
-            $msg['code'] = 400;
-            $msg['message'] = "";
-
-            if (!empty($prix_achat) && !empty($prix_vente)) {
-                $data = [
-                    'prix_achat' => $prix_achat,
-                    'prix_vente' => $prix_vente,
-                    'stock_alert' => $stock_alert,
-                    'garantie_article' => $garantie_article
-                ];
-
-                $result = Soutra::updated("entrepot_article", $data, ['ID_entrepot_article' => $id_entrepot_article]);
-
-
-                if ($result) {
-                    $msg['entrepot_id'] = $entrepot_id;
-                    $msg['message'] = "Entrepot modifié avec succès.";
-                    $msg['code'] = 200;
-                } else {
-                    $msg['message'] = 'Une erreur est survenue !';
-                }
-            }else {
-                $msg["message"] = 'Veuillez renseigner les champs obligatoires !';
-            }
-
-            echo json_encode($msg);
-        }
-    }
-
-    public static function suppresion_famille()
-    {
-        if (isset($_POST['btn_supprimer_famille'])) {
-
-            $data = array(
-                'etat_famille' => 0,
-                'ID_famille' => $_POST['id_famille']
-            );
-            Soutra::update("famille", $data);
-            echo 1;
-        }
-    }
-
-    public static function set_entrepot()
-    {
-        if (isset($_POST['set_entrepot'])) {
-            $msg = [];
-            if (!empty($_POST['id_entrepot'])) {
-                if (Soutra::exite('entrepot', 'ID_entrepot', $_POST['id_entrepot'])) {
-                    // L'entrepôt existe, on peut continuer
-                    $_SESSION['id_entrepot'] = $_POST['id_entrepot'];
-                    Soutra::update("employe", ['entrepot' => $_POST['id_entrepot'], 'ID_employe' => $_SESSION['id_employe']]);
-                    // var_dump($_SESSION['id_employe']);::
-                    $msg = ['success' => true, 'message' => 'Entrepôt sélectionné avec succès'];
-                } else {
-                    $msg = ['success' => false, 'message' => 'Entrepôt non trouvé'];
-                }
-            } else {
-                $msg = ['success' => false, 'message' => 'ID entrepôt manquant'];
-            }
-            echo json_encode($msg);
-        }
-    }
-
-    public static function getEntrepotForTransfert()
-    {
-        if (isset($_POST["btn_search_entrepot_transfert"])) {
-            $msg["code"] = 400;
-            if (!empty($_POST['id_entrepot'])) {
-
-                $entrepot = Soutra::getAllByItemsa('entrepot', 'ID_entrepot', $_POST['id_entrepot']);
-                $msg["code"] = 200;
-                if (!empty($entrepot)) {
-                    $msg["entrepot"] = $entrepot;
-                } else {
-                    $msg['entrepot'] = 'Erreur de récupération';
-                }
-            }
-            echo json_encode($msg);
-        }
-    }
-
-    public static function verifQteArticleTransfert()
-    {
-        if (isset($_POST['btn_verifQteArticleTransfert'])) {
-            $stock = Soutra::getNiveauStockArticle('vue_stock_produit', 'article_id', 'entrepot_id', $_POST['id'], $_SESSION['id_entrepot']);
-
-            // $entree = Soutra::getCompterSum('entree', 'qte', 'article_id', $_POST['id']);
-            // $sortie = Soutra::getCompterSum('sortie', 'qte', 'article_id', $_POST['id']);
-            // $stock = abs($entree - $sortie);
-            var_dump($stock);
-            // echo json_encode();
-            if (!empty($stock)) {
-
-                if ($stock['quantite_disponible'] >= $_POST['qte']) {
-                    echo 'ok';
-                } else {
-                    echo $stock['quantite_disponible'];
-                }
-            } else {
-                echo "stock indisponible";
-            }
-        }
-    }
-
-    public static function ajouter_panier_transfert()
-    {
-        if (isset($_POST['btn_ajouter_panier_transfert'])) {
-            $output = '';
-            if (!empty($_POST['article'])) {
-
-                $search = [];
-                $achat = [];
-
-                if (!isset($_SESSION['panier_transfert']))
-                    $_SESSION['panier_transfert'] = [];
-
-                // if (!empty($_POST['article'])) {
-
-                for ($i = 0; $i < count($_POST['article']); $i++) {
-                    $id = $_POST['article'][$i];
-                    if (!in_array($id, $_SESSION['panier_transfert'])) {
-                        $_SESSION['panier_transfert'][] = $id;
-                        $search[] = $id;
-                    }
-                }
-
-                // $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
-                $transfert = Soutra::getPanierTransfert(implode(',', $_SESSION['panier_transfert']));
-                // $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
-                // var_dump($transfert);
-
-                // }
-                echo json_encode($transfert);
-            }
-        }
-    }
-
-
-    public static function ajouter_transfert()
-    {
-        if (isset($_POST['btn_ajouter_transfert'])) {
-
-            extract($_POST);
-            $verifEmpty = false;
-            $verifType = false;
-            $msg['code'] = 400;
-
-            for ($i = 0; $i < count($pu); $i++) {
-                if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
-                    $verifEmpty = true;
-                } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
-                    $verifType = true;
-                }
-            }
-
-            if ($verifEmpty) {
-                $msg['message'] =  'Veuillez Entrer toutes les valeurs !';
-            } elseif ($verifType) {
-                $msg['message'] = 'Verifier les valeurs renseignées';
-            } else {
-
-                $date = date('Y-m-d');
-                $code = strtoupper(self::checkCode());
-                $employe_id = $_SESSION['id_employe'];
-                // $entrepot_source = $_POST['source'];
-                // $entrepot_destination = $_POST['destination'];
-
-                $data = array(
-                    'code_transfert' => $code,
-                    'employe_id' => $employe_id,
-                    'entrepot_source_id' => $source,
-                    'entrepot_destination_id' => $destination,
-                    'date_transfert' => $date,
-                    'created_at' => $date,
-                    'statut_transfert' => STATUT_COMMANDE[0]
-                );
-
-                $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
-                    Soutra::inserted("transfert", $data);
-                    for ($i = 0; $i < count($pu); $i++) {
-                        $transfert = array(
-                            'transfert_id' => $code,
-                            'article_id' => $id[$i],
-                            'prix_transfert' => $pu[$i],
-                            'qte' => $qte[$i]
-                        );
-
-                        Soutra::inserted("ligne_transfert", $transfert);
-                    }
-                });
-
-                if ($results) {
-                    unset($_SESSION['transfert']);
-                    unset($_SESSION['panier_transfert']);
-                    $msg['code'] = 200;
-                    $msg['message'] = "Echange enregistré avec succès.";
-                } else {
-                    $msg['message'] = 'Une erreur est survenue! ';
-                }
-            }
-
-            echo json_encode($msg);
-        }
-    }
-
-    public static function validation_transfert()
-    {
-        if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_validation_transfert") {
-            extract($_POST);
-            $msg = [];
-
-            $data = array(
-                'statut_achat' => STATUT_COMMANDE[1],
-                'code_achat' => $code
-            );
-
-
-            $ligneAchat = Soutra::getDetailAchat($code);
-
-
-            $results = Soutra::transactionData(
-                function () use ($data, $ligneAchat) {
-                    Soutra::update("achat", $data);
-                    $employe = $_SESSION['id_employe'];
-                    $entrepot = $_SESSION['id_entrepot'] ?? 7;
-                    $date = date('Y-m-d');
-
-                    $rows = array_map(function ($value) use ($employe, $entrepot, $date) {
-                        return [
-                            'article_id'     => $value['article_id'],
-                            'type_mouvement' => STATUT_MOUVEMENT[0],
-                            'quantite'       => $value['qte'],
-                            'employe_id'     => $employe,
-                            'prix_achat'     => $value['prix_achat'],
-                            'entrepot_id'    => $entrepot,
-                            'date_mouvement' => $date
-                        ];
-                    }, $ligneAchat);
-
-                    // 4. Insert multiple (1 seule requête 🔥)
-                    Soutra::insertMultiple('mouvement_stock', $rows);
-                }
-            );
-
-            if ($results) {
-                $msg = ["success" => true, "msg" => "Commande validee avec succès"];
-            } else {
-                $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
-            }
-
-            echo json_encode($msg);
-        }
-    }
-
-    public static function encaissement_transfert()
-    {
-        if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_encaisser_transfer") {
-            extract($_POST);
-            $msg = [];
-
-            $data = array(
-                'statut_achat' => STATUT_COMMANDE[2],
-                'code_achat' => $code
-            );
-            if (Soutra::update("achat", $data)) {
-                $msg = ["success" => true, "msg" => "Commande encaissee avec succès"];
-            } else {
-                $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
-            }
-            echo json_encode($msg);
-        }
-    }
-
-    public static function retourner_transfert()
-    {
-        if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_retourner_transfer") {
-            extract($_POST);
-            $msg = [];
-
-            $data = array(
-                'statut_achat' => STATUT_COMMANDE[3],
-                'code_achat' => $code
-            );
-
-            $ligneAchat = Soutra::getDetailAchat($code);
-
-
-            $results = Soutra::transactionData(
-                function () use ($data, $ligneAchat) {
-                    Soutra::update("achat", $data);
-                    $employe = $_SESSION['id_employe'];
-                    $date = date('Y-m-d');
-
-                    $rows = array_map(function ($value) use ($employe, $date) {
-                        return [
-                            'article_id'     => $value['article_id'],
-                            'type_mouvement' => STATUT_MOUVEMENT[5],
-                            'quantite'       => $value['qte'],
-                            'employe_id'     => $employe,
-                            'prix_achat'     => $value['prix_achat'],
-                            'entrepot_id'    => $value['entrepot_id'],
-                            'date_mouvement' => $date
-                        ];
-                    }, $ligneAchat);
-
-                    // 4. Insert multiple (1 seule requête 🔥)
-                    Soutra::insertMultiple('mouvement_stock', $rows);
-                }
-            );
-
-            if ($results) {
-                $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
-            } else {
-                $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
-            }
-
-            echo json_encode($msg);
-        }
-    }
-    public static function annulation_transfert()
-    {
-        if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_annuler_transfer") {
-            extract($_POST);
-            $msg = [];
-
-            $data = array(
-                'statut_achat' => STATUT_COMMANDE[4],
-                'code_achat' => $code
-            );
-            if (Soutra::update("achat", $data)) {
-                $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
-                $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
-                $msg = ["success" => true, "msg" => "Commande annulee avec succès"];
-            } else {
-                $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
-            }
-            echo json_encode($msg);
-        }
-    }
-
-    public static function btn_remove_ajouter_panier_transfert()
-    {
-        if (isset($_POST['remove_ajouter_panier_transfert'])) {
-
-            $article = $_POST['id_article'];
-
-
-            $_SESSION['panier_transfert'] = array_filter($_SESSION['panier_transfert'], function ($item) use ($article) {
-                return $item != $article;
+        if (!empty($employe)) {
+          if ($employe['responsable'] == 0) {
+            // existe et modif
+            $result = Soutra::transactionData(function () use ($id_entrepot, $responsable_entrepot) {
+              Soutra::updated("service", ['responsable' => '0'], ['entrepot_id' => $id_entrepot]);
+              Soutra::updated("service", ['responsable' => '1'], ['entrepot_id' => $id_entrepot, 'employe_id' => $responsable_entrepot]);
             });
+          }
+        } else {
+          // pas encore creer
+          $date = date('Y-m-d');
+          $dataService = [
+            'entrepot_id' => $id_entrepot,
+            'employe_id' => $responsable_entrepot,
+            'etat_service' => $service['etat_service'] ?? 0,
+            'responsable' => 1,
+            'created_at_service' => $date
+          ];
 
-            echo json_encode([
-                'code' => '200',
-                'message' => 'Produit retiré de la liste avec succès!',
-                'panier' => $_SESSION['panier_transfert']
-            ]);
-        }
-    }
+          $result = Soutra::transactionData(function () use ($dataService, $id_entrepot) {
 
-    public static function checkCode()
-    {
-        $code = "TR" . date('y') . date('d') . rand(10, 999);
-        if (!empty(Soutra::libelleExiste('transfert', 'code_transfert', $code))) {
-            self::checkCode();
+            Soutra::updated("service", ['responsable' => '0'], ['entrepot_id' => $id_entrepot]);
+            Soutra::inserted("service", $dataService);
+          });
         }
-        return $code;
+
+        $dataEntrepot = [
+          'libelle_entrepot' => $libelle_entrepot,
+          'ville_entrepot' => $ville_entrepot,
+          'adresse_entrepot' => $adresse_entrepot
+        ];
+
+        Soutra::updated("entrepot", $dataEntrepot, ['ID_entrepot' => $id_entrepot]);
+
+
+        if ($result) {
+          $msg['message'] = "Entrepot modifié avec succès.";
+          $msg['code'] = 200;
+        } else {
+          $msg['message'] = 'Une erreur est survenue !';
+        }
+      }
+
+      echo json_encode($msg);
     }
+  }
+
+  public static function modifier_entrepot_article()
+  {
+
+    if (isset($_POST['btn_modifier_entrepot_article'])) {
+
+      extract($_POST);
+      $msg['code'] = 400;
+      $msg['message'] = "";
+
+      if (!empty($prix_achat) && !empty($prix_vente)) {
+        $data = [
+          'prix_achat' => $prix_achat,
+          'prix_vente' => $prix_vente,
+          'stock_alert' => $stock_alert,
+          'garantie_article' => $garantie_article
+        ];
+
+        $result = Soutra::updated("entrepot_article", $data, ['ID_entrepot_article' => $id_entrepot_article]);
+
+
+        if ($result) {
+          $msg['entrepot_id'] = $entrepot_id;
+          $msg['message'] = "Entrepot modifié avec succès.";
+          $msg['code'] = 200;
+        } else {
+          $msg['message'] = 'Une erreur est survenue !';
+        }
+      } else {
+        $msg["message"] = 'Veuillez renseigner les champs obligatoires !';
+      }
+
+      echo json_encode($msg);
+    }
+  }
+
+  public static function suppresion_famille()
+  {
+    if (isset($_POST['btn_supprimer_famille'])) {
+
+      $data = array(
+        'etat_famille' => 0,
+        'ID_famille' => $_POST['id_famille']
+      );
+      Soutra::update("famille", $data);
+      echo 1;
+    }
+  }
+
+  public static function set_entrepot()
+  {
+    if (isset($_POST['set_entrepot'])) {
+      $msg = [];
+      if (!empty($_POST['id_entrepot'])) {
+        if (Soutra::exite('entrepot', 'ID_entrepot', $_POST['id_entrepot'])) {
+          // L'entrepôt existe, on peut continuer
+          $_SESSION['id_entrepot'] = $_POST['id_entrepot'];
+          Soutra::update("employe", ['entrepot' => $_POST['id_entrepot'], 'ID_employe' => $_SESSION['id_employe']]);
+          // var_dump($_SESSION['id_employe']);::
+          $msg = ['success' => true, 'message' => 'Entrepôt sélectionné avec succès'];
+        } else {
+          $msg = ['success' => false, 'message' => 'Entrepôt non trouvé'];
+        }
+      } else {
+        $msg = ['success' => false, 'message' => 'ID entrepôt manquant'];
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function getEntrepotForTransfert()
+  {
+    if (isset($_POST["btn_search_entrepot_transfert"])) {
+      $msg["code"] = 400;
+      if (!empty($_POST['id_entrepot'])) {
+
+        $entrepot = Soutra::getAllByItemsa('entrepot', 'ID_entrepot', $_POST['id_entrepot']);
+        $msg["code"] = 200;
+        if (!empty($entrepot)) {
+          $msg["entrepot"] = $entrepot;
+        } else {
+          $msg['entrepot'] = 'Erreur de récupération';
+        }
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function verifQteArticleTransfert()
+  {
+    if (isset($_POST['btn_verifQteArticleTransfert'])) {
+      $stock = Soutra::getNiveauStockArticle('vue_stock_produit', 'article_id', 'entrepot_id', $_POST['id'], $_SESSION['id_entrepot']);
+
+      // $entree = Soutra::getCompterSum('entree', 'qte', 'article_id', $_POST['id']);
+      // $sortie = Soutra::getCompterSum('sortie', 'qte', 'article_id', $_POST['id']);
+      // $stock = abs($entree - $sortie);
+      var_dump($stock);
+      // echo json_encode();
+      if (!empty($stock)) {
+
+        if ($stock['quantite_disponible'] >= $_POST['qte']) {
+          echo 'ok';
+        } else {
+          echo $stock['quantite_disponible'];
+        }
+      } else {
+        echo "stock indisponible";
+      }
+    }
+  }
+
+  public static function ajouter_panier_transfert()
+  {
+    if (isset($_POST['btn_ajouter_panier_transfert'])) {
+      $output = '';
+      if (!empty($_POST['article'])) {
+
+        $search = [];
+        $achat = [];
+
+        if (!isset($_SESSION['panier_transfert']))
+          $_SESSION['panier_transfert'] = [];
+
+        // if (!empty($_POST['article'])) {
+
+        for ($i = 0; $i < count($_POST['article']); $i++) {
+          $id = $_POST['article'][$i];
+          if (!in_array($id, $_SESSION['panier_transfert'])) {
+            $_SESSION['panier_transfert'][] = $id;
+            $search[] = $id;
+          }
+        }
+
+        // $transfert = Soutra::getPanierTransfert(implode(',', $_POST['article']));
+        $transfert = Soutra::getPanierTransfert(implode(',', $_SESSION['panier_transfert']));
+        // $achat = Soutra::getPanierAchat(implode(',', $_SESSION['panier']), $_SESSION['id_entrepot']);
+        // var_dump($transfert);
+
+        // }
+        echo json_encode($transfert);
+      }
+    }
+  }
+
+
+  public static function ajouter_transfert()
+  {
+    if (isset($_POST['btn_ajouter_transfert'])) {
+
+      extract($_POST);
+      $verifEmpty = false;
+      $verifType = false;
+      $msg['code'] = 400;
+
+      for ($i = 0; $i < count($pu); $i++) {
+        if (empty(trim($pu[$i])) || empty(trim($qte[$i])) || empty($total[$i])) {
+          $verifEmpty = true;
+        } elseif (!ctype_digit($pu[$i]) || !ctype_digit($qte[$i]) || $qte[$i] < 1 || !ctype_digit($total[$i])) {
+          $verifType = true;
+        }
+      }
+
+      if ($verifEmpty) {
+        $msg['message'] =  'Veuillez Entrer toutes les valeurs !';
+      } elseif ($verifType) {
+        $msg['message'] = 'Verifier les valeurs renseignées';
+      } else {
+
+        $date = date('Y-m-d');
+        $code = strtoupper(self::checkCode());
+        $employe_id = $_SESSION['id_employe'];
+        // $entrepot_source = $_POST['source'];
+        // $entrepot_destination = $_POST['destination'];
+
+        $data = array(
+          'code_transfert' => $code,
+          'employe_id' => $employe_id,
+          'entrepot_source_id' => $source,
+          'entrepot_destination_id' => $destination,
+          'date_transfert' => $date,
+          'created_at' => $date,
+          'statut_transfert' => STATUT_COMMANDE[0]
+        );
+
+        $results = Soutra::transactionData(function () use ($data, $pu, $qte, $id, $code) {
+          Soutra::inserted("transfert", $data);
+          for ($i = 0; $i < count($pu); $i++) {
+            $transfert = array(
+              'transfert_id' => $code,
+              'article_id' => $id[$i],
+              'prix_transfert' => $pu[$i],
+              'qte' => $qte[$i]
+            );
+
+            Soutra::inserted("ligne_transfert", $transfert);
+          }
+        });
+
+        if ($results) {
+          unset($_SESSION['transfert']);
+          unset($_SESSION['panier_transfert']);
+          $msg['code'] = 200;
+          $msg['message'] = "Echange enregistré avec succès.";
+        } else {
+          $msg['message'] = 'Une erreur est survenue! ';
+        }
+      }
+
+      echo json_encode($msg);
+    }
+  }
+
+  public static function validation_transfert()
+  {
+    if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_validation_transfert") {
+      extract($_POST);
+      $msg = [];
+
+      $data = array(
+        'statut_achat' => STATUT_COMMANDE[1],
+        'code_achat' => $code
+      );
+
+
+      $ligneAchat = Soutra::getDetailAchat($code);
+
+
+      $results = Soutra::transactionData(
+        function () use ($data, $ligneAchat) {
+          Soutra::update("achat", $data);
+          $employe = $_SESSION['id_employe'];
+          $entrepot = $_SESSION['id_entrepot'] ?? 7;
+          $date = date('Y-m-d');
+
+          $rows = array_map(function ($value) use ($employe, $entrepot, $date) {
+            return [
+              'article_id'     => $value['article_id'],
+              'type_mouvement' => STATUT_MOUVEMENT[0],
+              'quantite'       => $value['qte'],
+              'employe_id'     => $employe,
+              'prix_achat'     => $value['prix_achat'],
+              'entrepot_id'    => $entrepot,
+              'date_mouvement' => $date
+            ];
+          }, $ligneAchat);
+
+          // 4. Insert multiple (1 seule requête 🔥)
+          Soutra::insertMultiple('mouvement_stock', $rows);
+        }
+      );
+
+      if ($results) {
+        $msg = ["success" => true, "msg" => "Commande validee avec succès"];
+      } else {
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
+      }
+
+      echo json_encode($msg);
+    }
+  }
+
+  public static function encaissement_transfert()
+  {
+    if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_encaisser_transfer") {
+      extract($_POST);
+      $msg = [];
+
+      $data = array(
+        'statut_achat' => STATUT_COMMANDE[2],
+        'code_achat' => $code
+      );
+      if (Soutra::update("achat", $data)) {
+        $msg = ["success" => true, "msg" => "Commande encaissee avec succès"];
+      } else {
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function retourner_transfert()
+  {
+    if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_retourner_transfer") {
+      extract($_POST);
+      $msg = [];
+
+      $data = array(
+        'statut_achat' => STATUT_COMMANDE[3],
+        'code_achat' => $code
+      );
+
+      $ligneAchat = Soutra::getDetailAchat($code);
+
+
+      $results = Soutra::transactionData(
+        function () use ($data, $ligneAchat) {
+          Soutra::update("achat", $data);
+          $employe = $_SESSION['id_employe'];
+          $date = date('Y-m-d');
+
+          $rows = array_map(function ($value) use ($employe, $date) {
+            return [
+              'article_id'     => $value['article_id'],
+              'type_mouvement' => STATUT_MOUVEMENT[5],
+              'quantite'       => $value['qte'],
+              'employe_id'     => $employe,
+              'prix_achat'     => $value['prix_achat'],
+              'entrepot_id'    => $value['entrepot_id'],
+              'date_mouvement' => $date
+            ];
+          }, $ligneAchat);
+
+          // 4. Insert multiple (1 seule requête 🔥)
+          Soutra::insertMultiple('mouvement_stock', $rows);
+        }
+      );
+
+      if ($results) {
+        $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
+      } else {
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
+      }
+
+      echo json_encode($msg);
+    }
+  }
+  public static function annulation_transfert()
+  {
+    if (isset($_POST['btn_action_transfert']) && $_POST['btn_action_transfert'] == "btn_annuler_transfer") {
+      extract($_POST);
+      $msg = [];
+
+      $data = array(
+        'statut_achat' => STATUT_COMMANDE[4],
+        'code_achat' => $code
+      );
+      if (Soutra::update("achat", $data)) {
+        $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
+        $msg = ["success" => true, "msg" => "Commande retournee avec succès"];
+        $msg = ["success" => true, "msg" => "Commande annulee avec succès"];
+      } else {
+        $msg = ["success" => false, "msg" => "Une erreur est survenue !"];
+      }
+      echo json_encode($msg);
+    }
+  }
+
+  public static function btn_remove_ajouter_panier_transfert()
+  {
+    if (isset($_POST['remove_ajouter_panier_transfert'])) {
+
+      $article = $_POST['id_article'];
+
+
+      $_SESSION['panier_transfert'] = array_filter($_SESSION['panier_transfert'], function ($item) use ($article) {
+        return $item != $article;
+      });
+
+      echo json_encode([
+        'code' => '200',
+        'message' => 'Produit retiré de la liste avec succès!',
+        'panier' => $_SESSION['panier_transfert']
+      ]);
+    }
+  }
+
+  public static function checkCode()
+  {
+    $code = "TR" . date('y') . date('d') . rand(10, 999);
+    if (!empty(Soutra::libelleExiste('transfert', 'code_transfert', $code))) {
+      self::checkCode();
+    }
+    return $code;
+  }
 }
 
 //fin de la class
