@@ -2871,7 +2871,7 @@ ajax_detail_entrepot_article();
             },
             dataType: "json",
             success: function (data) {
-                
+
                 var verif = data;
                 if (verif.status) {
 

@@ -3895,14 +3895,12 @@ GROUP BY e.ID_entrepot;";
             FROM type_depense t
             JOIN depense d ON t.ID_type = d.type_id
             JOIN employe e ON e.id_employe = d.employe_id
-        WHERE  DATE(d.date_created) BETWEEN :startDate AND :endDate ";
-        $params = ['startDate' => $startDate, 'endDate' => $endDate];
+        WHERE d.entrepot_id = :entrepot_id AND DATE(d.date_created) BETWEEN :startDate AND :endDate ORDER BY d.ID_depense DESC";
+
+        $params = ['startDate' => $startDate, 'endDate' => $endDate, 'entrepot_id' => $entrepot];
 
 
-        if (!empty($entrepot)) {
-            $sql .= " AND d.entrepot_id = :entrepot_id";
-            $params['entrepot_id'] = $entrepot;
-        }
+
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute($params);
