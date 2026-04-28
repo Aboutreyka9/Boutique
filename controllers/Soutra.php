@@ -3041,12 +3041,12 @@ GROUP BY e.ID_entrepot;";
     {
         $data = [];
         $sql = 'SELECT ach.*, 
-            SUM(en.qte) AS article,
-            SUM(en.prix_achat * en.qte) AS total,
+            COALESCE(COUNT(ach.ID_achat),0) article,
+            COALESCE(SUM(vma.montant_total),0) AS total,
             -- ach._achat,ach.created_at,
             fr.nom_fournisseur AS fournisseur, CONCAT(emp.nom_employe, " ", emp.prenom_employe) AS employe
             FROM achat ach 
-            JOIN entree en ON en.achat_id = ach.code_achat
+            JOIN vue_montant_achats vma ON vma.code_achat = ach.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ach.fournisseur_id
             JOIN employe emp ON emp.ID_employe = ach.employe_id
             WHERE ach.entrepot_id = :entrepot_id AND DATE(ach.created_at) BETWEEN :dateStart AND :dateEnd
@@ -3466,12 +3466,11 @@ GROUP BY e.ID_entrepot;";
     {
         $data = [];
 
-        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_achat * en.qte),0) total
+        $sql = 'SELECT COALESCE(COUNT(ac.ID_achat),0) article, COALESCE(SUM(vma.montant_total),0) total
             FROM achat ac
-            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN vue_montant_achats vma ON vma.code_achat = ac.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
-            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse )
-              AND en.etat_entree = :etat_entree 
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse ) 
               AND DATE(ac.created_at) BETWEEN :start AND :end
            ';
 
@@ -3480,7 +3479,6 @@ GROUP BY e.ID_entrepot;";
             'entrepot_id' => $_SESSION['id_entrepot'],
             'statut_valide' => STATUT_COMMANDE[1],
             'statut_encaisse' => STATUT_COMMANDE[2],
-            'etat_entree' => $etat_entree,
             'start' => $startDate,
             'end' => $endDate
         ]);
@@ -3498,18 +3496,16 @@ GROUP BY e.ID_entrepot;";
     {
         $data = [];
 
-        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_achat * en.qte),0) total
+        $sql = 'SELECT COALESCE(COUNT(ac.ID_achat),0) article, COALESCE(SUM(vma.montant_total),0) total
             FROM achat ac
-            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN vue_montant_achats vma ON vma.code_achat = ac.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
-            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_en_attente
-              AND en.etat_entree = :etat_entree ';
+            WHERE ac.entrepot_id = :entrepot_id AND ac.statut_achat = :statut_en_attente';
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
             'entrepot_id' => $_SESSION['id_entrepot'],
-            'statut_en_attente' => STATUT_COMMANDE[0],
-            'etat_entree' => $etat,
+            'statut_en_attente' => STATUT_COMMANDE[0]
         ]);
 
         if ($query->rowCount() > 0) {
@@ -3916,14 +3912,12 @@ GROUP BY e.ID_entrepot;";
             FROM type_depense t
             JOIN depense d ON t.ID_type = d.type_id
             JOIN employe e ON e.id_employe = d.employe_id
-        WHERE  DATE(d.date_created) BETWEEN :startDate AND :endDate ";
-        $params = ['startDate' => $startDate, 'endDate' => $endDate];
+        WHERE d.entrepot_id = :entrepot_id AND DATE(d.date_created) BETWEEN :startDate AND :endDate ORDER BY d.ID_depense DESC";
+
+        $params = ['startDate' => $startDate, 'endDate' => $endDate, 'entrepot_id' => $entrepot];
 
 
-        if (!empty($entrepot)) {
-            $sql .= " AND d.entrepot_id = :entrepot_id";
-            $params['entrepot_id'] = $entrepot;
-        }
+
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute($params);

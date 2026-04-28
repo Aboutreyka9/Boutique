@@ -748,7 +748,7 @@ class ControllerVente extends Connexion
           // return false;
         });
         if ($results) {
-          $msg = ['status' => true, 'message' => 'Vente enregistrée avec succès.'];
+          $msg = ['client' => $client, 'status' => true, 'message' => 'Vente enregistrée avec succès.'];
         } else {
           $msg = ['status' => false, 'message' => 'Une erreur est survenue !'];
         }
