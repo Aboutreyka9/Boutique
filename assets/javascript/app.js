@@ -361,7 +361,14 @@ return total_ttc;
                     notify(verif[1]);
                     resetForm();
                     $('#client-modal').modal('hide');
-                    liste_client();
+
+                    if ($('#page_evnte_sexion').length > 0) {
+                        $("#frm_client_vente_sexion").load(" #frm_client_vente_sexion > *");
+                        
+                    } else {
+                        
+                        // liste_client();
+                    }
 
                     // $(".message").html('<strong class="alert alert-success">Employé : Ajout réussi !</strong>');
                 } else {
@@ -493,7 +500,15 @@ return total_ttc;
                     notify(verif[1]);
                     resetForm();
                     $('#fournisseur-modal').modal('hide');
-                    liste_fournisseur();
+
+                     if ($('#page_achat_sexion').length > 0) {
+                        $("#frm_fournisseur_vente_sexion").load(" #frm_fournisseur_vente_sexion > *");
+                                            
+                    } else {
+                        
+                        // liste_fournisseur();
+                    }
+                    
 
                 } else {
                     // // 
@@ -4721,7 +4736,7 @@ ajax_detail_entrepot_article();
                 success: function (data) {
                     
                     let res = JSON.parse(data);
-                    console.log(res);return
+                    console.log(res);
 
 
                     $('#nb_achats').text(res.total_article);

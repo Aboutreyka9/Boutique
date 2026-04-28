@@ -8,7 +8,7 @@
   // var_dump($info);
   ?>
 
- <header class="page-title-bar">
+ <header class="page-title-bar" id="page_vente_sexion">
    <h1 class="page-title mb-3"> Espace vente</h1>
    <!-- <p class="text-muted"> Ajouter une vente</p> -->
    <?php if (Soutra::getState('client') == 1): ?>
@@ -16,7 +16,7 @@
        <div class="col-md-12">
          <div class="card">
            <div class="card-body">
-             <form method="post">
+             <form method="post" id="frm_client_vente_sexion">
                <div class="row my-3">
                  <div class="col-md-4">
                    <div style="position: relative;" class="form-group">
