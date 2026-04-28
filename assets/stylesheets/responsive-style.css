@@ -307,3 +307,10 @@
   border-left: 4px solid #198754;
 }
 
+.text-red{
+    color: red;
+}
+.text-green{
+    color: green;
+}
+

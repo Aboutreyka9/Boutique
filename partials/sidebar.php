@@ -170,7 +170,7 @@
             <div class="dropdown-divider">Configuration</div>
             <!-- .menu-item -->
             <li class="menu-item has-child  <?= isActive('entrepot'); ?>">
-              <a href="#" class="menu-link"><i class=" menu-icon bi bi-bank"></i><span class="menu-text">Entrepot</span>
+              <a href="#" class="menu-link"><i class=" menu-icon bi bi-shop"></i><span class="menu-text">Entrepot</span>
 
               </a> <!-- child menu -->
               <ul class="menu">

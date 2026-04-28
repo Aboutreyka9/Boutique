@@ -796,11 +796,11 @@ class Soutra extends Connexion
         }
     }
 
-    public static function geDetteClient($client, $nature, $statut_commande, $entrepot)
+    public static function geDetteClient($client, $nature, $entrepot)
     {
         try {
 
-            $sql = "SELECT COALESCE(SUM(reste_a_payer),0) as montant_total, COUNT(vep.reste_a_payer) as nombre_total FROM vue_etat_paiements vep JOIN vente v ON vep.code_transaction = v.code_vente
+            $sql = "SELECT COALESCE(SUM(reste_a_payer),0) as reste_a_payer FROM vue_etat_paiements vep JOIN vente v ON vep.code_transaction = v.code_vente
             WHERE v.client_id = :client AND vep.entrepot = :id AND vep.nature = :na AND vep.statut_commande = :st
             ";
             $params = [
@@ -1355,6 +1355,27 @@ GROUP BY e.ID_entrepot;";
 
         if ($query->rowCount() > 0) {
             $data = $query->fetchAll();
+        }
+        $query->closeCursor();
+        return $data;
+    }
+
+    public static function getAllArticleFamilleMarkDetailEntepot($entrepot = null)
+    {
+        $data = [];
+        $sql = "SELECT ar.*, fa.libelle_famille famille, ma.libelle_mark mark, un.libelle_unite unite,ent.prix_achat,ent.prix_vente,ent.stock_alert,ent.garantie_article,ent.etat_article AS etat_entrepot_article,ent.ID_entrepot_article
+        FROM article ar 
+        JOIN entrepot_article ent ON ent.article_id = ar.ID_article AND ent.entrepot_id = :entrepot_id 
+        JOIN famille fa ON fa.ID_famille = ar.famille_id 
+        JOIN mark ma ON ma.ID_mark = ar.mark_id  
+        JOIN unite un ON un.ID_unite = ar.unite_id ORDER BY ar.libelle_article DESC";
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $entrepot ?? $_SESSION['id_entrepot']
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
         return $data;

@@ -78,6 +78,11 @@ $taxe = $info['taxe'];
                </div>
              </form>
            </div>
+           <div class="col-md-12">
+             <div class="form-group">
+               <h3>Ce client doit : <strong id="dette_client"></strong></h3>
+             </div>
+           </div>
          </div>
        </div>
      </div>
@@ -125,7 +130,7 @@ $taxe = $info['taxe'];
    <div class="card-body">
      <div class="row row_montant">
        <div class="col-md-12 mb-3 ">
-         <span style="font-size: 35px;">Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
+         <span style="font-size: 35px;"> Montant :</span> <span class="mtt" style="font-size: 35px;"> 0</span> <span style="font-size: 35px;"> FCFA</span>
        </div>
      </div>
      <div class="table-responsive bg-light py-3 px-2 border rounded panier_vente">

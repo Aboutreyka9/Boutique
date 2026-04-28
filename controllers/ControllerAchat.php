@@ -1133,7 +1133,9 @@ class ControllerAchat extends Connexion
                   'created_at' => $date,
                   'transaction_code' => $code_achat,
                   'type_versement' => 'achat',
-                  'pay_mode' => $pay_mode
+                  'pay_mode' => $pay_mode,
+                  'entrepot_id' => $_SESSION["id_entrepot"],
+                  
                 ];
 
                 $connect = Soutra::getConnexion();
