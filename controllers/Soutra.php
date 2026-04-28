@@ -3656,17 +3656,16 @@ GROUP BY e.ID_entrepot;";
     {
         $data = [];
 
-        $sql = 'SELECT COALESCE(SUM(so.qte),0) article, COALESCE(SUM(so.prix_vente * so.qte),0) total
+        $sql = 'SELECT COALESCE(COUNT(ve.ID_vente),0) article, 
+                COALESCE(SUM(vmv.montant_total),0) total
             FROM vente ve
-            JOIN sortie so ON so.vente_id = ve.code_vente
+            JOIN vue_montant_ventes vmv ON vmv.code_vente =ve.code_vente
             LEFT JOIN client cl ON cl.ID_client = ve.client_id
-            WHERE ve.entrepot_id = :entrepot_id AND ve.statut_vente = :statut_en_attente
-            AND so.etat_sortie = :etat_sortie ';
+            WHERE ve.entrepot_id = :entrepot_id AND ve.statut_vente = :statut_en_attente';
         $query = self::getConnexion()->prepare($sql);
         $query->execute([
             'entrepot_id' => $_SESSION['id_entrepot'],
-            'statut_en_attente' => STATUT_COMMANDE[0],
-            'etat_sortie' => $etat,
+            'statut_en_attente' => STATUT_COMMANDE[0]
         ]);
 
         if ($query->rowCount() > 0) {

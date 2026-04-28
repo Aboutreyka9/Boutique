@@ -3371,6 +3371,7 @@ ajax_detail_entrepot_article();
 
                     $("#achat_attente").text(formatMontant((data.totalAchatAttente.total)));
                     $("#vente_attente").text(formatMontant((data.totalVenteAttente.total)));
+                    $("#nombre_vente_en_attente").text((data.totalVenteAttente.article));
                     $("#nombre_vente").text(data.ventes.nombre_ventes);
                     $("#montant_vente").text(formatMontant((data.ventes.montant_total)));
                     $("#nombre_reapprovisionnement").text(data.reapprovisionnements.nombre_achats);
