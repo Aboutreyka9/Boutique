@@ -22,7 +22,7 @@
                    <div style="position: relative;" class="form-group">
                      <label for="client">Client</label>
                      <select name="client" class="form-control client_search" id="client">
-                       <option>--- CHOISIR ---</option>
+                       <option value="">--- CHOISIR ---</option>
                        <?php
                         $client = Soutra::getAllClient();
                         $output = "";

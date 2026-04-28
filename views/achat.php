@@ -21,6 +21,7 @@ $totalAttente = Soutra::getTotauxAchatEnAttente(); // méthode adaptée que l'on
 // $totalBenefice = Soutra::getTotauxAchatBenefice(); // méthode adaptée que l'on a créée
 // $reste = Soutra::getTotalDetteClientDashboard($start, $end,'achat',$_SESSION['id_entrepot']);
 
+
 ?>
 
 <header class="page-title-bar">

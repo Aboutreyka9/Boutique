@@ -24,7 +24,7 @@ if (!isAdminGestionnaire()) {
                   <div style="position: relative;" class="form-group">
                     <label for="fournisseur">Fournisseur</label>
                     <select name="fournisseur" class="form-control fournisseur_search" id="fournisseur">
-                      <option value>--- CHOISIR ---</option>
+                      <option value="" value>--- CHOISIR ---</option>
                       <?php
                       $fournisseur = Soutra::getAllFournisseur();
                       $output = "";

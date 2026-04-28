@@ -2382,10 +2382,11 @@ ajax_detail_entrepot_article();
             e.preventDefault();
 
             var fournisseur = $('#fournisseur').val();
-            if (!fournisseur) {
-                notify("Veuillez choisir un fournisseur", "", "alert", "warning");
-                return;
-            }
+
+            // if (!fournisseur) {
+            //     notify("Veuillez choisir un fournisseur", "", "alert", "warning");
+            //     return;
+            // }
 
             var id = pushData("id");
             var qte = pushData("qte");
@@ -2843,10 +2844,12 @@ ajax_detail_entrepot_article();
             var client = $('#client').val();
             var montant_encaisse = $('#montant_encaisse').val();
             var pay_mode = $('.pay_mode').val();
-            if (!client) {
-                notify("Veuillez choisir un client", "", "alert", "warning");
-                return;
-            }
+
+            // if (!client) {
+            //     notify("Veuillez choisir un client", "", "alert", "warning");
+            //     return;
+            // }
+
             var id = pushData("id");
             var qte = pushData("qte");
             var pu = pushData("pu");
