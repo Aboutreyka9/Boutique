@@ -4719,9 +4719,9 @@ ajax_detail_entrepot_article();
                     btn_filter_achat: type
                 },
                 success: function (data) {
-                    // console.log(data);return
                     
                     let res = JSON.parse(data);
+                    console.log(res);return
 
 
                     $('#nb_achats').text(res.total_article);
