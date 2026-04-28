@@ -2220,7 +2220,7 @@ GROUP BY e.ID_entrepot;";
             FROM versement v
             LEFT JOIN client c ON v.client_id = c.ID_client
             LEFT JOIN employe e ON e.ID_employe = v.employe_id
-            WHERE v.entrepot_id = :entrepot 
+            WHERE  v.entrepot_id = :entrepot 
               AND v.type_versement = :types";
 
         $query = self::getConnexion()->prepare($sql);
@@ -3028,15 +3028,15 @@ GROUP BY e.ID_entrepot;";
             JOIN entree en ON en.achat_id = ach.code_achat
             JOIN fournisseur fr ON fr.ID_fournisseur = ach.fournisseur_id
             JOIN employe emp ON emp.ID_employe = ach.employe_id
-            WHERE DATE(ach.created_at) BETWEEN :dateStart AND :dateEnd
+            WHERE ach.entrepot_id = :entrepot_id AND DATE(ach.created_at) BETWEEN :dateStart AND :dateEnd
             GROUP BY ach.ID_achat 
             ORDER BY ach.ID_achat DESC';
 
         $query = self::getConnexion()->prepare($sql);
-        $query->execute(['dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
+        $query->execute(['entrepot_id' => $_SESSION['id_entrepot'], 'dateStart' => $dateStart, 'dateEnd' => $dateEnd]);
 
         if ($query->rowCount() > 0) {
-            $data = $query->fetchAll();
+            $data = $query->fetchAll(PDO::FETCH_ASSOC);
         }
         $query->closeCursor();
 
@@ -3923,19 +3923,16 @@ GROUP BY e.ID_entrepot;";
         $sql = 'SELECT  COALESCE(SUM(d.montant),0) montant_depense,  COALESCE(COUNT(d.ID_depense),0) nombre_depense
             FROM type_depense t
             JOIN depense d ON t.ID_type = d.type_id AND d.statut_depense = :statut_depense
-            WHERE DATE(d.date_created) BETWEEN :startDate AND :endDate ';
+            WHERE d.entrepot_id = :entrepot_id AND  DATE(d.date_created) BETWEEN :startDate AND :endDate ';
 
         $params = [
             ':startDate' => $startDate,
             ':endDate'   => $endDate,
             ':statut_depense'   => $statut,
+            ':entrepot_id'   => $_SESSION['id_entrepot']
         ];
 
-        // Ajout condition dynamique
-        if (!empty($entrepot)) {
-            $sql .= ' AND d.entrepot_id = :entrepot_id ';
-            $params[':entrepot_id'] = $entrepot;
-        }
+
 
         $query = self::getConnexion()->prepare($sql);
         $query->execute($params);
