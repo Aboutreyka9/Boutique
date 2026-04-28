@@ -3381,8 +3381,11 @@ ajax_detail_entrepot_article();
                     console.log(data);
                     // return
                     $("#total_montant_reste").text(((data.reliquat.montant_total)));
+                    $("#total_montant_reste_vente").text(((data.reliquatVente.montant_total)));
                     $("#total_montant_regler").text(formatMontant((data.totauxAchat.total_montant_regler)));
+                    $("#total_montant_regler_vente").text(formatMontant((data.totauxVente.total_montant_regler)));
                     $("#nb_achats").text(data.totauxAchat.article);
+                    $("#nb_vente").text(data.totauxVente.article);
 
                     $("#achat_attente").text(formatMontant((data.totalAchatAttente.total)));
                     $("#vente_attente").text(formatMontant((data.totalVenteAttente.total)));

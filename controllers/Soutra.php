@@ -3462,6 +3462,71 @@ GROUP BY e.ID_entrepot;";
         return $data;
     }
 
+    
+    public static function getTotauxAchatDashboardByDateRange($startDate, $endDate, $etat_entree = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_achat * en.qte),0) total
+            FROM achat ac
+            JOIN entree en ON en.achat_id = ac.code_achat
+            JOIN fournisseur fr ON fr.ID_fournisseur = ac.fournisseur_id
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_achat = :statut_valide OR ac.statut_achat = :statut_encaisse ) 
+            AND en.etat_entree = :etat_entree
+              AND DATE(ac.created_at) BETWEEN :start AND :end
+           ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_valide' => STATUT_COMMANDE[1],
+            'statut_encaisse' => STATUT_COMMANDE[2],
+            'etat_entree' => $etat_entree,
+            'start' => $startDate,
+            'end' => $endDate
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+    
+    public static function getTotauxVenteDashboardByDateRange($startDate, $endDate, $etat_sortie = 1)
+    {
+        $data = [];
+
+        $sql = 'SELECT COALESCE(SUM(en.qte),0) article, COALESCE(SUM(en.prix_vente * en.qte),0) total
+            FROM vente ac
+            JOIN sortie en ON en.vente_id = ac.code_vente
+            JOIN client cl ON cl.ID_client = ac.client_id
+            WHERE ac.entrepot_id = :entrepot_id AND (ac.statut_vente = :statut_valide OR ac.statut_vente = :statut_encaisse ) 
+            AND en.etat_sortie = :etat_sortie
+              AND DATE(ac.created_at) BETWEEN :start AND :end
+           ';
+
+        $query = self::getConnexion()->prepare($sql);
+        $query->execute([
+            'entrepot_id' => $_SESSION['id_entrepot'],
+            'statut_valide' => STATUT_COMMANDE[1],
+            'statut_encaisse' => STATUT_COMMANDE[2],
+            'etat_sortie' => $etat_sortie,
+            'start' => $startDate,
+            'end' => $endDate
+        ]);
+
+        if ($query->rowCount() > 0) {
+            $data = $query->fetch();
+        }
+
+        $query->closeCursor();
+
+        return $data;
+    }
+
     public static function getTotauxAchatByDateRange($startDate, $endDate, $etat_entree = 1)
     {
         $data = [];
