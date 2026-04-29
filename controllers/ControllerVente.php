@@ -1217,7 +1217,42 @@ class ControllerVente extends Connexion
         'statut_vente' => STATUT_COMMANDE[1],
         'code_vente' => $code
       );
+
       $ligneVente = Soutra::getDetailVente($code, $_SESSION['id_entrepot']);
+
+
+      // $stocksData = Soutra::getStockDisponibleEntrepot($_SESSION['id_entrepot']);
+
+      // $stocks = [];
+      // foreach ($stocksData as $row) {
+      //   $stocks[$row['article_id']] = $row;
+      // }
+
+      // $erreurs = [];
+
+      // foreach ($ligneVente as $ligne) {
+      //   $article_id = $ligne['article_id'];
+      //   $qte        = $ligne['qte'];
+
+      //   if (!isset($stocks[$article_id])) {
+      //     $erreurs[] = "Article (" . $ligne['libelle_article'] . ")introuvable";
+      //     continue;
+      //   }
+
+      //   $stock_dispo = $stocks[$article_id]['stock_disponible'];
+
+      //   if ($stock_dispo < $qte) {
+      //     $erreurs[] = "Stock insuffisant pour l'article : " . $ligne['libelle_article'] . " ( stock Dispo: $stock_dispo, qte Demandé: $qte)";
+      //   }
+      // }
+
+      // if (!empty($erreurs)) {
+      //   echo json_encode([
+      //     "success" => false,
+      //     "msg" => implode("<br>", $erreurs)
+      //   ]);
+      //   return;
+      // }
 
       $results = Soutra::transactionData(function () use ($data, $ligneVente) {
 
