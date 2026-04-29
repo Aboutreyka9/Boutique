@@ -9,7 +9,16 @@
   ?>
 
  <header class="page-title-bar" id="page_vente_sexion">
-   <h1 class="page-title mb-3"> Espace vente</h1>
+   
+ 
+  <div class="header-vente d-flex align-items-center mb-4">
+    <i class="bi bi-cart-check me-3 mr-3" style="font-size:30px;"></i>
+    <div>
+      <h4 class="mb-0">Espace Vente</h4>
+      <small>Gestion des ventes et encaissements</small>
+    </div>
+  </div>
+  
    <!-- <p class="text-muted"> Ajouter une vente</p> -->
    <?php if (Soutra::getState('client') == 1): ?>
      <div class="row">

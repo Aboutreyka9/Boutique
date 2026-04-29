@@ -6,7 +6,13 @@ if (!isAdminGestionnaire()) {
 
 ?>
 <header class="page-title-bar" id="page_achat_sexion">
-  <h1 class="page-title mb-3"> Espace réapprovisionement</h1>
+  <div class="header-achat d-flex align-items-center mb-4">
+    <i class="bi bi-bag-check me-3 mr-3" style="font-size:30px;"></i>
+    <div>
+      <h4 class="mb-0">Espace Achat</h4>
+      <small>Gestion des approvisionnements</small>
+    </div>
+  </div>
   <!-- <p class="text-muted"> Ajouter un achat</p> -->
   <!-- floating action -->
   <button type="button" id="btn_ajouter_achat" class="btn btn-success btn-floated" title="Effectuer Achat"><span style="line-height: 45px" class="fa fa-plus"></span></button>
