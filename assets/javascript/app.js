@@ -362,7 +362,7 @@ return total_ttc;
                     resetForm();
                     $('#client-modal').modal('hide');
 
-                    if ($('#page_evnte_sexion').length > 0) {
+                    if ($('#page_vente_sexion').length > 0) {
                         $("#frm_client_vente_sexion").load(" #frm_client_vente_sexion > *");
                         
                     } else {
