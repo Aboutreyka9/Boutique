@@ -819,6 +819,27 @@ class Soutra extends Connexion
         }
     }
 
+    public static function geMontantRegleByActivite($code,$nature)
+    {
+        try {
+
+            $sql = "SELECT COALESCE(montant_facture,0) as montant_facture ,COALESCE(total_paye,0) as total_paye , COALESCE(reste_a_payer,0) as reste_a_payer FROM vue_etat_paiements vep 
+            WHERE vep.code_transaction = :code AND vep.nature = :nature
+            ";
+            $params = [
+                'code' => $code,
+                'nature' => $nature
+            ];
+
+            $query = self::getConnexion()->prepare($sql);
+            $query->execute($params);
+
+            return $query->fetch(PDO::FETCH_ASSOC) ?? [];
+        } catch (Exception $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+
     public static function getTotalDetteClientDashboard($startDate, $endDate, $nature, $entrepot = null)
     {
         try {

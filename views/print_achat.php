@@ -17,6 +17,8 @@ $statut =$_GET['statut']?? null;
 // var_dump($statutLabel);return;
 
 $achat = Soutra::singleAchat($_GET['id']);
+$totaux = Soutra::geMontantRegleByActivite($_GET['id'],'achat');
+
 $infoBoutique = Soutra::getInfoBoutique();
 // var_dump($achat);return;
 if (empty($achat)) {
@@ -24,7 +26,7 @@ if (empty($achat)) {
     exit("achat non trouvée");
 }
 
-function generateProRecuHTML($infoBoutique, $achat) {
+function generateProRecuHTML($infoBoutique, $achat,$totaux) {
     $fournisseur = $achat[0];
     $total = array_sum(array_column($achat, 'prix_total'));
     $date = date('d/m/Y à H:i', strtotime($fournisseur['created_at']));
@@ -132,66 +134,83 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
         tbody td:nth-child(2),
         tbody td:nth-child(3),
         tbody td:nth-child(4) { text-align: right; }
-        
-        .totaux { 
-            padding: 20px;
-            display: flex;
-            justify-content: flex-end;
-        }
-        .totaux-table { width: 300px; }
-        .totaux .ligne { 
-            display: flex; 
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .totaux .ligne:last-child { 
-            border-bottom: 2px solid #e7e5e52e2;
-            padding-top: 10px;
-        }
-        .totaux .libelle { font-weight: bold; color: #333; }
-        .totaux .montant { font-weight: bold; }
-        .totaux .total { font-size: 16px; color: #1a1a1a; }
-        
-        .footer {
-            text-align: center; 
-            padding: 20px;
-            border-top: 1px solid #eeecec;
-            background: #f8f9fa;
 
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            left:0;
-            
-        }
-        .footer .merci { 
-            font-size: 14px; 
-            font-weight: bold; 
-            color: #333;
-            margin-bottom: 8px;
-        }
-        .footer .conseil { 
-            font-size: 11px; 
-            color: #777;
-            margin-bottom: 10px;
-        }
-        .footer .contact { 
-            font-size: 10px; 
-            color: #999;
-        }
-        .barcode { 
-            margin-top: 12px; 
-            font-family: "Courier New", monospace;
-            font-size: 11px;
-            color: #666;
-            letter-spacing: 2px;
-        }
+/* IMPORTANT : affichage en tableau (compatible PDF) */
+.totaux-table { 
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+.totaux .ligne { 
+    display: table-cell;
+    text-align: center;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+/* supprimer bordure droite du dernier */
+.totaux .ligne:last-child { 
+    border-right: none;
+}
+
+/* style texte */
+.totaux .libelle { 
+    display: block;
+    font-weight: bold; 
+    color: #333;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.totaux .montant { 
+    display: block;
+    font-weight: bold; 
+}
+
+.totaux .total { 
+    font-size: 16px; 
+    color: #1a1a1a; 
+}
+    .footer {
+        text-align: center; 
+        padding: 20px;
+        border-top: 1px solid #eeecec;
+        background: #f8f9fa;
+
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        left:0;
         
-        @media print {
-            body { padding: 0; }
-            .facture { border: none; }
-        }
+    }
+    .footer .merci { 
+        font-size: 14px; 
+        font-weight: bold; 
+        color: #333;
+        margin-bottom: 8px;
+    }
+    .footer .conseil { 
+        font-size: 11px; 
+        color: #777;
+        margin-bottom: 10px;
+    }
+    .footer .contact { 
+        font-size: 10px; 
+        color: #999;
+    }
+    .barcode { 
+        margin-top: 12px; 
+        font-family: "Courier New", monospace;
+        font-size: 11px;
+        color: #666;
+        letter-spacing: 2px;
+    }
+    
+    @media print {
+        body { padding: 0; }
+        .facture { border: none; }
+    }
     </style>
 </head>
 <body>
@@ -290,9 +309,17 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
             
             <div class="totaux">
                 <div class="totaux-table">
-                    <div class="ligne">
+                     <div class="ligne">
                         <span class="libelle">TOTAL À PAYER</span>
-                        <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
+                        <span class="montant total">' . number_format($totaux['montant_facture'] ?? 0, 0, ",", " ") . ' Fcfa</span>
+                    </div>
+                    <div class="ligne">
+                        <span class="libelle">TOTAL PAYE</span>
+                        <span class="montant total">' . number_format($totaux['total_paye'] ?? 0, 0, ",", " ") . ' Fcfa</span>
+                    </div>
+                    <div class="ligne">
+                        <span class="libelle">RESTE A PAYER</span>
+                        <span class="montant total">' . number_format($totaux['reste_a_payer'] ?? 0, 0, ",", " ") . ' Fcfa</span>
                     </div>
                 </div>
             </div>
@@ -311,7 +338,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
     return $html;
 }
 
-$html = generateProRecuHTML($infoBoutique, $achat);
+$html = generateProRecuHTML($infoBoutique, $achat,$totaux);
 
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);

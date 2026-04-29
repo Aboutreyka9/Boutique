@@ -1,4 +1,5 @@
 <?php
+var_dump(password_hash(123, PASSWORD_BCRYPT));
 // session_destroy();
 if (session_status() == PHP_SESSION_NONE) {
   session_start();

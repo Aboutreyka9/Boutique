@@ -14,9 +14,11 @@ if (isset($_GET['statut'])) {
 $statut =$_GET['statut']?? null;
 
 }
-// var_dump($statutLabel);return;
+// var_dump($_GET);return;
 
 $vente = Soutra::singleVente($_GET['id']);
+$totaux = Soutra::geMontantRegleByActivite($_GET['id'],'vente');
+// var_dump($totaux['montant_facture']);return;
 $infoBoutique = Soutra::getInfoBoutique();
 // var_dump($vente);return;
 if (empty($vente)) {
@@ -24,7 +26,7 @@ if (empty($vente)) {
     exit("Vente non trouvée");
 }
 
-function generateProRecuHTML($infoBoutique, $vente) {
+function generateProRecuHTML($infoBoutique, $vente,$totaux) {
     $client = $vente[0];
     $total = array_sum(array_column($vente, 'prix_total'));
     $date = date('d/m/Y à H:i', strtotime($client['created_at']));
@@ -313,15 +315,15 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
                 <div class="totaux-table">
                     <div class="ligne">
                         <span class="libelle">TOTAL À PAYER</span>
-                        <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
+                        <span class="montant total">' . number_format($totaux['montant_facture'] ?? 0, 0, ",", " ") . ' Fcfa</span>
                     </div>
                     <div class="ligne">
                         <span class="libelle">TOTAL PAYE</span>
-                        <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
+                        <span class="montant total">' . number_format($totaux['total_paye'] ?? 0, 0, ",", " ") . ' Fcfa</span>
                     </div>
                     <div class="ligne">
                         <span class="libelle">RESTE A PAYER</span>
-                        <span class="montant total">' . number_format($total, 0, ",", " ") . ' Fcfa</span>
+                        <span class="montant total">' . number_format($totaux['reste_a_payer'] ?? 0, 0, ",", " ") . ' Fcfa</span>
                     </div>
                 </div>
             </div>
@@ -340,7 +342,7 @@ $logo = 'data:image/jpeg;base64,' . base64_encode($image);
     return $html;
 }
 
-$html = generateProRecuHTML($infoBoutique, $vente);
+$html = generateProRecuHTML($infoBoutique, $vente,$totaux);
 
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
